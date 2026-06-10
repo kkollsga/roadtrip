@@ -363,6 +363,10 @@ window.Scene = (() => {
   /* ---------------- chunked item placement (cached, deterministic) ------ */
   const itemCache = new Map();
   const susp = { y: 0, vy: 0, p: 0, vp: 0 }; // body spring state (suspension)
+  const OCC_TREES = { // types allowed on near hillsides (trees only)
+    pine: 1, roundTree: 1, birch: 1, deadTree: 1, cactus: 1,
+    palm: 1, sakura: 1, redwood: 1, canopyTree: 1, fern: 1,
+  };
   function chunkItems(layerSeed, ci, p, chunkW, densityKey, tableKey) {
     const key = layerSeed + ':' + ci;
     let items = itemCache.get(key);
@@ -1020,7 +1024,7 @@ window.Scene = (() => {
         const owx = (ci * chunkW + chunkW / 2) / p;
         if (r() > effN(owx, 'occluder')) continue;
         const sx = ci * chunkW + r() * chunkW - lx0;
-        const rad = h * (0.55 + r() * 0.45);
+        const rad = h * (0.25 + r() * 0.75); // hill size varies; 1.0h is the cap
         const ors = resolve(owx);
         const oside = r() < ors.t ? ors.b : ors.a;
         const oprof = oside.vt > 0.5 ? oside.p2 : oside.p1;
@@ -1042,12 +1046,27 @@ window.Scene = (() => {
         ctx.closePath();
         ctx.fill();
         const c = colorsFor(oprof, 0.015);
-        // this hillside is nearer than the car, so its trees are huge
-        for (let k = -2; k <= 2; k++) {
-          if (r() > 0.5) continue;
-          const tq = 0.5 + k * 0.17 + (r() - 0.5) * 0.06;
-          Assets.pine(ctx, sx - rad + tq * 2 * rad, domeY(tq) + 4, h * (0.26 + r() * 0.16), c, r(), time);
+        // huge trees (this hillside is nearer than the car) scatter over
+        // the crest AND down the front face; species follow the biome
+        const hillTrees = [];
+        for (let k = 0; k < 7; k++) {
+          const gate = r(), pickR = r(), tq0 = r(), face = r(), ts0 = r(), vv = r();
+          if (gate > 0.55) continue;
+          const table = oprof.items;
+          let type = table[table.length - 1][0];
+          for (const e of table) if (pickR <= e[1]) { type = e[0]; break; }
+          if (!OCC_TREES[type]) continue;
+          const tq = 0.10 + tq0 * 0.80;
+          const ty = domeY(tq);
+          hillTrees.push({
+            type, vv,
+            x: sx - rad + tq * 2 * rad,
+            y: ty + face * face * (h + 20 - ty) * 0.55 + 4,
+            s: h * (0.24 + ts0 * 0.18),
+          });
         }
+        hillTrees.sort((a2, b2) => a2.y - b2.y); // lower on the face = nearer
+        for (const t2 of hillTrees) Assets[t2.type](ctx, t2.x, t2.y, t2.s, c, t2.vv, time);
       }
     }
     void mid;
