@@ -47,12 +47,17 @@ window.Cars = (() => {
     ctx.lineTo(nx, ny + 5);
     ctx.closePath();
     ctx.fill();
-    // pool of light on the road ahead
-    const rg = ctx.createRadialGradient(nx + 130, o.y + 6, 10, nx + 130, o.y + 6, 150);
+    // pool of light on the road ahead — the gradient is squashed with the
+    // ellipse so it fades to nothing at the edge (no hard-edged stripe)
+    ctx.save();
+    ctx.translate(nx + 130, o.y + 6);
+    ctx.scale(1, 0.17);
+    const rg = ctx.createRadialGradient(0, 0, 10, 0, 0, 155);
     rg.addColorStop(0, `rgba(255,232,170,${0.16 * k})`);
     rg.addColorStop(1, 'rgba(255,232,170,0)');
     ctx.fillStyle = rg;
-    ctx.beginPath(); ctx.ellipse(nx + 130, o.y + 6, 160, 26, 0, 0, TAU); ctx.fill();
+    ctx.beginPath(); ctx.arc(0, 0, 155, 0, TAU); ctx.fill();
+    ctx.restore();
     ctx.fillStyle = `rgba(255,244,200,${0.95 * k})`;
     ctx.beginPath(); ctx.arc(nx, ny, 3.4, 0, TAU); ctx.fill();
     ctx.fillStyle = `rgba(255,64,48,${0.85 * k})`;

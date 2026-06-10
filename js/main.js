@@ -17,9 +17,17 @@
 
   const BASE_SPEED = 150; // px/s scenery scroll at speedMult 1
 
+  /* high-latitude winter light: midday sinks toward blue hour */
+  const POLAR = {
+    top: U.col('#14223e'), bot: U.col('#4a6da0'), glow: U.col('#7d96c0'),
+    fog: U.col('#2a3c5c'), amb: U.col('#2a3a58'),
+  };
+
   const App = {
     carIndex: 0,
     speedMult: 0.9,
+    latitude: 0,
+    setLatitude(v) { this.latitude = U.clamp(+v || 0, 0, 1); },
     weatherMode: 'auto',
     biomeMode: 'auto',
     paused: false,
@@ -50,6 +58,7 @@
     if (q.has('weather')) App.setWeatherMode(q.get('weather'));
     if (q.has('car')) App.setCar(parseInt(q.get('car'), 10) || 0);
     if (q.has('speed')) App.setSpeed(parseFloat(q.get('speed')));
+    if (q.has('lat')) App.setLatitude(parseFloat(q.get('lat')));
     if (q.get('ui') === '0') document.body.classList.add('no-ui');
     if (q.has('warp')) {
       const wm = q.get('weather');
@@ -126,6 +135,23 @@
       light: U.clamp(pal.light * grade.lm, 0, 1),
       stars: pal.stars,
     };
+    // far-north winter: the brighter the hour, the harder it is pulled
+    // down toward blue-hour light; nights are already night
+    if (App.latitude > 0.01) {
+      const dayness = U.smooth(U.clamp((pal.light - 0.18) / 0.55, 0, 1));
+      const f = App.latitude * dayness;
+      if (f > 0.001) {
+        pal = {
+          top: U.mix(pal.top, POLAR.top, f),
+          bot: U.mix(pal.bot, POLAR.bot, f),
+          glow: U.mix(pal.glow, POLAR.glow, f),
+          fog: U.mix(pal.fog, POLAR.fog, f),
+          amb: U.mix(pal.amb, POLAR.amb, f),
+          light: U.lerp(pal.light, 0.34, f),
+          stars: Math.max(pal.stars, 0.30 * f),
+        };
+      }
+    }
     const biome = (() => {
       const bi = Scene.biomeAt(state.worldX + W * 0.5);
       return bi.t < 0.5 ? bi.a : bi.b;
@@ -142,6 +168,7 @@
       carIndex: App.carIndex,
       wheelRot: state.wheelRot,
       moonPhase: MOON_PHASE,
+      polar: App.latitude,
       biome,
       weather: null,
       aurora: Scene.auroraAt(state.worldX + W * 0.5),

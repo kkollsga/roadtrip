@@ -66,6 +66,7 @@
       if (!app) return;
       var data = {
         carIndex: app.carIndex,
+        latitude: app.latitude,
         loopMinutes: dom.dayLen ? Number(dom.dayLen.value) : (DC() ? DC().loopMinutes : 15),
         sessionMinutes: dom.sessionInput ? Number(dom.sessionInput.value) : 50
       };
@@ -81,6 +82,7 @@
     if (!app) return;
     try {
       if (typeof s.carIndex === 'number' && typeof app.setCar === 'function') app.setCar(s.carIndex);
+      if (typeof s.latitude === 'number' && typeof app.setLatitude === 'function') app.setLatitude(s.latitude);
       if (typeof s.loopMinutes === 'number' && typeof app.setDayLoopMinutes === 'function') app.setDayLoopMinutes(s.loopMinutes);
     } catch (e) { /* ignore */ }
   }
@@ -92,7 +94,7 @@
     burger: null,
     panel: null,
     carName: null,
-    speed: null,
+    lat: null,
     dayLenRow: null,
     dayLen: null,
     sessionRow: null,
@@ -163,6 +165,23 @@
 
     // Weather and speed are deliberately NOT configurable: both wander
     // on their own, like a real road trip.
+
+    // 2. Latitude: how far north the winter drive is. At the far end the
+    // sun never clears the horizon and midday is blue hour.
+    var lat = el('input', 'du-range');
+    lat.type = 'range';
+    lat.min = '0';
+    lat.max = '1';
+    lat.step = '0.05';
+    lat.value = '0';
+    lat.title = 'How far north (winter daylight)';
+    dom.lat = lat;
+    lat.addEventListener('input', function () {
+      var app = App();
+      if (app && typeof app.setLatitude === 'function') app.setLatitude(Number(lat.value));
+      saveState();
+    });
+    panel.appendChild(field('Winter latitude', lat));
 
     // 5. Day length (hidden during session)
     var dayLen = el('input', 'du-num');
@@ -338,6 +357,7 @@
     if (!app) return;
     var dc = DC();
     if (dom.dayLen && dc) dom.dayLen.value = dc.loopMinutes;
+    if (dom.lat && typeof app.latitude === 'number') dom.lat.value = app.latitude;
     refreshCarName();
     refreshPauseIcon();
   }

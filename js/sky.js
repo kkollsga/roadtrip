@@ -158,6 +158,8 @@ window.Sky = (() => {
 
     // -- sun --
     const sun = Palette.sunPos(env.t);
+    // far north in winter the sun barely grazes (or never clears) the horizon
+    if (env.polar) sun.elev = sun.elev * (1 - 0.96 * env.polar) - 0.05 * env.polar;
     if (sun.up) {
       const sxp = w * (0.14 + 0.72 * sun.p);
       const syp = horizonY - sun.elev * (horizonY - h * 0.09);

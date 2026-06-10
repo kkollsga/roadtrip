@@ -34,6 +34,7 @@ Click it to open a compact settings panel; click outside, press `Esc`, or click
 | ----------------- | ------------------------------------------------ |
 | Open settings     | Move the mouse, click `☰` top-right               |
 | Change car        | `‹ ›` arrows in the panel, or press `c`           |
+| Winter latitude   | Slider: drive further north — at the far end the sun never rises and midday is blue hour |
 | Day length        | "Day" number field (minutes per full cycle)       |
 | Pause / play      | `⏸` / `▶` button, or `Space`                       |
 | Fullscreen        | `⛶` button, or `f`                                 |
