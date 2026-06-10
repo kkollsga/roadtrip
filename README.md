@@ -34,8 +34,6 @@ Click it to open a compact settings panel; click outside, press `Esc`, or click
 | ----------------- | ------------------------------------------------ |
 | Open settings     | Move the mouse, click `☰` top-right               |
 | Change car        | `‹ ›` arrows in the panel, or press `c`           |
-| Weather           | Weather dropdown (Auto picks naturally)           |
-| Speed             | Speed slider, or `↑` / `↓` (0 = parked)           |
 | Day length        | "Day" number field (minutes per full cycle)       |
 | Pause / play      | `⏸` / `▶` button, or `Space`                       |
 | Fullscreen        | `⛶` button, or `f`                                 |

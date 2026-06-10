@@ -101,7 +101,9 @@
     const runDt = App.paused ? 0 : dt;
 
     DayCycle.update(runDt);
-    const speed = App.paused ? 0 : BASE_SPEED * App.speedMult;
+    // cruise speed wanders on its own: easy stretches, lazy slowdowns
+    const wander = 0.78 + 0.42 * U.noise1(state.time / 90, 77);
+    const speed = App.paused ? 0 : BASE_SPEED * wander * App.speedMult;
     state.worldX += speed * runDt;
     state.wheelRot += (speed * runDt) / Cars.WHEEL_R;
 
@@ -132,7 +134,6 @@
       carX: W * 0.42, carY: H * 0.872,
       carIndex: App.carIndex,
       wheelRot: state.wheelRot,
-      carBob: Math.sin(state.time * 2.6) * 1.2 + Math.sin(state.time * 7.1) * 0.4,
       biome,
       weather: null,
       aurora: Scene.auroraAt(state.worldX + W * 0.5),

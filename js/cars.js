@@ -107,8 +107,9 @@ window.Cars = (() => {
       ctx.fillRect(X + 95, Y - 22, 14, 5);
       ctx.fillStyle = o.shade(C('#7e2820'));
       ctx.fillRect(X - 88, Y - 15, 174, 4);
-      wheel(ctx, X - 64, Y, 18, o.wheelRot, o);
-      wheel(ctx, X + 66, Y, 18, o.wheelRot, o);
+      const dr = o.drops || [0, 0];
+      wheel(ctx, X - 64, o.y + dr[0], 18, o.wheelRot, o);
+      wheel(ctx, X + 66, o.y + dr[1], 18, o.wheelRot, o);
       lights(ctx, o, { x: 107, y: 30 }, { x: -106, y: 32 });
     },
   };
@@ -161,8 +162,9 @@ window.Cars = (() => {
       ctx.fillStyle = o.shade(C('#d9dade'));
       ctx.fillRect(X - 104, Y - 20, 12, 5);
       ctx.fillRect(X + 93, Y - 20, 12, 5);
-      wheel(ctx, X - 62, Y, 17, o.wheelRot, o);
-      wheel(ctx, X + 60, Y, 17, o.wheelRot, o);
+      const dr = o.drops || [0, 0];
+      wheel(ctx, X - 62, o.y + dr[0], 17, o.wheelRot, o);
+      wheel(ctx, X + 60, o.y + dr[1], 17, o.wheelRot, o);
       lights(ctx, o, { x: 96, y: 34 }, { x: -100, y: 30 });
     },
   };
@@ -201,8 +203,9 @@ window.Cars = (() => {
       ctx.fillStyle = o.shade(C('#d9dade'));
       ctx.fillRect(X - 110, Y - 20, 13, 5);
       ctx.fillRect(X + 98, Y - 20, 13, 5);
-      wheel(ctx, X - 66, Y, 19, o.wheelRot, o);
-      wheel(ctx, X + 62, Y, 19, o.wheelRot, o);
+      const dr = o.drops || [0, 0];
+      wheel(ctx, X - 66, o.y + dr[0], 19, o.wheelRot, o);
+      wheel(ctx, X + 62, o.y + dr[1], 19, o.wheelRot, o);
       lights(ctx, o, { x: 104, y: 32 }, { x: -106, y: 30 });
     },
   };
@@ -249,8 +252,9 @@ window.Cars = (() => {
       ctx.fillStyle = o.shade(C('#d9dade'));
       ctx.fillRect(X - 96, Y - 20, 12, 4);
       ctx.fillRect(X + 86, Y - 20, 12, 4);
-      wheel(ctx, X - 56, Y, 16, o.wheelRot, o);
-      wheel(ctx, X + 56, Y, 16, o.wheelRot, o);
+      const dr = o.drops || [0, 0];
+      wheel(ctx, X - 56, o.y + dr[0], 16, o.wheelRot, o);
+      wheel(ctx, X + 56, o.y + dr[1], 16, o.wheelRot, o);
       lights(ctx, o, { x: 93, y: 28 }, { x: -92, y: 26 });
     },
   };

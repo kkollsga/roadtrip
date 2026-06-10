@@ -362,6 +362,7 @@ window.Scene = (() => {
 
   /* ---------------- chunked item placement (cached, deterministic) ------ */
   const itemCache = new Map();
+  const susp = { y: 0, vy: 0, p: 0, vp: 0 }; // body spring state (suspension)
   function chunkItems(layerSeed, ci, p, chunkW, densityKey, tableKey) {
     const key = layerSeed + ':' + ci;
     let items = itemCache.get(key);
@@ -884,11 +885,30 @@ window.Scene = (() => {
     // the car is the scale constant — except on tiny viewports (phones),
     // where it shrinks so it doesn't tower over the scenery
     const cs = U.clamp(Math.min(h / 760, w / 1100), 0.42, 1);
+    const car = Cars.LIST[env.carIndex] || Cars.LIST[0];
+    // suspension: the wheels ride the road texture, the body follows on a
+    // lagged spring with a hint of pitch — planted, never floating
+    const wp = car.wheels || [-64, 64];
+    const spd = U.clamp(env.speed / 135, 0, 1.4);
+    const bumpAt = wx2 => (U.noise1(wx2 / 29, 510) - 0.5) * 2 * (0.7 + 1.5 * spd);
+    const dR = bumpAt(worldX + wp[0] * cs);
+    const dF = bumpAt(worldX + wp[1] * cs);
+    const sdt = Math.min(env.dt || 0, 0.05);
+    if (sdt > 0) {
+      const targY = (dR + dF) * 0.5;
+      const targP = (dF - dR) / ((wp[1] - wp[0]) * cs) * 0.55;
+      susp.vy += (targY - susp.y) * 38 * sdt;
+      susp.vy *= Math.max(0, 1 - 8 * sdt);
+      susp.y += susp.vy * sdt;
+      susp.vp += (targP - susp.p) * 30 * sdt;
+      susp.vp *= Math.max(0, 1 - 8 * sdt);
+      susp.p += susp.vp * sdt;
+    }
+    const idle = env.speed < 5 ? Math.sin(time * 9) * 0.25 : 0;
     ctx.save();
     ctx.translate(carX, carSurf);
-    ctx.rotate(Math.atan(slope));
+    ctx.rotate(Math.atan(slope) + susp.p);
     ctx.scale(cs, cs);
-    const car = Cars.LIST[env.carIndex] || Cars.LIST[0];
     { // soft contact shadow: radial falloff + dark patches under the wheels
       const shA = 0.10 + 0.24 * light;
       ctx.save();
@@ -911,7 +931,8 @@ window.Scene = (() => {
     const shade = base => U.css(U.mix(Palette.lit(base, pal, light), pal.fog, effD(0.05)));
     car.draw(ctx, {
       x: 0, y: 0, time, light,
-      wheelRot: env.wheelRot, bob: env.carBob, speed: env.speed, shade,
+      wheelRot: env.wheelRot, bob: susp.y + idle, drops: [dR, dF],
+      speed: env.speed, shade,
     });
 
     // wheel spray on a wet road

@@ -66,8 +66,6 @@
       if (!app) return;
       var data = {
         carIndex: app.carIndex,
-        speedMult: app.speedMult,
-        weatherMode: app.weatherMode,
         loopMinutes: dom.dayLen ? Number(dom.dayLen.value) : (DC() ? DC().loopMinutes : 15),
         sessionMinutes: dom.sessionInput ? Number(dom.sessionInput.value) : 50
       };
@@ -83,8 +81,6 @@
     if (!app) return;
     try {
       if (typeof s.carIndex === 'number' && typeof app.setCar === 'function') app.setCar(s.carIndex);
-      if (typeof s.speedMult === 'number' && typeof app.setSpeed === 'function') app.setSpeed(s.speedMult);
-      if (typeof s.weatherMode === 'string' && typeof app.setWeatherMode === 'function') app.setWeatherMode(s.weatherMode);
       if (typeof s.loopMinutes === 'number' && typeof app.setDayLoopMinutes === 'function') app.setDayLoopMinutes(s.loopMinutes);
     } catch (e) { /* ignore */ }
   }
@@ -96,7 +92,6 @@
     burger: null,
     panel: null,
     carName: null,
-    weatherSel: null,
     speed: null,
     dayLenRow: null,
     dayLen: null,
@@ -166,33 +161,8 @@
     // Biomes are deliberately NOT configurable: the road wanders through them
     // on its own (tied to date & time), keeping the sense of discovery alive.
 
-    // 3. Weather select
-    var weatherSel = el('select', 'du-select');
-    weatherSel.title = 'Weather';
-    dom.weatherSel = weatherSel;
-    fillWeatherOptions(weatherSel);
-    weatherSel.addEventListener('change', function () {
-      var app = App();
-      if (app && typeof app.setWeatherMode === 'function') app.setWeatherMode(weatherSel.value);
-      saveState();
-    });
-    panel.appendChild(field('Weather', weatherSel));
-
-    // 4. Speed slider
-    var speed = el('input', 'du-range');
-    speed.type = 'range';
-    speed.min = '0';
-    speed.max = '2';
-    speed.step = '0.05';
-    speed.value = '1';
-    speed.title = 'Speed';
-    dom.speed = speed;
-    speed.addEventListener('input', function () {
-      var app = App();
-      if (app && typeof app.setSpeed === 'function') app.setSpeed(Number(speed.value));
-      saveState();
-    });
-    panel.appendChild(field('Speed', speed));
+    // Weather and speed are deliberately NOT configurable: both wander
+    // on their own, like a real road trip.
 
     // 5. Day length (hidden during session)
     var dayLen = el('input', 'du-num');
@@ -298,21 +268,6 @@
     document.body.appendChild(root);
   }
 
-  function fillWeatherOptions(sel) {
-    sel.appendChild(makeOption('auto', 'Auto'));
-    var w = Weather();
-    var types = (w && w.types) ? w.types : [];
-    for (var i = 0; i < types.length; i++) {
-      sel.appendChild(makeOption(types[i], cap(types[i])));
-    }
-  }
-
-  function makeOption(value, label) {
-    var o = el('option', null, label);
-    o.value = value;
-    return o;
-  }
-
   // ---- actions ------------------------------------------------------------
 
   function cycleCar(dir) {
@@ -381,8 +336,6 @@
   function syncControls() {
     var app = App();
     if (!app) return;
-    if (dom.speed) dom.speed.value = app.speedMult;
-    if (dom.weatherSel && app.weatherMode != null) dom.weatherSel.value = app.weatherMode;
     var dc = DC();
     if (dom.dayLen && dc) dom.dayLen.value = dc.loopMinutes;
     refreshCarName();
@@ -492,22 +445,7 @@
       cycleCar(1);
     } else if (key === 'h' || key === 'H') {
       toggleUserHidden();
-    } else if (key === 'ArrowUp') {
-      adjustSpeed(0.1);
-      e.preventDefault();
-    } else if (key === 'ArrowDown') {
-      adjustSpeed(-0.1);
-      e.preventDefault();
     }
-  }
-
-  function adjustSpeed(delta) {
-    var app = App();
-    if (!app) return;
-    var v = Math.max(0, Math.min(2, (app.speedMult || 0) + delta));
-    if (typeof app.setSpeed === 'function') app.setSpeed(v);
-    if (dom.speed) dom.speed.value = v;
-    saveState();
   }
 
   // ---- outside-click ------------------------------------------------------

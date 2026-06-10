@@ -36,11 +36,14 @@ window.Palette = (() => {
     };
   }
 
-  /* Sun travels t 0.06 → 0.79; elevation is a sine arc. p = horizontal progress. */
+  /* Sun travels t 0.06 → 0.79; elevation is a sine arc. p = horizontal
+     progress. The arc extends a little past the horizon (negative
+     elevation) so the disc rises and sets behind the scenery instead of
+     popping in and out of existence. */
   function sunPos(t) {
     t = ((t % 1) + 1) % 1;
     const p = (t - 0.06) / 0.73;
-    if (p < 0 || p > 1) return { up: false, p: 0, elev: 0 };
+    if (p < -0.12 || p > 1.12) return { up: false, p: 0, elev: 0 };
     return { up: true, p, elev: Math.sin(Math.PI * p) };
   }
 
@@ -49,7 +52,7 @@ window.Palette = (() => {
     t = ((t % 1) + 1) % 1;
     const m = t < 0.5 ? t + 1 : t;
     const p = (m - 0.83) / 0.24;
-    if (p < 0 || p > 1) return { up: false, p: 0, elev: 0 };
+    if (p < -0.12 || p > 1.12) return { up: false, p: 0, elev: 0 };
     return { up: true, p, elev: Math.sin(Math.PI * p) };
   }
 

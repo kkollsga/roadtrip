@@ -25,10 +25,9 @@ window.Sky = (() => {
     ctx.fillRect(0, 0, w, h);
 
     // -- stars (slight parallax so the sky drifts very slowly) --
-    if (pal.stars > 0.02) {
+    if (pal.stars > 0.04) {
       const sx = env.worldX * 0.012;
       const cell = 130;
-      ctx.fillStyle = '#ffffff';
       for (let i = Math.floor(sx / cell); i < (sx + w) / cell + 1; i++) {
         for (let j = 0; j < Math.ceil(horizonY / cell); j++) {
           const n = Math.floor(2 + U.hash2(i, j * 57) * 2);
@@ -36,9 +35,20 @@ window.Sky = (() => {
             const px = i * cell + U.hash2(i * 3 + k, j) * cell - sx;
             const py = j * cell + U.hash2(i, j * 7 + k) * cell;
             if (py > horizonY - 8) continue;
-            const a = pal.stars * starAlpha(i + k, j, time) * (1 - py / horizonY * 0.5);
-            const r = 0.6 + U.hash2(i + k * 11, j + 5) * 0.9;
-            ctx.globalAlpha = a;
+            const mag = U.hash2(i * 7 + k * 13, j * 29 + 1);
+            const planet = U.hash2(i * 31 + k, j * 53 + 9) < 0.015;
+            const bright = planet ? 1 : mag * mag;
+            // brightest bodies surface first as dusk deepens, the dim
+            // multitude fills in only once the sky is truly dark
+            const thr = planet ? 0.06 : 0.18 + (1 - bright) * 0.72;
+            const fade = U.clamp((pal.stars - thr) / 0.16, 0, 1);
+            if (fade <= 0) continue;
+            const tw = planet ? 0.9 : starAlpha(i + k, j, time);
+            ctx.globalAlpha = fade * (0.35 + 0.65 * bright) * tw * (1 - py / horizonY * 0.4);
+            ctx.fillStyle = planet
+              ? ['#ffe9c4', '#ffd6b8', '#e8f0ff'][Math.floor(mag * 3) % 3]
+              : '#ffffff';
+            const r = planet ? 1.7 + mag * 0.9 : 0.5 + bright * 1.4;
             ctx.fillRect(px, py, r, r);
           }
         }
@@ -122,7 +132,7 @@ window.Sky = (() => {
     if (sun.up) {
       const sxp = w * (0.14 + 0.72 * sun.p);
       const syp = horizonY - sun.elev * (horizonY - h * 0.09);
-      const lowness = 1 - U.smooth(Math.min(1, sun.elev * 1.6));
+      const lowness = 1 - U.smooth(U.clamp(sun.elev * 1.6, 0, 1));
       const sunCol = U.mix(U.col('#fff6dc'), U.col('#ff8a4d'), lowness);
       const glowR = h * (0.30 + lowness * 0.50);
       const gg = ctx.createRadialGradient(sxp, syp, 0, sxp, syp, glowR);
@@ -143,7 +153,8 @@ window.Sky = (() => {
       ctx.arc(sxp - sr * 0.30, syp - sr * 0.35, sr * 0.30, 0, TAU);
       ctx.arc(sxp + sr * 0.25, syp + sr * 0.15, sr * 0.16, 0, TAU);
       ctx.fill();
-      env.sunX = sxp; env.sunY = syp; env.sunLow = lowness;
+      if (sun.elev > 0.02) { env.sunX = sxp; env.sunY = syp; }
+      env.sunLow = lowness;
     }
 
     // -- moon --
@@ -161,12 +172,23 @@ window.Sky = (() => {
       ctx.beginPath(); ctx.arc(mx, my, r, 0, TAU); ctx.fill();
       ctx.fillStyle = U.css(pal.top, 0.85); // crescent bite
       ctx.beginPath(); ctx.arc(mx - r * 0.42, my - r * 0.22, r * 0.86, 0, TAU); ctx.fill();
-      env.moonX = mx; env.moonY = my;
+      if (moon.elev > 0.02) { env.moonX = mx; env.moonY = my; }
     }
 
     // -- clouds: two parallax bands of chunked ellipse clusters --
     drawClouds(ctx, env, pal, 0.04, h * 0.16, 11, 0.55);
     drawClouds(ctx, env, pal, 0.09, h * 0.30, 23, 1.0);
+
+    // a heavy ceiling closes over the sky as cover approaches full storm
+    if (env.weather.cloudCover > 0.7) {
+      const sa = Math.min(0.6, (env.weather.cloudCover - 0.7) * 2.0);
+      const sc = Palette.lit(U.col('#69748a'), pal, env.light);
+      const sg = ctx.createLinearGradient(0, 0, 0, h * 0.32);
+      sg.addColorStop(0, U.css(sc, sa));
+      sg.addColorStop(1, U.css(sc, 0));
+      ctx.fillStyle = sg;
+      ctx.fillRect(0, 0, w, h * 0.32);
+    }
 
     // -- birds (daytime, gentle) --
     birdTimer -= dt;
@@ -209,16 +231,16 @@ window.Sky = (() => {
     const shade = Palette.lit(U.col('#a8b2c2'), pal, env.light);
     for (let ci = Math.floor(lx / chunkW); ci < (lx + w) / chunkW + 1; ci++) {
       const r = U.rng(U.hash2(ci, layerSeed));
-      const count = 1 + Math.floor(r() * 2);
+      const count = 2 + Math.floor(r() * 2);
       for (let k = 0; k < count; k++) {
         const need = r();           // cloud appears once cover exceeds this
-        const a = U.clamp((cover + 0.30 - need) * 2.4, 0, 1) * 0.92;
         const cx = ci * chunkW + r() * chunkW - lx;
         const cy = baseY + (r() - 0.5) * h * 0.14;
         const cw = h * (0.10 + r() * 0.16) * sizeMul;
-        if (a < 0.01) { r(); r(); continue; }
-        const grey = U.clamp(cover - 0.35, 0, 0.55); // heavier cover = darker clouds
-        const wob = r();
+        const wob = r();            // always drawn: stable layout as cover shifts
+        const a = U.clamp((cover + 0.12 - need) * 3.0, 0, 1) * 0.92;
+        if (a < 0.01) continue;
+        const grey = U.clamp((cover - 0.30) * 1.2, 0, 0.8); // storm = darker
         // sculpted cumulus: lobed arcs on top, flat base
         ctx.fillStyle = U.css(U.mix(lit, shade, grey + wob * 0.10), a);
         ctx.beginPath();
