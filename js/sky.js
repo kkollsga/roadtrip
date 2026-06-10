@@ -114,45 +114,41 @@ window.Sky = (() => {
       ctx.stroke();
     }
 
-    // -- aurora (tundra nights) --
+    // -- aurora (high-latitude nights): one sinuous band with glowing
+    // patches and dark gaps — part of the night sky, never a wallpaper --
     if (env.aurora > 0.02 && pal.stars > 0.3) {
       ctx.save();
       ctx.globalCompositeOperation = 'lighter';
-      const colors = [[105, 230, 168], [88, 190, 215], [150, 130, 220]];
-      for (let k = 0; k < 3; k++) {
-        const a = 0.26 * env.aurora * pal.stars * (0.7 + 0.3 * Math.sin(time * 0.21 + k * 2.1));
-        const baseY = h * (0.13 + k * 0.05);
-        const grd = ctx.createLinearGradient(0, baseY - h * 0.05, 0, baseY + h * 0.26);
-        const c = colors[k];
-        grd.addColorStop(0, `rgba(${c[0]},${c[1]},${c[2]},0)`);
-        grd.addColorStop(0.35, `rgba(${c[0]},${c[1]},${c[2]},${a})`);
-        grd.addColorStop(1, `rgba(${c[0]},${c[1]},${c[2]},0)`);
-        ctx.fillStyle = grd;
-        ctx.beginPath();
-        ctx.moveTo(0, baseY + h * 0.3);
-        for (let x = 0; x <= w + 40; x += 40) {
-          const yy = baseY + Math.sin(x * 0.004 + time * 0.13 + k * 2) * h * 0.05
-            + Math.sin(x * 0.0013 - time * 0.07 + k) * h * 0.04;
-          ctx.lineTo(x, yy);
-        }
-        ctx.lineTo(w, baseY + h * 0.3);
-        ctx.closePath();
-        ctx.fill();
-      }
-      // shimmering vertical curtains over the glow
       const A = env.aurora * pal.stars;
-      for (let x = 0; x <= w; x += 6) {
-        const n = U.noise1(x * 0.010 + time * 0.15, 511);
-        const n2 = U.noise1(x * 0.0025 - time * 0.03, 522);
-        const a = 0.30 * A * n * n;
-        if (a < 0.012) continue;
-        const ty = h * (0.10 + n2 * 0.06);
-        const len = Math.min(h * (0.07 + n * 0.13), h * 0.36 - ty);
-        ctx.fillStyle = `rgba(118,235,180,${a})`;
-        ctx.fillRect(x, ty, 6, len);
-        ctx.fillStyle = `rgba(118,235,180,${a * 0.35})`;
-        ctx.fillRect(x, ty + len, 6, len * 0.4);
+      const ax = env.worldX * 0.01 + time * 5; // slow celestial drift
+      const colW = 8;
+      // shared vertical gradient: faint top, bright lower rim
+      const gTop = h * 0.04, gBot = h * 0.30;
+      const grad = ctx.createLinearGradient(0, gTop, 0, gBot);
+      grad.addColorStop(0, 'rgba(96,220,160,0)');
+      grad.addColorStop(0.6, 'rgba(96,220,160,0.14)');
+      grad.addColorStop(0.96, 'rgba(116,230,172,0.30)');
+      grad.addColorStop(1, 'rgba(96,220,160,0.06)');
+      for (let x = 0; x <= w; x += colW) {
+        // long-wave envelope makes glowing stretches with dark sky between;
+        // faster shimmer adds ray striations inside them
+        const patch = Math.pow(U.noise1((x + ax) * 0.0016, 611), 1.6);
+        const ray = 0.45 + 0.55 * U.noise1((x + ax * 1.4) * 0.006 + time * 0.06, 622);
+        const a = A * patch * ray * 2.0;
+        if (a < 0.03) continue;
+        const baseY = h * (0.15
+          + 0.07 * U.noise1((x + ax) * 0.0011 + 31, 633)
+          + 0.013 * Math.sin(time * 0.09 + x * 0.002));
+        const len = h * (0.05 + 0.13 * U.noise1((x + ax) * 0.004 - time * 0.03, 644));
+        ctx.globalAlpha = Math.min(0.7, a);
+        ctx.fillStyle = grad;
+        ctx.fillRect(x, baseY - len, colW, len);
+        // faint magenta fringe along the bright lower edge
+        ctx.globalAlpha = Math.min(0.35, a * 0.45);
+        ctx.fillStyle = 'rgba(206,128,210,1)';
+        ctx.fillRect(x, baseY - h * 0.006, colW, h * 0.011);
       }
+      ctx.globalAlpha = 1;
       ctx.restore();
     }
 
