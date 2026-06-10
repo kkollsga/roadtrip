@@ -45,10 +45,16 @@ window.Assets = (() => {
     ctx.fillStyle = v > 0.55 ? c.foliage : c.foliage2;
     const r = s * (0.26 + (v % 0.07));
     const cx = x + lean, cy = y - s * 0.62;
+    // moveTo before each arc: connected arcs self-intersect and leave
+    // unfilled triangular slivers in the canopy
     ctx.beginPath();
+    ctx.moveTo(cx + r, cy);
     ctx.arc(cx, cy, r, 0, TAU);
+    ctx.moveTo(cx - r * 0.75 + r * 0.66, cy + r * 0.30);
     ctx.arc(cx - r * 0.75, cy + r * 0.30, r * 0.66, 0, TAU);
+    ctx.moveTo(cx + r * 0.75 + r * 0.7, cy + r * 0.28);
     ctx.arc(cx + r * 0.75, cy + r * 0.28, r * 0.7, 0, TAU);
+    ctx.moveTo(cx + r * 0.1 + r * 0.6, cy - r * 0.45);
     ctx.arc(cx + r * 0.1, cy - r * 0.45, r * 0.6, 0, TAU);
     ctx.fill();
   }
@@ -129,8 +135,11 @@ window.Assets = (() => {
   function bush(ctx, x, y, s, c, v) {
     ctx.fillStyle = v > 0.5 ? c.foliage : c.foliage2;
     ctx.beginPath();
+    ctx.moveTo(x - s * 0.22 + s * 0.22, y - s * 0.16);
     ctx.arc(x - s * 0.22, y - s * 0.16, s * 0.22, 0, TAU);
+    ctx.moveTo(x + s * 0.1 + s * 0.27, y - s * 0.22);
     ctx.arc(x + s * 0.1, y - s * 0.22, s * 0.27, 0, TAU);
+    ctx.moveTo(x + s * 0.3 + s * 0.18, y - s * 0.13);
     ctx.arc(x + s * 0.3, y - s * 0.13, s * 0.18, 0, TAU);
     ctx.fill();
   }
@@ -507,13 +516,17 @@ window.Assets = (() => {
     ctx.fillStyle = v > 0.5 ? c.foliage : c.foliage2;
     ctx.beginPath();
     for (let i = -2; i <= 2; i++) {
-      ctx.ellipse(x + lean + i * cw * 0.30, cy0 + Math.abs(i) * s * 0.035,
-        cw * (0.34 - Math.abs(i) * 0.05), s * (0.115 - Math.abs(i) * 0.015), 0, 0, TAU);
+      const ex = x + lean + i * cw * 0.30, ey = cy0 + Math.abs(i) * s * 0.035;
+      const rx = cw * (0.34 - Math.abs(i) * 0.05);
+      ctx.moveTo(ex + rx, ey); // separate subpaths: no connector slivers
+      ctx.ellipse(ex, ey, rx, s * (0.115 - Math.abs(i) * 0.015), 0, 0, TAU);
     }
     ctx.fill();
     ctx.fillStyle = c.foliage2; // a higher second tier
     ctx.beginPath();
+    ctx.moveTo(x + lean - cw * 0.20 + cw * 0.30, cy0 - s * 0.09);
     ctx.ellipse(x + lean - cw * 0.20, cy0 - s * 0.09, cw * 0.30, s * 0.085, 0, 0, TAU);
+    ctx.moveTo(x + lean + cw * 0.25 + cw * 0.24, cy0 - s * 0.07);
     ctx.ellipse(x + lean + cw * 0.25, cy0 - s * 0.07, cw * 0.24, s * 0.07, 0, 0, TAU);
     ctx.fill();
   }
@@ -614,10 +627,15 @@ window.Assets = (() => {
     const r = s * (0.23 + (v % 0.08));
     ctx.fillStyle = v > 0.55 ? c.pink : c.pink2;
     ctx.beginPath();
+    ctx.moveTo(cx + r, cy);
     ctx.arc(cx, cy, r, 0, TAU);
+    ctx.moveTo(cx - r * 0.85 + r * 0.62, cy + r * 0.25);
     ctx.arc(cx - r * 0.85, cy + r * 0.25, r * 0.62, 0, TAU);
+    ctx.moveTo(cx + r * 0.80 + r * 0.66, cy + r * 0.20);
     ctx.arc(cx + r * 0.80, cy + r * 0.20, r * 0.66, 0, TAU);
+    ctx.moveTo(cx + r * 0.10 + r * 0.55, cy - r * 0.50);
     ctx.arc(cx + r * 0.10, cy - r * 0.50, r * 0.55, 0, TAU);
+    ctx.moveTo(x + lean * 0.4 - s * 0.24 + r * 0.45, y - s * 0.46);
     ctx.arc(x + lean * 0.4 - s * 0.24, y - s * 0.46, r * 0.45, 0, TAU);
     ctx.fill();
     ctx.fillStyle = 'rgba(255,255,255,0.16)'; // sunlit blossom highlight

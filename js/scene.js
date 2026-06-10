@@ -45,6 +45,7 @@ window.Scene = (() => {
       fgDensity: 2, fgItems: tbl([['tuft', 1]]),
       midDensity: 0, midItems: null,
       forestDepth: 0, depthItems: tbl([['pine', .6], ['roundTree', .4]]),
+      windfarm: 0, // chance of a wind farm (6-10 turbines at varying depth)
       weather: [['clear', 5], ['overcast', 2], ['rain', 1.5], ['fog', 0.8]],
     }, def);
   }
@@ -56,14 +57,15 @@ window.Scene = (() => {
       farAmp: 0.10, midAmp: 0.055, snowcap: 0, water: 0, waterCol: C('#3c6f95'), aurora: 0,
       ridged: 0, occluder: 0, landmarks: ['kilimanjaro', 'devilsTower', 'oldFaithful'],
       grade: { tint: C('#ffe3a8'), s: 0.12, lm: 1.0 }, avenue: 'roundTree',
-      density: 3.0, items: tbl([['roundTree', .40], ['bush', .18], ['tuft', .14], ['pine', .06], ['barn', .05], ['turbine', .10], ['sign', .04], ['rock', .03]]),
+      windfarm: 0.55,
+      density: 3.0, items: tbl([['roundTree', .44], ['bush', .20], ['tuft', .15], ['pine', .06], ['barn', .07], ['sign', .05], ['rock', .03]]),
       fgDensity: 2.2, fgItems: tbl([['tuft', .52], ['bush', .26], ['roundTree', .12], ['rock', .1]]),
       forestDepth: 0.5,
       midDensity: 0, midItems: null,
       weather: [['clear', 5], ['overcast', 2], ['rain', 2], ['fog', 0.5]],
       variants: [
         [{ key: 'groves', density: 6.5, forestDepth: 2, items: tbl([['roundTree', .5], ['pine', .2], ['bush', .2], ['tuft', .1]]) }, 2],
-        [{ key: 'farmland', density: 3.5, items: tbl([['barn', .18], ['turbine', .30], ['roundTree', .22], ['tuft', .2], ['sign', .1]]) }, 2],
+        [{ key: 'farmland', density: 3.5, windfarm: 0.95, items: tbl([['barn', .30], ['roundTree', .28], ['tuft', .26], ['sign', .16]]) }, 2],
         [{ key: 'lakeside', water: 0.55, waterCol: C('#447a99'), farAmp: 0.07 }, 1.5],
       ],
     }),
@@ -691,12 +693,53 @@ window.Scene = (() => {
       return h * 0.725 - amp * U.fbm(ix / 360, 33, 3) + 2;
     });
 
+    // wind farms: turbines come in groups of 6-10, each at its own
+    // distance from the road (own parallax, size and haze)
+    const farmTurbines = [];
+    {
+      const FARM_W = 12000;
+      const i0f = Math.floor((worldX - 4000) / FARM_W);
+      const i1f = Math.floor((worldX + w + 4000) / FARM_W);
+      for (let ci = i0f; ci <= i1f; ci++) {
+        const r = U.rng(U.hash2(ci, 3331));
+        const frs = resolve(ci * FARM_W + FARM_W / 2);
+        const fside = r() < frs.t ? frs.b : frs.a;
+        const fprof = r() < fside.vt ? fside.p2 : fside.p1;
+        const gate = r(), centerR = r();
+        if (gate > (fprof.windfarm || 0)) continue;
+        const cx = ci * FARM_W + (0.25 + centerR * 0.5) * FARM_W;
+        const n = 6 + Math.floor(r() * 5);
+        for (let k = 0; k < 10; k++) {
+          const tx0 = r(), pz = r(), jit = r(), szR = r(), vv = r();
+          if (k >= n) continue;
+          const p = 0.25 + pz * 0.6;
+          const nearX = cx + (tx0 - 0.5) * 2800;
+          const sx = (nearX - worldX) * p;
+          const s = h * (0.20 + szR * 0.08) * (p / 0.5);
+          if (sx < -s || sx > w + s) continue;
+          farmTurbines.push({
+            p, sx, s, v: vv, prof: fprof,
+            y: h * (0.695 + ((p - 0.2) / 0.65) * 0.105 + (jit - 0.5) * 0.012),
+            d: U.lerp(0.36, 0.08, (p - 0.2) / 0.65),
+          });
+        }
+      }
+      farmTurbines.sort((a3, b3) => a3.p - b3.p);
+    }
+    const drawFarm = (pMin, pMax) => {
+      for (const t2 of farmTurbines) {
+        if (t2.p < pMin || t2.p >= pMax) continue;
+        Assets.turbine(ctx, t2.sx, t2.y, t2.s, colorsFor(t2.prof, t2.d), t2.v, time);
+      }
+    };
+
     // distant forest bands: wooded hills stretching far away.
     // Depth of forest (forestDepth) is its own variable biome layer.
     drawItemSet(0.33, 611, 300, 'forestDepth', 'depthItems', 0.30,
       ix => h * 0.752 - h * 0.018 * U.fbm(ix / 300, 61, 2), 0.55);
     drawItemSet(0.41, 622, 300, 'forestDepth', 'depthItems', 0.26,
       ix => h * 0.774 - h * 0.016 * U.fbm(ix / 280, 62, 2), 0.75);
+    drawFarm(0, 0.45); // distant turbines stand behind the tree line
 
     // tree line ridge (the ground band the road sits in)
     const treeG = (ix) => h * 0.795 - h * 0.022 * U.fbm(ix / 260, 44, 2);
@@ -708,6 +751,7 @@ window.Scene = (() => {
     ctx.closePath();
     ctx.fill();
     drawItemSet(0.5, 444, 460, 'density', 'items', 0.18, ix => treeG(ix) + 2);
+    drawFarm(0.45, 2); // near turbines rise in front of the tree line
 
     // road elevation profile: mountain roads rise and (mostly) dip
     const hillW = (biC.a === 'mountains' ? 1 - biC.t : 0) + (biC.b === 'mountains' ? biC.t : 0)
