@@ -1,0 +1,275 @@
+/* ui.css — compact burger-menu control for Endless Drive. */
+
+#drive-ui {
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: 12.5px;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* Engine adds .no-ui (URL param) for clean screenshots. */
+body.no-ui #drive-ui { display: none !important; }
+
+/* Page CSS uses .hide-cursor to hide the cursor while idle. */
+
+/* ---- burger button (upper-right) ---- */
+.du-burger {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 9999;
+
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-family: inherit;
+  font-size: 16px;
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.8);
+
+  background: rgba(10, 14, 24, 0.55);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 50%;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+
+  opacity: 1;
+  transition: opacity 0.6s ease, background 0.2s ease;
+}
+.du-burger:hover { background: rgba(20, 26, 40, 0.7); color: #fff; }
+.du-burger.du-active { background: rgba(20, 26, 40, 0.72); color: #fff; }
+
+.du-burger.du-hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ---- panel (anchored below the burger, right-aligned) ---- */
+.du-panel {
+  position: fixed;
+  top: 62px;
+  right: 16px;
+  z-index: 9999;
+
+  width: 230px;
+  box-sizing: border-box;
+  padding: 14px;
+
+  display: none;
+  flex-direction: column;
+  gap: 12px;
+
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: 12.5px;
+  color: rgba(255, 255, 255, 0.85);
+
+  background: rgba(10, 14, 24, 0.55);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+}
+.du-panel.du-open { display: flex; }
+
+/* ---- fields ---- */
+.du-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.du-label {
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.du-inline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.du-sys-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ---- car picker ---- */
+.du-car-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.du-car-name {
+  flex: 1;
+  min-width: 0;
+  text-align: center;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.du-arrow {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 3px 9px;
+  border-radius: 8px;
+}
+.du-arrow:hover { color: #fff; background: rgba(255, 255, 255, 0.14); }
+
+/* ---- buttons ---- */
+.du-btn {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.85);
+  font-family: inherit;
+  font-size: 12px;
+  cursor: pointer;
+  padding: 5px 12px;
+  border-radius: 8px;
+  line-height: 1.2;
+}
+.du-btn:hover { background: rgba(255, 255, 255, 0.14); color: #fff; }
+
+.du-btn.du-icon {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 0;
+  font-size: 14px;
+}
+
+/* ---- selects ---- */
+.du-select {
+  width: 100%;
+  box-sizing: border-box;
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 12px;
+  padding: 5px 7px;
+  cursor: pointer;
+  outline: none;
+}
+.du-select:focus { border-color: rgba(255, 255, 255, 0.3); }
+.du-select option {
+  background: #141a28;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* ---- number inputs ---- */
+.du-num {
+  width: 60px;
+  box-sizing: border-box;
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 12px;
+  padding: 5px 7px;
+  outline: none;
+}
+.du-num:focus { border-color: rgba(255, 255, 255, 0.3); }
+.du-num-grow { flex: 1; min-width: 0; }
+
+/* ---- range slider ---- */
+.du-range {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.18);
+  outline: none;
+  cursor: pointer;
+}
+.du-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  cursor: pointer;
+}
+.du-range::-moz-range-thumb {
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  cursor: pointer;
+}
+
+/* ---- session countdown in-panel ---- */
+.du-count-label {
+  flex: 1;
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  text-align: center;
+}
+
+/* ---- standalone countdown chip, top-left ---- */
+.du-chip {
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  z-index: 9998;
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.05em;
+  color: rgba(255, 255, 255, 0.9);
+  opacity: 0.35;
+  padding: 4px 10px;
+  background: rgba(10, 14, 24, 0.45);
+  border-radius: 999px;
+  pointer-events: none;
+}
+
+/* ---- session complete toast ---- */
+.du-toast {
+  position: fixed;
+  top: 42%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10000;
+
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 17px;
+  letter-spacing: 0.16em;
+  color: rgba(255, 255, 255, 0.92);
+  padding: 16px 30px;
+  background: rgba(10, 14, 24, 0.5);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.4);
+
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 2s ease;
+}
+.du-toast.show { opacity: 1; }
