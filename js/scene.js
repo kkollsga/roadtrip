@@ -467,13 +467,16 @@ window.Scene = (() => {
         const wl = h * 0.655; // only near/below the waterline
         ctx.fillStyle = `rgba(34,52,72,${(0.20 * foamW).toFixed(3)})`;
         ctx.beginPath();
-        for (let i = 0; i < pts.length - 1; i++) {
-          if (pts[i] < wl && pts[i + 1] < wl) continue;
-          ctx.moveTo(i * step, pts[i]);
-          ctx.lineTo((i + 1) * step, pts[i + 1]);
-          ctx.lineTo((i + 1) * step, pts[i + 1] + h * 0.013);
-          ctx.lineTo(i * step, pts[i] + h * 0.013);
+        let wi = 0; // contiguous shoreline runs as single bands (no seams)
+        while (wi < pts.length) {
+          if (pts[wi] < wl) { wi++; continue; }
+          let wj = wi;
+          while (wj + 1 < pts.length && pts[wj + 1] >= wl) wj++;
+          ctx.moveTo(wi * step, pts[wi]);
+          for (let q = wi + 1; q <= wj; q++) ctx.lineTo(q * step, pts[q]);
+          for (let q = wj; q >= wi; q--) ctx.lineTo(q * step, pts[q] + h * 0.013);
           ctx.closePath();
+          wi = wj + 1;
         }
         ctx.fill();
         const foamLine = (dy, lw, a2) => {
@@ -501,21 +504,30 @@ window.Scene = (() => {
         const fade = 1 - effD(d) * 0.85; // facets soften into the haze
         // shade a band hugging the ridge line, not a full-height curtain
         const fDepth = effN(cwx, ampKey) * h * ampMul * 0.6 + h * 0.02;
+        const thr = 0.28 + d * 0.35; // distant layers facet less
+        const fv = new Array(pts.length - 1);
         for (let i = 0; i < pts.length - 1; i++) {
-          let f = U.clamp((pts[i + 1] - pts[i]) / step * dir * 1.5, -0.66, 0.66);
-          if (Math.abs(f) < 0.28 + d * 0.35) continue; // distant layers facet less
-          f = Math.round(f * 2) / 2;
-          if (f === 0) continue;
+          const f = U.clamp((pts[i + 1] - pts[i]) / step * dir * 1.5, -0.66, 0.66);
+          fv[i] = Math.abs(f) < thr ? 0 : Math.round(f * 2) / 2;
+        }
+        // contiguous equal-toned runs become ONE polygon: translucent quads
+        // sharing edges would double-blend into hairline seams
+        let i = 0;
+        while (i < fv.length) {
+          const f = fv[i];
+          if (f === 0) { i++; continue; }
+          let j = i;
+          while (j + 1 < fv.length && fv[j + 1] === f) j++;
           ctx.fillStyle = f > 0
             ? `rgba(255,252,244,${(0.14 * f * light * fade).toFixed(3)})`
             : `rgba(10,14,26,${(-0.22 * f * (0.3 + 0.7 * light) * fade).toFixed(3)})`;
           ctx.beginPath();
           ctx.moveTo(i * step, pts[i]);
-          ctx.lineTo((i + 1) * step, pts[i + 1]);
-          ctx.lineTo((i + 1) * step, Math.min(h, pts[i + 1] + fDepth));
-          ctx.lineTo(i * step, Math.min(h, pts[i] + fDepth));
+          for (let q = i + 1; q <= j + 1; q++) ctx.lineTo(q * step, pts[q]);
+          for (let q = j + 1; q >= i; q--) ctx.lineTo(q * step, Math.min(h, pts[q] + fDepth));
           ctx.closePath();
           ctx.fill();
+          i = j + 1;
         }
       }
       return { baseY, pts, step };
