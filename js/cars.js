@@ -9,21 +9,30 @@ window.Cars = (() => {
   const C = U.col;
 
   function wheel(ctx, x, y, r, rot, o) {
+    // the tire squishes slightly into the road: the center sits a touch
+    // low and everything below the ground line is clipped off, leaving a
+    // flat contact patch
+    const cy = y - r + r * 0.10;
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(x - r - 3, y - r * 2 - 6, r * 2 + 6, r * 2 + 6);
+    ctx.clip();
     ctx.fillStyle = o.shade(C('#181a20'));
-    ctx.beginPath(); ctx.arc(x, y - r, r, 0, TAU); ctx.fill();
+    ctx.beginPath(); ctx.arc(x, cy, r, 0, TAU); ctx.fill();
     ctx.fillStyle = o.shade(C('#9aa0a8'));
-    ctx.beginPath(); ctx.arc(x, y - r, r * 0.52, 0, TAU); ctx.fill();
+    ctx.beginPath(); ctx.arc(x, cy, r * 0.52, 0, TAU); ctx.fill();
     ctx.strokeStyle = o.shade(C('#3c4048'));
     ctx.lineWidth = r * 0.16;
     for (let i = 0; i < 4; i++) {
       const a = rot + i * TAU / 4;
       ctx.beginPath();
-      ctx.moveTo(x, y - r);
-      ctx.lineTo(x + Math.cos(a) * r * 0.44, y - r + Math.sin(a) * r * 0.44);
+      ctx.moveTo(x, cy);
+      ctx.lineTo(x + Math.cos(a) * r * 0.44, cy + Math.sin(a) * r * 0.44);
       ctx.stroke();
     }
     ctx.fillStyle = o.shade(C('#d8dade'));
-    ctx.beginPath(); ctx.arc(x, y - r, r * 0.13, 0, TAU); ctx.fill();
+    ctx.beginPath(); ctx.arc(x, cy, r * 0.13, 0, TAU); ctx.fill();
+    ctx.restore();
   }
 
   /* Headlight cone + lamps + taillight, shared by all cars.

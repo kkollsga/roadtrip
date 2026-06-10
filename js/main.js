@@ -15,7 +15,7 @@
   window.addEventListener('resize', resize);
   resize();
 
-  const BASE_SPEED = 150; // px/s scenery scroll at speedMult 1
+  const BASE_SPEED = 205; // px/s scenery scroll at speedMult 1
 
   /* high-latitude winter light: midday sinks toward blue hour */
   const POLAR = {

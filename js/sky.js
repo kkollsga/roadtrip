@@ -157,6 +157,11 @@ window.Sky = (() => {
     // far north in winter the sun barely grazes (or never clears) the horizon
     if (env.polar) sun.elev = sun.elev * (1 - 0.96 * env.polar) - 0.05 * env.polar;
     if (sun.up) {
+      // dawn builds from deep below the horizon: the glow fades in slowly
+      // as the sun climbs, rather than snapping on
+      const riseFade = U.smooth(U.clamp((sun.elev + 0.32) / 0.32, 0, 1));
+      ctx.save();
+      ctx.globalAlpha = riseFade;
       const sxp = w * (0.14 + 0.72 * sun.p);
       const syp = horizonY - sun.elev * (horizonY - h * 0.09);
       const lowness = 1 - U.smooth(U.clamp(sun.elev * 1.6, 0, 1));
@@ -180,6 +185,7 @@ window.Sky = (() => {
       ctx.arc(sxp - sr * 0.30, syp - sr * 0.35, sr * 0.30, 0, TAU);
       ctx.arc(sxp + sr * 0.25, syp + sr * 0.15, sr * 0.16, 0, TAU);
       ctx.fill();
+      ctx.restore();
       if (sun.elev > 0.02) { env.sunX = sxp; env.sunY = syp; }
       env.sunLow = lowness;
     }
@@ -189,6 +195,8 @@ window.Sky = (() => {
       const mx = w * (0.16 + 0.68 * moonArc.p);
       const my = horizonY - moonArc.elev * (horizonY - h * 0.12);
       const r = h * 0.024;
+      ctx.save(); // moonrise eases in the same way dawn does
+      ctx.globalAlpha = U.smooth(U.clamp((moonArc.elev + 0.5) / 0.5, 0, 1));
       const ga = 0.06 + 0.26 * illum; // glow follows the phase
       const mg = ctx.createRadialGradient(mx, my, 0, mx, my, r * 6);
       mg.addColorStop(0, `rgba(220,230,245,${ga.toFixed(3)})`);
@@ -197,6 +205,7 @@ window.Sky = (() => {
       ctx.fillRect(mx - r * 6, my - r * 6, r * 12, r * 12);
       drawMoonPhase(ctx, mx, my, r, mph,
         '#e8edf5', U.css(U.mix(pal.top, U.col('#8e98ac'), 0.22), 0.9));
+      ctx.restore();
       if (moonArc.elev > 0.02 && illum > 0.25) { env.moonX = mx; env.moonY = my; }
     }
 

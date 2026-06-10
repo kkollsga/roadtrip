@@ -43,7 +43,7 @@ window.Palette = (() => {
   function sunPos(t) {
     t = ((t % 1) + 1) % 1;
     const p = (t - 0.06) / 0.73;
-    if (p < -0.12 || p > 1.12) return { up: false, p: 0, elev: 0 };
+    if (p < -0.22 || p > 1.22) return { up: false, p: 0, elev: 0 };
     return { up: true, p, elev: Math.sin(Math.PI * p) };
   }
 
@@ -52,7 +52,7 @@ window.Palette = (() => {
     t = ((t % 1) + 1) % 1;
     const m = t < 0.5 ? t + 1 : t;
     const p = (m - 0.83) / 0.24;
-    if (p < -0.12 || p > 1.12) return { up: false, p: 0, elev: 0 };
+    if (p < -0.22 || p > 1.22) return { up: false, p: 0, elev: 0 };
     return { up: true, p, elev: Math.sin(Math.PI * p) };
   }
 

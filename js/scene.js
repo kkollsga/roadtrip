@@ -1025,17 +1025,27 @@ window.Scene = (() => {
         const oside = r() < ors.t ? ors.b : ors.a;
         const oprof = oside.vt > 0.5 ? oside.p2 : oside.p1;
         if (sx < -rad - 80 || sx > w + rad + 80) continue;
-        const cy = h + rad * 0.55;
+        // an irregular mound, not a perfect circle: the crest is shaped by
+        // noise so every hillside has its own profile
+        const peak = rad * (0.50 + r() * 0.18) + 40;
+        const domeY = tq => (h + 30)
+          - Math.pow(Math.sin(Math.PI * U.clamp(tq, 0, 1)), 0.8) * peak
+          * (0.78 + 0.30 * U.noise1(tq * 2.8 + ci * 7.31, 889));
         ctx.fillStyle = tint(U.scale(oprof.ground, 0.40), 0.015, 0.7);
         ctx.beginPath();
-        ctx.arc(sx, cy, rad, 0, TAU);
+        ctx.moveTo(sx - rad, h + 40);
+        for (let q = 0; q <= 22; q++) {
+          const tq = q / 22;
+          ctx.lineTo(sx - rad + tq * 2 * rad, domeY(tq));
+        }
+        ctx.lineTo(sx + rad, h + 40);
+        ctx.closePath();
         ctx.fill();
         const c = colorsFor(oprof, 0.015);
         for (let k = -2; k <= 2; k++) {
           if (r() > 0.7) continue;
-          const dx = k * rad * 0.16 + (r() - 0.5) * rad * 0.06;
-          const ty2 = cy - Math.sqrt(Math.max(0, rad * rad - dx * dx)) + 3;
-          Assets.pine(ctx, sx + dx, ty2, h * (0.05 + r() * 0.04), c, r(), time);
+          const tq = 0.5 + k * 0.13 + (r() - 0.5) * 0.05;
+          Assets.pine(ctx, sx - rad + tq * 2 * rad, domeY(tq) + 3, h * (0.05 + r() * 0.04), c, r(), time);
         }
       }
     }
