@@ -1072,38 +1072,79 @@ window.Assets = (() => {
     ctx.restore();
   }
 
-  /* shared eruption effect: ash column, pulsing vent glow, lava trickles.
-     (cx, cy) is the crater; vigor 0..1; gets brighter at night via c.light. */
+  /* shared eruption effect: towering churning ash lit from beneath, lava
+     fountains, ballistic embers and glowing flows. (cx, cy) is the crater;
+     vigor 0..1; the fire gets brighter at night via c.light. */
   function eruption(ctx, cx, cy, s, c, time, vigor) {
-    const pulse = 0.75 + 0.25 * Math.sin(time * 1.6) * Math.sin(time * 0.43);
+    const pulse = 0.7 + 0.3 * Math.sin(time * 1.9) * Math.sin(time * 0.47);
+    const k = vigor * (1.25 - c.light * 0.85);
     ctx.save();
-    ctx.fillStyle = c.shadow; // drifting ash column
-    ctx.globalAlpha = 0.5 * vigor;
-    for (let i = 0; i < 5; i++) {
-      const f = i / 4;
+    // towering ash column, churning as it rises and drifts downwind
+    ctx.fillStyle = c.shadow;
+    ctx.globalAlpha = 0.55 * vigor;
+    const billow = i => {
+      const f = i / 7;
+      return {
+        x: cx + s * (0.03 + f * 0.42 + Math.sin(time * 0.35 + i * 1.9) * 0.035 * (0.3 + f)),
+        y: cy - s * (0.06 + f * 0.74),
+        r: s * (0.06 + f * 0.20),
+      };
+    };
+    for (let i = 0; i < 8; i++) {
+      const b = billow(i);
       ctx.beginPath();
-      ctx.ellipse(
-        cx + s * (0.04 + f * 0.32 + Math.sin(time * 0.25 + i * 1.7) * 0.025),
-        cy - s * (0.05 + f * 0.40),
-        s * (0.055 + f * 0.13), s * (0.045 + f * 0.085), 0, 0, TAU);
+      ctx.ellipse(b.x, b.y, b.r, b.r * 0.8, 0, 0, TAU);
       ctx.fill();
     }
-    const k = vigor * pulse * (1.25 - c.light * 0.85);
     ctx.globalAlpha = 1;
     ctx.globalCompositeOperation = 'lighter';
-    const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, s * 0.30);
-    g.addColorStop(0, `rgba(255,118,38,${0.55 * k})`);
-    g.addColorStop(1, 'rgba(255,118,38,0)');
+    // the column's base glows, lit by the vent below
+    for (let i = 0; i < 3; i++) {
+      const b = billow(i);
+      ctx.fillStyle = `rgba(255,118,40,${((0.28 - i * 0.085) * k * pulse).toFixed(3)})`;
+      ctx.beginPath();
+      ctx.ellipse(b.x, b.y, b.r * 0.95, b.r * 0.75, 0, 0, TAU);
+      ctx.fill();
+    }
+    // vent glow
+    const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, s * 0.45);
+    g.addColorStop(0, `rgba(255,110,30,${(0.65 * k * pulse).toFixed(3)})`);
+    g.addColorStop(1, 'rgba(255,110,30,0)');
     ctx.fillStyle = g;
-    ctx.fillRect(cx - s * 0.3, cy - s * 0.3, s * 0.6, s * 0.6);
-    ctx.strokeStyle = `rgba(255,142,48,${0.55 * k})`; // lava trickles
-    ctx.lineWidth = Math.max(1, s * 0.014);
+    ctx.fillRect(cx - s * 0.45, cy - s * 0.45, s * 0.9, s * 0.9);
+    // lava fountain spraying from the vent
+    ctx.strokeStyle = `rgba(255,196,96,${(0.7 * k * pulse).toFixed(3)})`;
+    ctx.lineWidth = Math.max(1, s * 0.013);
     ctx.lineCap = 'round';
     ctx.beginPath();
+    for (let j = 0; j < 5; j++) {
+      const a = -Math.PI / 2 + (j - 2) * 0.24 + Math.sin(time * 3 + j * 2.1) * 0.06;
+      const len = s * (0.10 + 0.09 * ((time * 1.3 + j * 0.37) % 1));
+      ctx.moveTo(cx, cy);
+      ctx.lineTo(cx + Math.cos(a) * len, cy + Math.sin(a) * len);
+    }
+    ctx.stroke();
+    // embers on ballistic arcs
+    for (let e = 0; e < 7; e++) {
+      const tt = (time * 0.5 + e / 7) % 1;
+      const dir = e % 2 ? 1 : -1;
+      const ex = cx + dir * s * (0.04 + 0.24 * tt) * (0.7 + (e % 3) * 0.2);
+      const ey = cy - s * 0.6 * tt * (1 - tt * 0.78);
+      ctx.fillStyle = `rgba(255,160,70,${((1 - tt) * 0.8 * k).toFixed(3)})`;
+      ctx.beginPath();
+      ctx.arc(ex, ey, s * 0.013, 0, TAU);
+      ctx.fill();
+    }
+    // glowing lava streams working down the flank
+    ctx.strokeStyle = `rgba(255,132,46,${(0.55 * k).toFixed(3)})`;
+    ctx.lineWidth = Math.max(1, s * 0.016);
+    ctx.beginPath();
     ctx.moveTo(cx - s * 0.02, cy);
-    ctx.quadraticCurveTo(cx - s * 0.07, cy + s * 0.10, cx - s * 0.06, cy + s * 0.20);
+    ctx.quadraticCurveTo(cx - s * 0.10, cy + s * 0.16, cx - s * 0.07, cy + s * 0.34);
+    ctx.quadraticCurveTo(cx - s * 0.06, cy + s * 0.42, cx - s * 0.10, cy + s * 0.50);
     ctx.moveTo(cx + s * 0.03, cy);
-    ctx.quadraticCurveTo(cx + s * 0.09, cy + s * 0.08, cx + s * 0.12, cy + s * 0.16);
+    ctx.quadraticCurveTo(cx + s * 0.12, cy + s * 0.12, cx + s * 0.14, cy + s * 0.28);
+    ctx.quadraticCurveTo(cx + s * 0.15, cy + s * 0.36, cx + s * 0.20, cy + s * 0.44);
     ctx.stroke();
     ctx.restore();
   }

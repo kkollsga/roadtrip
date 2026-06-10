@@ -13,6 +13,26 @@ window.Sky = (() => {
     return 0.35 + 0.65 * (0.5 + 0.5 * Math.sin(time * (0.4 + tw * 1.2) + tw * 40));
   }
 
+  /* the moon with its true phase: lit limb + elliptical terminator */
+  function drawMoonPhase(ctx, x, y, r, ph, litCol, darkCol) {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.fillStyle = darkCol; // earthshine disc
+    ctx.beginPath(); ctx.arc(0, 0, r, 0, TAU); ctx.fill();
+    const waxing = ph < 0.5;
+    const c = Math.cos(TAU * ph); // 1 = new, 0 = quarter, -1 = full
+    ctx.fillStyle = litCol;
+    ctx.beginPath();
+    if (waxing) ctx.arc(0, 0, r, -Math.PI / 2, Math.PI / 2, false);
+    else ctx.arc(0, 0, r, Math.PI / 2, Math.PI * 1.5, false);
+    ctx.ellipse(0, 0, Math.max(0.001, Math.abs(c)) * r, r, 0,
+      waxing ? Math.PI / 2 : Math.PI * 1.5,
+      waxing ? -Math.PI / 2 : Math.PI / 2,
+      c > 0);
+    ctx.fill();
+    ctx.restore();
+  }
+
   function render(ctx, env, pal) {
     const { w, h, time, dt } = env;
     const horizonY = env.horizonY;
@@ -23,6 +43,14 @@ window.Sky = (() => {
     g.addColorStop(1, U.css(pal.bot));
     ctx.fillStyle = g;
     ctx.fillRect(0, 0, w, h);
+
+    // moonlight competes with the stars: on dim or moonless nights the
+    // whole sky burns brighter
+    const mph = env.moonPhase !== undefined ? env.moonPhase : 0.5;
+    const illum = (1 - Math.cos(TAU * mph)) / 2;
+    const moonArc = Palette.moonPos(env.t);
+    const moonLight = illum * (moonArc.up ? U.clamp(moonArc.elev * 3, 0, 1) : 0);
+    const starBoost = 1 + 0.55 * (1 - moonLight);
 
     // -- stars (slight parallax so the sky drifts very slowly) --
     if (pal.stars > 0.04) {
@@ -44,7 +72,8 @@ window.Sky = (() => {
             const fade = U.clamp((pal.stars - thr) / 0.16, 0, 1);
             if (fade <= 0) continue;
             const tw = planet ? 0.9 : starAlpha(i + k, j, time);
-            ctx.globalAlpha = fade * (0.35 + 0.65 * bright) * tw * (1 - py / horizonY * 0.4);
+            ctx.globalAlpha = Math.min(1,
+              fade * (0.35 + 0.65 * bright) * tw * (1 - py / horizonY * 0.4) * starBoost);
             ctx.fillStyle = planet
               ? ['#ffe9c4', '#ffd6b8', '#e8f0ff'][Math.floor(mag * 3) % 3]
               : '#ffffff';
@@ -157,22 +186,20 @@ window.Sky = (() => {
       env.sunLow = lowness;
     }
 
-    // -- moon --
-    const moon = Palette.moonPos(env.t);
-    if (moon.up) {
-      const mx = w * (0.16 + 0.68 * moon.p);
-      const my = horizonY - moon.elev * (horizonY - h * 0.12);
+    // -- moon, showing tonight's true phase (absent around new moon) --
+    if (moonArc.up && illum > 0.03) {
+      const mx = w * (0.16 + 0.68 * moonArc.p);
+      const my = horizonY - moonArc.elev * (horizonY - h * 0.12);
       const r = h * 0.024;
+      const ga = 0.06 + 0.26 * illum; // glow follows the phase
       const mg = ctx.createRadialGradient(mx, my, 0, mx, my, r * 6);
-      mg.addColorStop(0, 'rgba(220,230,245,0.30)');
+      mg.addColorStop(0, `rgba(220,230,245,${ga.toFixed(3)})`);
       mg.addColorStop(1, 'rgba(220,230,245,0)');
       ctx.fillStyle = mg;
       ctx.fillRect(mx - r * 6, my - r * 6, r * 12, r * 12);
-      ctx.fillStyle = '#e8edf5';
-      ctx.beginPath(); ctx.arc(mx, my, r, 0, TAU); ctx.fill();
-      ctx.fillStyle = U.css(pal.top, 0.85); // crescent bite
-      ctx.beginPath(); ctx.arc(mx - r * 0.42, my - r * 0.22, r * 0.86, 0, TAU); ctx.fill();
-      if (moon.elev > 0.02) { env.moonX = mx; env.moonY = my; }
+      drawMoonPhase(ctx, mx, my, r, mph,
+        '#e8edf5', U.css(U.mix(pal.top, U.col('#8e98ac'), 0.22), 0.9));
+      if (moonArc.elev > 0.02 && illum > 0.25) { env.moonX = mx; env.moonY = my; }
     }
 
     // -- clouds: two parallax bands of chunked ellipse clusters --

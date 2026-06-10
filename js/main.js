@@ -64,6 +64,13 @@
   const YEAR = 365 * 86400;
   const clockWorldX = (Date.now() / 1000 % YEAR) * BASE_SPEED;
 
+  /* The real lunar phase for tonight (0 = new, 0.5 = full), anchored to the
+     known new moon of 2000-01-06 18:14 UTC. Some nights are moonless. */
+  const moonQ = new URLSearchParams(location.search).get('moon');
+  const MOON_PHASE = moonQ !== null
+    ? U.clamp(parseFloat(moonQ) || 0, 0, 1)
+    : (((Date.now() / 86400000 - 10962.76) / 29.530588) % 1 + 1) % 1;
+
   const state = {
     worldX: parseFloat(new URLSearchParams(location.search).get('wx')) || clockWorldX,
     time: 0,
@@ -134,6 +141,7 @@
       carX: W * 0.42, carY: H * 0.872,
       carIndex: App.carIndex,
       wheelRot: state.wheelRot,
+      moonPhase: MOON_PHASE,
       biome,
       weather: null,
       aurora: Scene.auroraAt(state.worldX + W * 0.5),

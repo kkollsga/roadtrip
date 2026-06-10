@@ -164,7 +164,7 @@ window.Scene = (() => {
     fjord: mk({ // Norway: sheer snowcapped walls dropping into a deep teal sea
       far: C('#7c93ad'), mid: C('#557a58'), ground: C('#5d8455'),
       fol: C('#3a6a48'), fol2: C('#4c7f55'), trunk: C('#54483a'),
-      farAmp: 0.34, midAmp: 0.11, snowcap: 0.9, water: 0.9, waterCol: C('#2f5c70'), aurora: 0.5,
+      farAmp: 0.34, midAmp: 0.11, snowcap: 0.9, water: 0.9, waterCol: C('#2f5c70'), aurora: 0.8,
       ridged: 0.8, occluder: 0.07, landmarks: ['glacier'],
       grade: { tint: C('#a8ccd4'), s: 0.16, lm: 0.97 }, avenue: 'pine',
       density: 3.2, items: tbl([['pine', .42], ['birch', .22], ['cabin', .10], ['rock', .12], ['bush', .14]]),
