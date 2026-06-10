@@ -455,7 +455,7 @@ window.Scene = (() => {
           const fx = k * 16 - lx0;
           const idx = Math.max(0, Math.min(pts.length - 1, Math.round(fx / step)));
           const fy = pts[idx];
-          const fh = h * (0.012 + (hsh * 7 % 1) * 0.016) * (0.8 + (fringeMul || 0) * 0.5);
+          const fh = h * (0.012 + (hsh * 7 % 1) * 0.016) * (0.7 + (fringeMul || 0) * 0.9);
           ctx.moveTo(fx - 3.2, fy + 1);
           ctx.lineTo(fx, fy - fh);
           ctx.lineTo(fx + 3.2, fy + 1);
@@ -790,7 +790,7 @@ window.Scene = (() => {
           if (aprof.key !== avName) { avName = aprof.key; avC = colorsFor(aprof, 0.09); }
           const tfn = Assets[aprof.avenue] || Assets.roundTree;
           tfn(ctx, x1, rTopAt(x1) + h * 0.004,
-            h * (0.082 + U.hash1(i * 31) * 0.012), avC, 0.4 + U.hash1(i * 17) * 0.3, time);
+            h * (0.10 + U.hash1(i * 31) * 0.025), avC, 0.4 + U.hash1(i * 17) * 0.3, time);
         }
       }
     }
@@ -1042,10 +1042,11 @@ window.Scene = (() => {
         ctx.closePath();
         ctx.fill();
         const c = colorsFor(oprof, 0.015);
+        // this hillside is nearer than the car, so its trees are huge
         for (let k = -2; k <= 2; k++) {
-          if (r() > 0.7) continue;
-          const tq = 0.5 + k * 0.13 + (r() - 0.5) * 0.05;
-          Assets.pine(ctx, sx - rad + tq * 2 * rad, domeY(tq) + 3, h * (0.05 + r() * 0.04), c, r(), time);
+          if (r() > 0.5) continue;
+          const tq = 0.5 + k * 0.17 + (r() - 0.5) * 0.06;
+          Assets.pine(ctx, sx - rad + tq * 2 * rad, domeY(tq) + 4, h * (0.26 + r() * 0.16), c, r(), time);
         }
       }
     }
