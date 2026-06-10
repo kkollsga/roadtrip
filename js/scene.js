@@ -727,6 +727,8 @@ window.Scene = (() => {
     ctx.closePath();
     ctx.fill();
 
+    const nearFurniture = []; // proximal-side items, drawn in front of the car
+
     /* roadside furniture comes in long stretches that simply start and stop:
        power wires, street lamps, an avenue of planted trees, or nothing. */
     {
@@ -739,42 +741,93 @@ window.Scene = (() => {
       const d = effD(0.09);
       const polC = { dark: U.css(U.mix(Palette.lit(C('#2e2a26'), pal, light), pal.fog, d)) };
 
-      // power poles; wire spans only between two poles of the same stretch
+      // power poles: each stretch picks a side of the road, its own pole
+      // height and cable sag; runs begin and end with a cable that rises
+      // out of / drops back into the ground
       {
-        const sp = 540, H = h * 0.165, sag = H * 0.16;
-        ctx.strokeStyle = polC.dark;
-        const i0 = Math.floor((worldX - 100) / sp), i1 = Math.floor((worldX + w + 100) / sp);
+        const sp = 540;
+        const rdH = env.roadBot - env.roadTop;
+        const i0 = Math.floor((worldX - 700) / sp), i1 = Math.floor((worldX + w + 700) / sp);
+        const runs = [[], []]; // far shoulder, near shoulder
         for (let i = i0; i <= i1; i++) {
-          const wx1 = i * sp, wx2 = wx1 + sp;
+          const wx1 = i * sp;
           if (fAt(wx1) !== 'wires') continue;
-          const x1 = wx1 - worldX, x2 = wx2 - worldX;
-          const t1 = rTopAt(x1) + h * 0.004 - H * 0.92;
-          if (fAt(wx2) === 'wires') {
-            const t2 = rTopAt(x2) + h * 0.004 - H * 0.92;
-            ctx.lineWidth = 1;
-            ctx.beginPath();
-            ctx.moveTo(x1, t1);
-            ctx.quadraticCurveTo((x1 + x2) / 2, (t1 + t2) / 2 + sag, x2, t2);
-            ctx.moveTo(x1, t1 + H * 0.12);
-            ctx.quadraticCurveTo((x1 + x2) / 2, (t1 + t2) / 2 + H * 0.12 + sag, x2, t2 + H * 0.12);
-            ctx.stroke();
-          }
-          Assets.pole(ctx, x1, t1 + H * 0.92, H, polC);
+          const si = Math.floor(wx1 / FSEG);
+          const side = U.hash1(si * 511 + 9) < 0.6 ? 0 : 1;
+          const H = h * (0.14 + U.hash1(si * 727 + 3) * 0.055);
+          const x1 = wx1 - worldX;
+          const baseY = side === 0
+            ? rTopAt(x1) + h * 0.004
+            : rTopAt(x1) + rdH + h * 0.014;
+          runs[side].push({
+            i, x1, H, baseY,
+            topY: baseY - H * 0.92,
+            sag: H * (0.10 + U.hash1(si * 313 + 5) * 0.16),
+          });
         }
+        const drawRun = list => {
+          ctx.strokeStyle = polC.dark;
+          ctx.lineWidth = 1;
+          for (let n = 0; n < list.length; n++) {
+            const p1 = list[n], p2 = list[n + 1];
+            const linked = p2 && p2.i === p1.i + 1;
+            if (linked) {
+              ctx.beginPath();
+              ctx.moveTo(p1.x1, p1.topY);
+              ctx.quadraticCurveTo((p1.x1 + p2.x1) / 2, (p1.topY + p2.topY) / 2 + p1.sag, p2.x1, p2.topY);
+              ctx.moveTo(p1.x1, p1.topY + p1.H * 0.12);
+              ctx.quadraticCurveTo((p1.x1 + p2.x1) / 2, (p1.topY + p2.topY) / 2 + p1.H * 0.12 + p1.sag, p2.x1, p2.topY + p2.H * 0.12);
+              ctx.stroke();
+            }
+            const prev = list[n - 1];
+            if (!(prev && prev.i === p1.i - 1)) { // run starts: feed from the ground
+              ctx.beginPath();
+              ctx.moveTo(p1.x1 - sp * 0.42, p1.baseY + 6);
+              ctx.quadraticCurveTo(p1.x1 - sp * 0.30, p1.topY + p1.H * 0.25, p1.x1, p1.topY);
+              ctx.stroke();
+            }
+            if (!linked) { // run ends: cable drops back into the ground
+              ctx.beginPath();
+              ctx.moveTo(p1.x1, p1.topY);
+              ctx.quadraticCurveTo(p1.x1 + sp * 0.30, p1.topY + p1.H * 0.25, p1.x1 + sp * 0.42, p1.baseY + 6);
+              ctx.stroke();
+            }
+            Assets.pole(ctx, p1.x1, p1.baseY, p1.H, polC);
+          }
+        };
+        drawRun(runs[0]);
+        if (runs[1].length) nearFurniture.push(() => drawRun(runs[1]));
       }
 
-      // street lamps, glowing once the light fades
+      // street lamps: far side, near side, or alternating — per stretch,
+      // with varying post heights
       {
-        const sp = 460, S = h * 0.145;
+        const sp = 460;
+        const rdH = env.roadBot - env.roadTop;
         const lampGlow = U.clamp((0.5 - light) / 0.4, 0, 1);
-        const lampC = { dark: polC.dark, glowA: lampGlow, poolDY: (env.roadBot - env.roadTop) * 0.45 };
         const i0 = Math.floor((worldX - 200) / sp), i1 = Math.floor((worldX + w + 200) / sp);
         for (let i = i0; i <= i1; i++) {
           const wx1 = i * sp + 180;
           if (fAt(wx1) !== 'lights') continue;
+          const si = Math.floor(wx1 / FSEG);
+          const mode = Math.floor(U.hash1(si * 419 + 11) * 3); // far | near | alternating
+          const side = mode === 2 ? (i % 2) : mode;
+          const S = h * (0.115 + U.hash1(si * 941 + 7) * 0.05);
           const x1 = wx1 - worldX;
-          if (x1 < -120 || x1 > w + 120) continue;
-          Assets.streetlight(ctx, x1, rTopAt(x1) + h * 0.004, S, lampC, U.hash1(i));
+          if (x1 < -160 || x1 > w + 160) continue;
+          if (side === 0) {
+            Assets.streetlight(ctx, x1, rTopAt(x1) + h * 0.004, S,
+              { dark: polC.dark, glowA: lampGlow, poolDY: rdH * 0.45 }, U.hash1(i));
+          } else {
+            nearFurniture.push(((xx, yy, SS, vv) => () => {
+              ctx.save();
+              ctx.translate(xx, 0);
+              ctx.scale(-1, 1); // mirrored: the arm reaches back over the road
+              Assets.streetlight(ctx, 0, yy, SS,
+                { dark: polC.dark, glowA: lampGlow, poolDY: -rdH * 0.5 }, vv);
+              ctx.restore();
+            })(x1, rTopAt(x1) + rdH + h * 0.012, S * 1.08, U.hash1(i)));
+          }
         }
       }
 
@@ -976,6 +1029,9 @@ window.Scene = (() => {
     ctx.fill();
     drawItemSet(1.3, 555, 300, 'fgDensity', 'fgItems', 0.03,
       (ix, sx, it) => rTopAt(sx) + roadH + (h - roadBot) * (0.25 + it.v * 0.5), 1.7);
+
+    // proximal-side furniture stands between the car and the viewer
+    for (const f of nearFurniture) f();
 
     // colossal redwood trunks sweeping past, floor to ceiling
     {

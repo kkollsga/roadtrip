@@ -163,7 +163,7 @@
       t: DayCycle.t,
       light: 1, // filled below once weather has updated
       horizonY: H * 0.56,
-      roadTop: H * 0.80, roadBot: H * 0.92,
+      roadTop: H * 0.805, roadBot: H * 0.90,
       carX: W * 0.42, carY: H * 0.872,
       carIndex: App.carIndex,
       wheelRot: state.wheelRot,
