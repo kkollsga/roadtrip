@@ -881,9 +881,13 @@ window.Scene = (() => {
     const carX = env.carX;
     const carSurf = rTopAt(carX) + roadH * 0.60;
     const slope = (rTopAt(carX + 60) - rTopAt(carX - 60)) / 120;
+    // the car is the scale constant — except on tiny viewports (phones),
+    // where it shrinks so it doesn't tower over the scenery
+    const cs = U.clamp(Math.min(h / 760, w / 1100), 0.42, 1);
     ctx.save();
     ctx.translate(carX, carSurf);
     ctx.rotate(Math.atan(slope));
+    ctx.scale(cs, cs);
     const car = Cars.LIST[env.carIndex] || Cars.LIST[0];
     { // soft contact shadow: radial falloff + dark patches under the wheels
       const shA = 0.10 + 0.24 * light;
