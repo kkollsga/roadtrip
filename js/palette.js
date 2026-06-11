@@ -6,17 +6,17 @@ window.Palette = (() => {
   /* t, sky top, sky horizon, horizon glow, daylight 0..1, fog/haze color,
      ambient (what shadows lean toward), star visibility 0..1 */
   const KEYS = [
-    { t: 0.000, top: C('#04060f'), bot: C('#0b1026'), glow: C('#0b1026'), light: 0.12, fog: C('#0a0e20'), amb: C('#141a33'), stars: 1.00 },
-    { t: 0.040, top: C('#131a38'), bot: C('#3c2f4e'), glow: C('#7a4a5a'), light: 0.20, fog: C('#241f3a'), amb: C('#2a2440'), stars: 0.65 },
-    { t: 0.090, top: C('#3f5783'), bot: C('#ffac6e'), glow: C('#ffc98a'), light: 0.50, fog: C('#c9a08a'), amb: C('#6a5a60'), stars: 0.00 },
-    { t: 0.160, top: C('#6fa7d8'), bot: C('#d8ecf4'), glow: C('#fff3c9'), light: 0.88, fog: C('#cfdde8'), amb: C('#c8d4dd'), stars: 0.00 },
-    { t: 0.350, top: C('#4e94d4'), bot: C('#bfe2f2'), glow: C('#ffffff'), light: 1.00, fog: C('#d4e4ee'), amb: C('#dde8ee'), stars: 0.00 },
-    { t: 0.550, top: C('#5391c8'), bot: C('#c4dfe9'), glow: C('#fff6d8'), light: 0.96, fog: C('#d2e0e8'), amb: C('#d8e2e8'), stars: 0.00 },
-    { t: 0.670, top: C('#5f7eb4'), bot: C('#ffd9a3'), glow: C('#ffe2a8'), light: 0.82, fog: C('#e0c8a8'), amb: C('#c0b09a'), stars: 0.00 },
-    { t: 0.750, top: C('#4a4a80'), bot: C('#ff8e55'), glow: C('#ff9e5e'), light: 0.58, fog: C('#b08068'), amb: C('#7a6470'), stars: 0.05 },
-    { t: 0.820, top: C('#232450'), bot: C('#b45a68'), glow: C('#d06a6a'), light: 0.34, fog: C('#4a3a55'), amb: C('#3a3050'), stars: 0.40 },
-    { t: 0.900, top: C('#0a0f28'), bot: C('#1c2750'), glow: C('#1c2750'), light: 0.16, fog: C('#131a33'), amb: C('#1a2140'), stars: 0.95 },
-    { t: 1.000, top: C('#04060f'), bot: C('#0b1026'), glow: C('#0b1026'), light: 0.12, fog: C('#0a0e20'), amb: C('#141a33'), stars: 1.00 },
+    { t: 0.000, top: C('#0a1318'), bot: C('#16262c'), glow: C('#16262c'), light: 0.12, fog: C('#101c20'), amb: C('#1d2c30'), stars: 1.00 },
+    { t: 0.040, top: C('#15242a'), bot: C('#3d3a32'), glow: C('#8a6a4a'), light: 0.20, fog: C('#2b2e28'), amb: C('#2e342f'), stars: 0.65 },
+    { t: 0.090, top: C('#41586a'), bot: C('#e9c87e'), glow: C('#f2dc9a'), light: 0.50, fog: C('#c2a878'), amb: C('#6a6450'), stars: 0.00 },
+    { t: 0.160, top: C('#5d7a8a'), bot: C('#cfd8cf'), glow: C('#f5ecc2'), light: 0.88, fog: C('#c5cfc2'), amb: C('#b8c2b2'), stars: 0.00 },
+    { t: 0.350, top: C('#4a7490'), bot: C('#b3cdd1'), glow: C('#fff7d8'), light: 1.00, fog: C('#c8d2c8'), amb: C('#d2dcd2'), stars: 0.00 },
+    { t: 0.550, top: C('#4f7186'), bot: C('#b9c9c4'), glow: C('#f7eccc'), light: 0.96, fog: C('#c6cfc4'), amb: C('#cdd6cc'), stars: 0.00 },
+    { t: 0.670, top: C('#57708c'), bot: C('#e3c98e'), glow: C('#ecd49a'), light: 0.82, fog: C('#cdb88a'), amb: C('#b3a888'), stars: 0.00 },
+    { t: 0.750, top: C('#3d4a62'), bot: C('#d9a05e'), glow: C('#e8b46a'), light: 0.58, fog: C('#94795e'), amb: C('#6f6258'), stars: 0.05 },
+    { t: 0.820, top: C('#232f42'), bot: C('#8a5e54'), glow: C('#a86d56'), light: 0.34, fog: C('#3d4244'), amb: C('#344044'), stars: 0.40 },
+    { t: 0.900, top: C('#0e1a20'), bot: C('#1d3038'), glow: C('#1d3038'), light: 0.16, fog: C('#14222a'), amb: C('#20303a'), stars: 0.95 },
+    { t: 1.000, top: C('#0a1318'), bot: C('#16262c'), glow: C('#16262c'), light: 0.12, fog: C('#101c20'), amb: C('#1d2c30'), stars: 1.00 },
   ];
 
   function get(t) {

@@ -12,18 +12,18 @@
 name: savanna
 order: 11
 terrain:
-  far: '#9aa3b5'
-  mid: '#c4ad6a'
-  ground: '#c9b066'
+  far: '#8a92a2'
+  mid: '#b5a065'
+  ground: '#b9a25e'
   farAmp: 0.07
   midAmp: 0.04
   ridged: 0
   snowcap: 0
   water: 0
 flora:
-  foliage: '#5d7c39'
-  foliage2: '#84994a'
-  trunk: '#6b5340'
+  foliage: '#566b36'
+  foliage2: '#788442'
+  trunk: '#4a3a2c'
   avenue: acacia
 light:
   grade: { tint: '#ffd98e', strength: 0.18, multiplier: 1.04 }
@@ -81,7 +81,7 @@ variants:
         - { asset: bush, w: 0.08 }
   - key: dry
     weight: 1.5
-    terrain: { ground: '#cdb273', mid: '#cdb273' }
+    terrain: { ground: '#bda66c', mid: '#bda66c' }
     near:
       density: 0.9
       table:

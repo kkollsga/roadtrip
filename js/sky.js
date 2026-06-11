@@ -221,13 +221,13 @@ window.Sky = (() => {
       ctx.save(); // moonrise eases in the same way dawn does
       ctx.globalAlpha = U.smooth(U.clamp((moonArc.elev + 0.5) / 0.5, 0, 1));
       const ga = 0.06 + 0.26 * illum; // glow follows the phase
-      const mg = ctx.createRadialGradient(mx, my, 0, mx, my, r * 6);
-      mg.addColorStop(0, `rgba(220,230,245,${ga.toFixed(3)})`);
-      mg.addColorStop(1, 'rgba(220,230,245,0)');
+      const mg = ctx.createRadialGradient(mx, my, 0, mx, my, r * 8);
+      mg.addColorStop(0, `rgba(238,216,150,${ga.toFixed(3)})`);
+      mg.addColorStop(1, 'rgba(238,216,150,0)');
       ctx.fillStyle = mg;
-      ctx.fillRect(mx - r * 6, my - r * 6, r * 12, r * 12);
+      ctx.fillRect(mx - r * 8, my - r * 8, r * 16, r * 16);
       drawMoonPhase(ctx, mx, my, r, mph,
-        '#e8edf5', U.css(U.mix(pal.top, U.col('#8e98ac'), 0.22), 0.9));
+        '#f2e2a8', U.css(U.mix(pal.top, U.col('#8a8a74'), 0.22), 0.9));
       ctx.restore();
       if (moonArc.elev > 0.02 && illum > 0.25) { env.moonX = mx; env.moonY = my; }
     }

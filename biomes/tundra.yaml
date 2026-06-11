@@ -12,19 +12,19 @@
 name: tundra
 order: 5
 terrain:
-  far: '#9fb3c8'
-  mid: '#c2cfdc'
-  ground: '#dde7f0'
+  far: '#8da2b5'
+  mid: '#b5c4cf'
+  ground: '#d5e0e8'
   farAmp: 0.15
   midAmp: 0.06
   ridged: 0.45
   snowcap: 0.9
   water: 0.85
-  waterCol: '#28465e'
+  waterCol: '#243d50'
 flora:
-  foliage: '#2e4a44'
-  foliage2: '#43555a'
-  trunk: '#5a4a3c'
+  foliage: '#2a403c'
+  foliage2: '#3c4c50'
+  trunk: '#473b30'
   avenue: pine
 light:
   grade: { tint: '#9fc0e4', strength: 0.22, multiplier: 0.92 }

@@ -12,9 +12,9 @@
 name: desert
 order: 2
 terrain:
-  far: '#b9805a'
-  mid: '#d3a06a'
-  ground: '#dcb077'
+  far: '#a3765a'
+  mid: '#c29a6a'
+  ground: '#cfa979'
   farAmp: 0.06
   midAmp: 0.04
   ridged: 0
@@ -22,9 +22,9 @@ terrain:
   water: 0
   waterCol: '#3c6f95'
 flora:
-  foliage: '#5e7d4a'
-  foliage2: '#8a6a4a'
-  trunk: '#7a5a3e'
+  foliage: '#5d6b42'
+  foliage2: '#7e6447'
+  trunk: '#65503c'
   avenue: palm
 light:
   grade: { tint: '#ffb24d', strength: 0.22, multiplier: 1.06 }

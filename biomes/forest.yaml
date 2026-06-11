@@ -12,19 +12,19 @@
 name: forest
 order: 1
 terrain:
-  far: '#5e7b94'
-  mid: '#557e62'
-  ground: '#47714f'
+  far: '#46606e'
+  mid: '#42594a'
+  ground: '#3c5440'
   farAmp: 0.14
   midAmp: 0.07
   ridged: 0.15
   snowcap: 0
   water: 0
-  waterCol: '#3c6f95'
+  waterCol: '#356076'
 flora:
-  foliage: '#2f5d3e'
-  foliage2: '#3d7050'
-  trunk: '#4a3a2c'
+  foliage: '#2a4632'
+  foliage2: '#3d5a40'
+  trunk: '#2e2218'
   avenue: roundTree
 light:
   grade: { tint: '#7fae84', strength: 0.14, multiplier: 0.94 }
@@ -74,5 +74,5 @@ variants:
     forest: { depth: 2 }
   - key: lakeside
     weight: 1.5
-    terrain: { water: 0.6, waterCol: '#3f7390' }
+    terrain: { water: 0.6, waterCol: '#37647c' }
     near: { density: 2.5 }

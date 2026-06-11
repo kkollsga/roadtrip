@@ -234,7 +234,7 @@ window.Scene = (() => {
       // distance (colors bleed into the haze) and toward the extreme
       // foreground (slightly muted again, like a lens focused on the road)
       const vib = U.clamp(1 - Math.abs(d - 0.07) / 0.15, 0, 1);
-      if (vib > 0) c = U.sat(c, 1 + 0.75 * vib * (0.35 + 0.65 * light));
+      if (vib > 0) c = U.sat(c, 1 + 0.5 * vib * (0.35 + 0.65 * light));
       if (snowC > 0 && snowMix) c = U.mix(c, snowLit, snowC * snowMix);
       return U.css(U.mix(c, pal.fog, effD(d)));
     };
@@ -392,10 +392,10 @@ window.Scene = (() => {
         foliage2: tint(bb.fol2, d, 0.45),
         trunk: tint(bb.trunk, d, 0),
         dark: tint(U.scale(bb.trunk, 0.55), d, 0),
-        light: tint(C('#e6e2d4'), d, 0),
+        light: tint(C('#e8e0c4'), d, 0),
         accent: tint(C('#9a4538'), d, 0),
-        pink: tint(C('#f0b6c9'), d, 0.5),
-        pink2: tint(C('#e094b2'), d, 0.5),
+        pink: tint(C('#e3aab8'), d, 0.5),
+        pink2: tint(C('#cf8a9b'), d, 0.5),
         fill: tint(U.mix(bb.far, bb.mid, 0.4), d, 0.5),
         tan: tint(C('#c89e62'), d, 0.35),    // fauna hides
         brown: tint(C('#7a5a3c'), d, 0),

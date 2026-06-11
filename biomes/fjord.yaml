@@ -12,19 +12,19 @@
 name: fjord
 order: 7
 terrain:
-  far: '#7c93ad'
-  mid: '#557a58'
-  ground: '#5d8455'
+  far: '#677e92'
+  mid: '#48624a'
+  ground: '#4f6c46'
   farAmp: 0.34
   midAmp: 0.11
   ridged: 0.8
   snowcap: 0.9
   water: 0.9
-  waterCol: '#2f5c70'
+  waterCol: '#2c5365'
 flora:
-  foliage: '#3a6a48'
-  foliage2: '#4c7f55'
-  trunk: '#54483a'
+  foliage: '#33523c'
+  foliage2: '#446247'
+  trunk: '#42382c'
   avenue: pine
 light:
   grade: { tint: '#a8ccd4', strength: 0.16, multiplier: 0.97 }

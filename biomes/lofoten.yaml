@@ -12,19 +12,19 @@
 name: lofoten
 order: 8
 terrain:
-  far: '#84a0b6'
-  mid: '#ded6b8'
-  ground: '#74986b'
+  far: '#73899c'
+  mid: '#d3ccae'
+  ground: '#647e58'
   farAmp: 0.33
   midAmp: 0.035
   ridged: 0.85
   snowcap: 0.85
   water: 0.9
-  waterCol: '#2f96a8'
+  waterCol: '#2f7a86'
 flora:
-  foliage: '#3c6b4c'
-  foliage2: '#52805c'
-  trunk: '#6b6052'
+  foliage: '#35563e'
+  foliage2: '#48664a'
+  trunk: '#544b3e'
   avenue: birch
 light:
   grade: { tint: '#bce0da', strength: 0.16, multiplier: 1 }

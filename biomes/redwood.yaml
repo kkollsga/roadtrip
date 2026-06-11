@@ -12,19 +12,19 @@
 name: redwood
 order: 6
 terrain:
-  far: '#5e7e88'
-  mid: '#41614f'
-  ground: '#3c5a44'
+  far: '#4a6570'
+  mid: '#364c40'
+  ground: '#334a39'
   farAmp: 0.13
   midAmp: 0.075
   ridged: 0.1
   snowcap: 0
   water: 0
-  waterCol: '#3c6f95'
+  waterCol: '#356076'
 flora:
-  foliage: '#2c5a3c'
-  foliage2: '#3e7050'
-  trunk: '#7a4634'
+  foliage: '#284632'
+  foliage2: '#39553f'
+  trunk: '#5e3526'
   avenue: pine
 light:
   grade: { tint: '#9bbf9e', strength: 0.18, multiplier: 0.93 }

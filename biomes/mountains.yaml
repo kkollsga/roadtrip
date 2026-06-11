@@ -12,9 +12,9 @@
 name: mountains
 order: 3
 terrain:
-  far: '#8c9cb2'
-  mid: '#67788a'
-  ground: '#5e7a52'
+  far: '#73869a'
+  mid: '#566a78'
+  ground: '#566c4a'
   farAmp: 0.3
   midAmp: 0.13
   ridged: 1
@@ -22,9 +22,9 @@ terrain:
   water: 0
   waterCol: '#3c6f95'
 flora:
-  foliage: '#35594a'
-  foliage2: '#42685a'
-  trunk: '#4f4438'
+  foliage: '#2e463a'
+  foliage2: '#3c5648'
+  trunk: '#3c352c'
   avenue: pine
 light:
   grade: { tint: '#b9c8e8', strength: 0.15, multiplier: 1 }
@@ -61,7 +61,7 @@ extras:
 variants:
   - key: alpineLake
     weight: 1.5
-    terrain: { water: 0.5, waterCol: '#3f7a90' }
+    terrain: { water: 0.5, waterCol: '#386a7e' }
   - key: forestedValley
     weight: 2
     terrain: { farAmp: 0.2, midAmp: 0.09 }

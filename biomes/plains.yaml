@@ -12,19 +12,19 @@
 name: plains
 order: 0
 terrain:
-  far: '#7d92aa'
-  mid: '#8fae70'
-  ground: '#79a35d'
+  far: '#6e8294'
+  mid: '#7e9263'
+  ground: '#6f8a52'
   farAmp: 0.1
   midAmp: 0.055
   ridged: 0
   snowcap: 0
   water: 0
-  waterCol: '#3c6f95'
+  waterCol: '#356076'
 flora:
-  foliage: '#55844a'
-  foliage2: '#6f9c54'
-  trunk: '#6b5340'
+  foliage: '#4d6b3d'
+  foliage2: '#6d8447'
+  trunk: '#4a3a2c'
   avenue: roundTree
 light:
   grade: { tint: '#ffe3a8', strength: 0.12, multiplier: 1 }
@@ -84,4 +84,4 @@ variants:
     extras: { windfarm: 0.95 }
   - key: lakeside
     weight: 1.5
-    terrain: { farAmp: 0.07, water: 0.55, waterCol: '#447a99' }
+    terrain: { farAmp: 0.07, water: 0.55, waterCol: '#3d6a82' }
