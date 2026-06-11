@@ -684,22 +684,26 @@ window.Scene = (() => {
       // height and cable sag; runs begin and end with a cable that rises
       // out of / drops back into the ground
       {
-        const sp = 540;
+        // ~45 m between poles; each shoulder lives at its own parallax, so
+        // the near row is bigger AND spreads wider on screen than the far
+        const sp = 1500;
+        const PSH = [0.96, 1.12]; // far shoulder, near shoulder
         const rdH = env.roadBot - env.roadTop;
-        const i0 = Math.floor((worldX - 700) / sp), i1 = Math.floor((worldX + w + 700) / sp);
+        const i0 = Math.floor((worldX - 2 * sp) / sp), i1 = Math.floor((worldX + w + 2 * sp) / sp);
         const runs = [[], []]; // far shoulder, near shoulder
         for (let i = i0; i <= i1; i++) {
           const wx1 = i * sp;
           if (fAt(wx1) !== 'wires') continue;
           const si = Math.floor(wx1 / FSEG);
           const side = U.hash1(si * 511 + 9) < 0.6 ? 0 : 1;
-          const H = (9 + U.hash1(si * 727 + 3) * 2) * h * METER; // 9-11 m
-          const x1 = wx1 - worldX;
+          const pS = PSH[side];
+          const H = (9 + U.hash1(si * 727 + 3) * 2) * h * METER * pS; // 9-11 m
+          const x1 = (wx1 - worldX) * pS;
           const baseY = side === 0
             ? rTopAt(x1) + h * 0.004
             : rTopAt(x1) + rdH + h * 0.014;
           runs[side].push({
-            i, x1, H, baseY,
+            i, x1, H, baseY, pS,
             topY: baseY - H * 0.92,
             sag: H * (0.10 + U.hash1(si * 313 + 5) * 0.16),
           });
@@ -719,16 +723,17 @@ window.Scene = (() => {
               ctx.stroke();
             }
             const prev = list[n - 1];
+            const fs = sp * p1.pS; // on-screen span to the neighbour pole
             if (!(prev && prev.i === p1.i - 1)) { // run starts: feed from the ground
               ctx.beginPath();
-              ctx.moveTo(p1.x1 - sp * 0.42, p1.baseY + 6);
-              ctx.quadraticCurveTo(p1.x1 - sp * 0.30, p1.topY + p1.H * 0.25, p1.x1, p1.topY);
+              ctx.moveTo(p1.x1 - fs * 0.42, p1.baseY + 6);
+              ctx.quadraticCurveTo(p1.x1 - fs * 0.30, p1.topY + p1.H * 0.25, p1.x1, p1.topY);
               ctx.stroke();
             }
             if (!linked) { // run ends: cable drops back into the ground
               ctx.beginPath();
               ctx.moveTo(p1.x1, p1.topY);
-              ctx.quadraticCurveTo(p1.x1 + sp * 0.30, p1.topY + p1.H * 0.25, p1.x1 + sp * 0.42, p1.baseY + 6);
+              ctx.quadraticCurveTo(p1.x1 + fs * 0.30, p1.topY + p1.H * 0.25, p1.x1 + fs * 0.42, p1.baseY + 6);
               ctx.stroke();
             }
             Assets.pole(ctx, p1.x1, p1.baseY, p1.H, polC);
@@ -743,18 +748,21 @@ window.Scene = (() => {
       // street lamps: far side, near side, or alternating — per stretch,
       // with varying post heights
       {
-        const sp = 460;
+        // ~35 m between lamps (alternating sides doubles the per-side gap);
+        // shoulder parallax stretches the near row's size and spacing
+        const sp = 1200;
         const rdH = env.roadBot - env.roadTop;
         const lampGlow = U.clamp((0.5 - light) / 0.4, 0, 1);
-        const i0 = Math.floor((worldX - 200) / sp), i1 = Math.floor((worldX + w + 200) / sp);
+        const i0 = Math.floor((worldX - 600) / sp), i1 = Math.floor((worldX + w + 600) / sp);
         for (let i = i0; i <= i1; i++) {
           const wx1 = i * sp + 180;
           if (fAt(wx1) !== 'lights') continue;
           const si = Math.floor(wx1 / FSEG);
           const mode = Math.floor(U.hash1(si * 419 + 11) * 3); // far | near | alternating
           const side = mode === 2 ? (i % 2) : mode;
-          const S = (7 + U.hash1(si * 941 + 7) * 2) * h * METER; // 7-9 m
-          const x1 = wx1 - worldX;
+          const pS = side === 0 ? 0.96 : 1.12;
+          const S = (7 + U.hash1(si * 941 + 7) * 2) * h * METER * pS; // 7-9 m
+          const x1 = (wx1 - worldX) * pS;
           if (x1 < -160 || x1 > w + 160) continue;
           if (side === 0) {
             Assets.streetlight(ctx, x1, rTopAt(x1) + h * 0.004, S,
@@ -770,7 +778,7 @@ window.Scene = (() => {
                 Assets.streetlight(ctx, 0, yy, SS,
                   { dark: polC.dark, glowA: lampGlow, poolDY: -rdH * 0.5 }, vv);
                 ctx.restore();
-              })(x1, S * 1.08, U.hash1(i)),
+              })(x1, S, U.hash1(i)),
             });
           }
         }
@@ -778,21 +786,21 @@ window.Scene = (() => {
 
       // a planted avenue: evenly spaced, uniform trees fitting the biome
       {
-        const sp = 300;
-        const i0 = Math.floor((worldX - 120) / sp), i1 = Math.floor((worldX + w + 120) / sp);
+        const sp = 540; // ~16 m between planted trees
+        const i0 = Math.floor((worldX - 300) / sp), i1 = Math.floor((worldX + w + 300) / sp);
         let avC = null, avName = null;
         for (let i = i0; i <= i1; i++) {
           const wx1 = i * sp + 150;
           if (fAt(wx1) !== 'avenue') continue;
-          const x1 = wx1 - worldX;
-          if (x1 < -80 || x1 > w + 80) continue;
+          const x1 = (wx1 - worldX) * 0.96; // far shoulder parallax
+          if (x1 < -200 || x1 > w + 200) continue;
           const ars = resolve(wx1);
           const aside = ars.t < 0.5 ? ars.a : ars.b;
           const aprof = aside.vt < 0.5 ? aside.p1 : aside.p2;
           if (aprof.key !== avName) { avName = aprof.key; avC = colorsFor(aprof, 0.09); }
           const tfn = Assets[aprof.avenue] || Assets.roundTree;
           tfn(ctx, x1, rTopAt(x1) + h * 0.004,
-            (6 + U.hash1(i * 31) * 3) * h * METER, avC, 0.4 + U.hash1(i * 17) * 0.3, time);
+            (6 + U.hash1(i * 31) * 3) * h * METER * 0.96, avC, 0.4 + U.hash1(i * 17) * 0.3, time);
         }
       }
     }
