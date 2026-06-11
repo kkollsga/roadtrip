@@ -390,7 +390,7 @@ window.Scene = (() => {
       const colorSets = {};
       const lx0 = worldX * p;
       const M = h * METER * p; // px per real-world meter on this layer
-      const mg = marg || 90;
+      const mg = marg || 200; // wide enough for the biggest band trees
       for (let ci = Math.floor((lx0 - mg) / chunkW); ci <= (lx0 + w + mg) / chunkW; ci++) {
         const items = chunkItems(seed, ci, p, chunkW, densityKey, tableKey);
         for (const it of items) {
@@ -416,16 +416,21 @@ window.Scene = (() => {
     function nearFieldItems(seed, chunkW, densityKey, tableKey, p0, p1, d0, d1, groundAt) {
       const list = [];
       const colorSets = {};
-      const m = 260; // generous margin: big trees would pop in late otherwise
-      const i0 = Math.floor((worldX - m / p0) / chunkW);
-      const i1 = Math.floor((worldX + (w + m) / p0) / chunkW);
+      // culling must scale with the object: a 90 m redwood is taller than
+      // the screen and its canopy enters frame LONG before its trunk does.
+      // reach = the world span the largest possible item can cover.
+      const m = 260;
+      const reach = 95 * h * METER; // max asset height in meters, as px/p
+      const i0 = Math.floor((worldX - m / p0 - reach) / chunkW);
+      const i1 = Math.floor((worldX + (w + m) / p0 + reach) / chunkW);
       for (let ci = i0; ci <= i1; ci++) {
         const items = chunkItems(seed, ci, 1, chunkW, densityKey, tableKey);
         for (const it of items) {
           const z = it.z;
           const p = U.lerp(p0, p1, z);
           const sx = (it.x - worldX) * p;
-          if (sx < -m || sx > w + m) continue;
+          const cullM = Math.max(m, itemMeters(it.type, it.sf) * h * METER * p);
+          if (sx < -cullM || sx > w + cullM) continue;
           const zq = Math.round(z * 4) / 4;
           const ck = it.prof.key + ':' + zq;
           const c = colorSets[ck] || (colorSets[ck] = colorsFor(it.prof, U.lerp(d0, d1, zq)));
@@ -660,8 +665,8 @@ window.Scene = (() => {
     // down to the far shoulder (forest biomes get real staggered depth)
     {
       const behind = nearFieldItems(444, 660, 'density', 'items',
-        0.5, 0.95, 0.18, 0.085,
-        (sx, z) => U.lerp(treeG(worldX * 0.5 + sx), rTopAt(sx) + h * 0.004, z));
+        0.5, 0.92, 0.18, 0.09,
+        (sx, z) => U.lerp(treeG(worldX * 0.5 + sx), rTopAt(sx) - h * 0.012, z));
       drawNearField(behind);
     }
 
@@ -724,16 +729,20 @@ window.Scene = (() => {
             }
             const prev = list[n - 1];
             const fs = sp * p1.pS; // on-screen span to the neighbour pole
+            // anchor cables hang BELOW their straight chord (gravity), the
+            // same concave sag as the pole-to-pole spans
             if (!(prev && prev.i === p1.i - 1)) { // run starts: feed from the ground
+              const gx = p1.x1 - fs * 0.30, gy = p1.baseY + 6;
               ctx.beginPath();
-              ctx.moveTo(p1.x1 - fs * 0.42, p1.baseY + 6);
-              ctx.quadraticCurveTo(p1.x1 - fs * 0.30, p1.topY + p1.H * 0.25, p1.x1, p1.topY);
+              ctx.moveTo(gx, gy);
+              ctx.quadraticCurveTo((gx + p1.x1) / 2, (gy + p1.topY) / 2 + p1.sag * 0.7, p1.x1, p1.topY);
               ctx.stroke();
             }
             if (!linked) { // run ends: cable drops back into the ground
+              const gx = p1.x1 + fs * 0.30, gy = p1.baseY + 6;
               ctx.beginPath();
               ctx.moveTo(p1.x1, p1.topY);
-              ctx.quadraticCurveTo(p1.x1 + fs * 0.30, p1.topY + p1.H * 0.25, p1.x1 + fs * 0.42, p1.baseY + 6);
+              ctx.quadraticCurveTo((gx + p1.x1) / 2, (gy + p1.topY) / 2 + p1.sag * 0.7, gx, gy);
               ctx.stroke();
             }
             Assets.pole(ctx, p1.x1, p1.baseY, p1.H, polC);
@@ -985,8 +994,8 @@ window.Scene = (() => {
     // same depth ordering so a lamp post never hides behind a nearer bush
     {
       const front = nearFieldItems(555, 300, 'fgDensity', 'fgItems',
-        1.1, 1.45, 0.05, 0.008,
-        (sx, z) => rTopAt(sx) + roadH + (h - roadBot) * U.lerp(0.10, 0.85, z));
+        1.12, 1.45, 0.05, 0.008,
+        (sx, z) => rTopAt(sx) + roadH + (h - roadBot) * U.lerp(0.22, 0.88, z));
       for (const f of nearFurniture) front.push(f);
       drawNearField(front);
     }
@@ -1003,7 +1012,7 @@ window.Scene = (() => {
         const sx = ci * chunkW + r() * chunkW - lx0;
         const vv = r();
         if (rprof.bname !== 'redwood') continue;
-        if (sx < -200 || sx > w + 200) continue;
+        if (sx < -500 || sx > w + 500) continue;
         // capped: at full true scale the trunk slab swallows half the frame
         Assets.redwoodTrunk(ctx, sx, h + 30,
           Math.min(h * 3, itemMeters('redwoodTrunk', vv) * h * METER * 1.45),
