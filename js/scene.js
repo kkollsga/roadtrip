@@ -402,7 +402,7 @@ window.Scene = (() => {
           const draw = it.type === 'mesa'
             ? () => Assets.mesa(ctx, sx, y, size * 2.8, size, c, it.v)
             : () => Assets[it.type](ctx, sx, y, size, c, it.v, time);
-          if (sink) sink.push({ y, draw });
+          if (sink) q(D0 / p, draw, y);
           else draw();
         }
       }
@@ -436,40 +436,46 @@ window.Scene = (() => {
           const c = colorSets[ck] || (colorSets[ck] = colorsFor(it.prof, U.lerp(d0, d1, zq)));
           // true size: meters at this item's own depth
           const size = itemMeters(it.type, it.sf) * h * METER * p;
-          list.push({ y: groundAt(sx, z), sx, size, c, it });
+          list.push({ y: groundAt(sx, z), sx, size, c, it, dist: D0 / p });
         }
       }
       return list;
     }
-    const drawNearField = list => {
-      list.sort((a2, b2) => a2.y - b2.y); // lower base = nearer = painted later
-      for (const o of list) {
-        if (o.draw) o.draw();
-        else Assets[o.it.type](ctx, o.sx, o.y, o.size, o.c, o.it.v, time);
-      }
-    };
 
-    /* ================= layers, back to front ================= */
+    /* ================= the distance ladder =================
+       EVERY drawable carries its camera distance in meters (the road is
+       ~15 m out; the sky effectively infinite). One queue, sorted far to
+       near, paints the whole scene — stacking order is a property of the
+       world, never of code position. Ties break on base y. */
+    const Q = [];
+    const q = (dist, fn, y) => Q.push({ dist, fn, y: y || 0 });
+    const D0 = 15; // meters at parallax 1 (the road plane)
+
+    // small grounding shadow so items read anchored even on pale terrain
+    const itemShadow = (sx, y, size) => {
+      ctx.fillStyle = `rgba(8,12,20,${(0.06 + 0.10 * light).toFixed(3)})`;
+      ctx.beginPath();
+      ctx.ellipse(sx, y + 1, size * 0.16, Math.max(1.5, size * 0.028), 0, 0, TAU);
+      ctx.fill();
+    };
+    const paintItem = o => {
+      itemShadow(o.sx, o.y, o.size);
+      Assets[o.it.type](ctx, o.sx, o.y, o.size, o.c, o.it.v, time);
+    };
 
     // far ridges (where there is open sea, they read as headlands in it)
     const waterWpre = effN(cwx, 'water');
-    ridge(0.055, 11, 1 / 620, 0.615, 'farAmp', 1.0, 'far', 0.68, 1.0, 0, 0);
-    ridge(0.115, 22, 1 / 480, 0.660, 'farAmp', 0.65, 'far', 0.52, 0.8, 0.35, 0);
+    q(270, () => ridge(0.055, 11, 1 / 620, 0.615, 'farAmp', 1.0, 'far', 0.68, 1.0, 0, 0));
+    q(130, () => ridge(0.115, 22, 1 / 480, 0.660, 'farAmp', 0.65, 'far', 0.52, 0.8, 0.35, 0));
     // nearest far ridge ducks low where open water takes over
-    ridge(0.165, 44, 1 / 520, 0.697, 'farAmp', 0.32 * (1 - waterWpre * 0.85), 'far', 0.38, 0.7, 0.7, 0);
-
-    /* Everything living between the far ridges and the mid ridge — drifting
-       ice, horizon mesas, wind turbines, famous landmarks — collects into
-       ONE list painted in base-y order: the ground position of an object's
-       base IS its distance, so an iceberg floating lower (nearer) than a
-       landmark's foot must cover it. Same rule as the near field. */
-    const farField = [];
+    q(91, () => ridge(0.165, 44, 1 / 520, 0.697, 'farAmp', 0.32 * (1 - waterWpre * 0.85), 'far', 0.38, 0.7, 0.7, 0));
 
     // open water (warm seas, cold fjords, passing lakes)
     const waterW = effN(cwx, 'water');
     if (waterW > 0.02) {
       const top = env.horizonY, bot = h * 0.705;
       const water = Palette.lit(effC(cwx, 'waterCol'), pal, light);
+      q(90, () => {
       const g = ctx.createLinearGradient(0, top, 0, bot);
       g.addColorStop(0, U.css(U.mix(U.mix(water, pal.bot, 0.45), pal.fog, effD(0.5)), waterW));
       g.addColorStop(1, U.css(U.mix(water, pal.fog, effD(0.3)), waterW));
@@ -503,6 +509,7 @@ window.Scene = (() => {
           ctx.fillRect(x + U.hash2(row, Math.floor((x + off) / sp)) * 30, ry, len, 1 + row * 0.3);
         }
       }
+      });
       // drifting ice in polar waters (bigger and lower = nearer)
       {
         const p = 0.16, chunkW = 520, lx0 = worldX * p;
@@ -528,12 +535,12 @@ window.Scene = (() => {
             const fn = kind < 0.35 ? Assets.floe : Assets.iceberg;
             const sIce = itemMeters(kind < 0.35 ? 'floe' : 'iceberg', vv)
               * h * METER * pIce * (kind < 0.35 ? 2.0 : 1);
-            farField.push({ y: iy, draw: () => {
+            q(D0 / pIce, () => {
               const a0 = ctx.globalAlpha;
               ctx.globalAlpha = a0 * waterW;
               fn(ctx, ix, iy, sIce, iceC, vv);
               ctx.globalAlpha = a0;
-            } });
+            }, iy);
           }
         }
       }
@@ -542,7 +549,7 @@ window.Scene = (() => {
     // horizon set pieces: true-scale mesas (90-220 m) far out where their
     // bulk reads as distance, not as a wall
     drawItemSet(0.03, 999, 1100, 'horizonDensity', 'horizonItems', 0.58,
-      ix => h * 0.652 - h * 0.010 * U.fbm(ix / 240, 99, 2), 900, farField);
+      ix => h * 0.652 - h * 0.010 * U.fbm(ix / 240, 99, 2), 900, true);
 
     // wind farms: true-scale turbines (110-150 m) far out on the horizon
     // ridges — or offshore — drifting past slowly in groups of 6-10
@@ -575,8 +582,8 @@ window.Scene = (() => {
         }
       }
       for (const t2 of farm) {
-        farField.push({ y: t2.y, draw: () =>
-          Assets.turbine(ctx, t2.sx, t2.y, t2.s, colorsFor(t2.prof, t2.d), t2.v, time) });
+        q(D0 / t2.p, () =>
+          Assets.turbine(ctx, t2.sx, t2.y, t2.s, colorsFor(t2.prof, t2.d), t2.v, time), t2.y);
       }
     }
 
@@ -609,39 +616,39 @@ window.Scene = (() => {
           light,
         };
         const ly = h * cfg.y;
-        farField.push({ y: ly, draw: () => Assets[kind](ctx, sx, ly, s, c, vv, time) });
+        q(D0 / 0.08, () => Assets[kind](ctx, sx, ly, s, c, vv, time), ly);
       }
     }
 
-    // the far field paints lowest-base last (nearest on top)
-    farField.sort((a2, b2) => a2.y - b2.y);
-    for (const o of farField) o.draw();
-
     // mid ridge + its landmarks (mesas, lighthouse)
-    const mid = ridge(0.24, 33, 1 / 360, 0.725, 'midAmp', 1.0, 'mid', 0.26, 0.6, 1.0, waterWpre);
-    drawItemSet(0.24, 333, 700, 'midDensity', 'midItems', 0.34, (ix) => {
-      const nearwx = ix / 0.24;
-      const amp = effN(nearwx, 'midAmp') * h * ampEnv(nearwx, 33);
-      return h * 0.725 - amp * U.fbm(ix / 360, 33, 3) + 2;
+    q(62, () => {
+      ridge(0.24, 33, 1 / 360, 0.725, 'midAmp', 1.0, 'mid', 0.26, 0.6, 1.0, waterWpre);
+      drawItemSet(0.24, 333, 700, 'midDensity', 'midItems', 0.34, (ix) => {
+        const nearwx = ix / 0.24;
+        const amp = effN(nearwx, 'midAmp') * h * ampEnv(nearwx, 33);
+        return h * 0.725 - amp * U.fbm(ix / 360, 33, 3) + 2;
+      });
     });
 
-    // distant forest bands: wooded hills stretching far away.
-    // Depth of forest (forestDepth) is its own variable biome layer.
-    // True-scale trees demand genuinely distant parallax to read as far.
-    drawItemSet(0.14, 611, 300, 'forestDepth', 'depthItems', 0.30,
-      ix => h * 0.752 - h * 0.018 * U.fbm(ix / 300, 61, 2));
-    drawItemSet(0.22, 622, 300, 'forestDepth', 'depthItems', 0.26,
-      ix => h * 0.774 - h * 0.016 * U.fbm(ix / 280, 62, 2));
+    // distant forest bands: wooded slopes behind the mid ridge. Ground
+    // lines sit where their distance says they should (between the third
+    // far ridge and the mid ridge), so later fills can never swallow them.
+    q(79, () => drawItemSet(0.19, 611, 300, 'forestDepth', 'depthItems', 0.30,
+      ix => h * 0.706 - h * 0.014 * U.fbm(ix / 300, 61, 2)));
+    q(70, () => drawItemSet(0.215, 622, 300, 'forestDepth', 'depthItems', 0.26,
+      ix => h * 0.717 - h * 0.012 * U.fbm(ix / 280, 62, 2)));
 
     // tree line ridge (the ground band the road sits in)
     const treeG = (ix) => h * 0.795 - h * 0.022 * U.fbm(ix / 260, 44, 2);
-    ctx.fillStyle = tint(effC(cwx, 'ground'), 0.18, 0.65);
-    ctx.beginPath();
-    ctx.moveTo(0, h);
-    for (let sx = 0; sx <= w + 10; sx += 10) ctx.lineTo(sx, treeG(worldX * 0.5 + sx));
-    ctx.lineTo(w + 10, h);
-    ctx.closePath();
-    ctx.fill();
+    q(30, () => {
+      ctx.fillStyle = tint(effC(cwx, 'ground'), 0.18, 0.65);
+      ctx.beginPath();
+      ctx.moveTo(0, h);
+      for (let sx = 0; sx <= w + 10; sx += 10) ctx.lineTo(sx, treeG(worldX * 0.5 + sx));
+      ctx.lineTo(w + 10, h);
+      ctx.closePath();
+      ctx.fill();
+    });
 
     // road elevation profile: mountain roads rise and (mostly) dip
     const hillW = (biC.a === 'mountains' ? 1 - biC.t : 0) + (biC.b === 'mountains' ? biC.t : 0)
@@ -653,25 +660,24 @@ window.Scene = (() => {
     };
 
     // roadside strip between tree line and road
-    ctx.fillStyle = tint(U.scale(effC(cwx, 'ground'), 0.82), 0.10, 0.7);
-    ctx.beginPath();
-    ctx.moveTo(0, h * 0.787);
-    ctx.lineTo(w, h * 0.787);
-    for (let sx = w; sx >= 0; sx -= 20) ctx.lineTo(sx, rTopAt(sx) + 2);
-    ctx.closePath();
-    ctx.fill();
+    q(15.8, () => {
+      ctx.fillStyle = tint(U.scale(effC(cwx, 'ground'), 0.82), 0.10, 0.7);
+      ctx.beginPath();
+      ctx.moveTo(0, h * 0.787);
+      ctx.lineTo(w, h * 0.787);
+      for (let sx = w; sx >= 0; sx -= 20) ctx.lineTo(sx, rTopAt(sx) + 2);
+      ctx.closePath();
+      ctx.fill();
+    });
 
     // near field behind the road: items at every depth from the tree line
     // down to the far shoulder (forest biomes get real staggered depth)
-    {
-      const behind = nearFieldItems(444, 660, 'density', 'items',
-        0.5, 0.92, 0.18, 0.09,
-        (sx, z) => U.lerp(treeG(worldX * 0.5 + sx), rTopAt(sx) - h * 0.012, z));
-      drawNearField(behind);
+    for (const o of nearFieldItems(444, 660, 'density', 'items',
+      0.5, 0.92, 0.18, 0.09,
+      (sx, z) => U.lerp(treeG(worldX * 0.5 + sx), rTopAt(sx) - h * 0.012, z))) {
+      q(o.dist, () => paintItem(o), o.y);
     }
 
-    const nearFurniture = []; // {y, draw}: proximal-side items, merged into
-    // the front near field so paint order follows ground position
 
     /* roadside furniture comes in long stretches that simply start and stop:
        power wires, street lamps, an avenue of planted trees, or nothing. */
@@ -748,10 +754,8 @@ window.Scene = (() => {
             Assets.pole(ctx, p1.x1, p1.baseY, p1.H, polC);
           }
         };
-        drawRun(runs[0]);
-        if (runs[1].length) {
-          nearFurniture.push({ y: runs[1][0].baseY, draw: () => drawRun(runs[1]) });
-        }
+        if (runs[0].length) q(15.6, () => drawRun(runs[0]), runs[0][0].baseY);
+        if (runs[1].length) q(13.39, () => drawRun(runs[1]), runs[1][0].baseY);
       }
 
       // street lamps: far side, near side, or alternating — per stretch,
@@ -774,21 +778,19 @@ window.Scene = (() => {
           const x1 = (wx1 - worldX) * pS;
           if (x1 < -160 || x1 > w + 160) continue;
           if (side === 0) {
-            Assets.streetlight(ctx, x1, rTopAt(x1) + h * 0.004, S,
-              { dark: polC.dark, glowA: lampGlow, poolDY: rdH * 0.45 }, U.hash1(i));
+            const yy = rTopAt(x1) + h * 0.004;
+            q(15.6, () => Assets.streetlight(ctx, x1, yy, S,
+              { dark: polC.dark, glowA: lampGlow, poolDY: rdH * 0.45 }, U.hash1(i)), yy);
           } else {
             const yy = rTopAt(x1) + rdH + h * 0.012;
-            nearFurniture.push({
-              y: yy,
-              draw: ((xx, SS, vv) => () => {
-                ctx.save();
-                ctx.translate(xx, 0);
-                ctx.scale(-1, 1); // mirrored: the arm reaches back over the road
-                Assets.streetlight(ctx, 0, yy, SS,
-                  { dark: polC.dark, glowA: lampGlow, poolDY: -rdH * 0.5 }, vv);
-                ctx.restore();
-              })(x1, S, U.hash1(i)),
-            });
+            q(13.39, ((xx, SS, vv) => () => {
+              ctx.save();
+              ctx.translate(xx, 0);
+              ctx.scale(-1, 1); // mirrored: the arm reaches back over the road
+              Assets.streetlight(ctx, 0, yy, SS,
+                { dark: polC.dark, glowA: lampGlow, poolDY: -rdH * 0.5 }, vv);
+              ctx.restore();
+            })(x1, S, U.hash1(i)), yy);
           }
         }
       }
@@ -808,8 +810,12 @@ window.Scene = (() => {
           const aprof = aside.vt < 0.5 ? aside.p1 : aside.p2;
           if (aprof.key !== avName) { avName = aprof.key; avC = colorsFor(aprof, 0.09); }
           const tfn = Assets[aprof.avenue] || Assets.roundTree;
-          tfn(ctx, x1, rTopAt(x1) + h * 0.004,
-            (6 + U.hash1(i * 31) * 3) * h * METER * 0.96, avC, 0.4 + U.hash1(i * 17) * 0.3, time);
+          const c2 = avC, ty = rTopAt(x1) + h * 0.004;
+          const ts = (6 + U.hash1(i * 31) * 3) * h * METER * 0.96;
+          q(15.6, () => {
+            itemShadow(x1, ty, ts);
+            tfn(ctx, x1, ty, ts, c2, 0.4 + U.hash1(i * 17) * 0.3, time);
+          }, ty);
         }
       }
     }
@@ -817,6 +823,7 @@ window.Scene = (() => {
     /* ---------------- the road (an undulating band) ---------------- */
     const { roadTop, roadBot } = env;
     const roadH = roadBot - roadTop;
+    q(15, () => {
     const roadPath = new Path2D();
     roadPath.moveTo(0, rTopAt(0));
     for (let sx = 20; sx <= w + 20; sx += 20) roadPath.lineTo(sx, rTopAt(sx));
@@ -908,8 +915,10 @@ window.Scene = (() => {
       ctx.fillStyle = U.css(sc, 0.18 * snowC);
       ctx.fill(roadPath);
     }
+    });
 
     /* ---------------- the car (rides and tilts with the road) ------- */
+    q(13.6, () => {
     const carX = env.carX;
     const carSurf = rTopAt(carX) + roadH * 0.60;
     const slope = (rTopAt(carX + 60) - rTopAt(carX - 60)) / 120;
@@ -980,24 +989,24 @@ window.Scene = (() => {
       }
     }
     ctx.restore();
+    });
 
     /* ---------------- foreground strip ---------------- */
-    ctx.fillStyle = tint(U.scale(effC(cwx, 'ground'), 0.52), 0.03, 0.7);
-    ctx.beginPath();
-    ctx.moveTo(0, h);
-    for (let sx = 0; sx <= w + 20; sx += 20) ctx.lineTo(sx, rTopAt(sx) + roadH);
-    ctx.lineTo(w + 20, h);
-    ctx.closePath();
-    ctx.fill();
+    q(13.45, () => {
+      ctx.fillStyle = tint(U.scale(effC(cwx, 'ground'), 0.52), 0.03, 0.7);
+      ctx.beginPath();
+      ctx.moveTo(0, h);
+      for (let sx = 0; sx <= w + 20; sx += 20) ctx.lineTo(sx, rTopAt(sx) + roadH);
+      ctx.lineTo(w + 20, h);
+      ctx.closePath();
+      ctx.fill();
+    });
 
-    // near field in front of the road; proximal-side furniture joins the
-    // same depth ordering so a lamp post never hides behind a nearer bush
-    {
-      const front = nearFieldItems(555, 300, 'fgDensity', 'fgItems',
-        1.12, 1.45, 0.05, 0.008,
-        (sx, z) => rTopAt(sx) + roadH + (h - roadBot) * U.lerp(0.22, 0.88, z));
-      for (const f of nearFurniture) front.push(f);
-      drawNearField(front);
+    // near field in front of the road — same ladder, same rule
+    for (const o of nearFieldItems(555, 300, 'fgDensity', 'fgItems',
+      1.12, 1.45, 0.05, 0.008,
+      (sx, z) => rTopAt(sx) + roadH + (h - roadBot) * U.lerp(0.22, 0.88, z))) {
+      q(o.dist, () => paintItem(o), o.y);
     }
 
     // colossal redwood trunks sweeping past, floor to ceiling
@@ -1014,15 +1023,15 @@ window.Scene = (() => {
         if (rprof.bname !== 'redwood') continue;
         if (sx < -500 || sx > w + 500) continue;
         // capped: at full true scale the trunk slab swallows half the frame
-        Assets.redwoodTrunk(ctx, sx, h + 30,
+        q(D0 / 1.45, () => Assets.redwoodTrunk(ctx, sx, h + 30,
           Math.min(h * 3, itemMeters('redwoodTrunk', vv) * h * METER * 1.45),
-          colorsFor(rprof, 0.012), vv);
+          colorsFor(rprof, 0.012), vv), h + 30);
       }
     }
 
     /* ---------------- fireflies on forest evenings ---------------- */
     const forestW = (biC.a === 'forest' ? 1 - biC.t : 0) + (biC.b === 'forest' ? biC.t : 0);
-    if (forestW > 0.05 && light < 0.42) {
+    if (forestW > 0.05 && light < 0.42) q(8, () => {
       const aBase = U.clamp((0.42 - light) / 0.3, 0, 1) * forestW;
       const sp = 240, p = 0.85;
       for (let i = Math.floor(worldX * p / sp); i <= (worldX * p + w) / sp; i++) {
@@ -1039,7 +1048,7 @@ window.Scene = (() => {
           ctx.beginPath(); ctx.arc(fx, fy, 5, 0, TAU); ctx.fill();
         }
       }
-    }
+    });
     /* ---- near hillsides that briefly hide the road (mountain passes) ---- */
     {
       const p = 1.55, chunkW = 900;
@@ -1061,17 +1070,8 @@ window.Scene = (() => {
         const domeY = tq => (h + 30)
           - Math.pow(Math.sin(Math.PI * U.clamp(tq, 0, 1)), 0.8) * peak
           * (0.78 + 0.30 * U.noise1(tq * 2.8 + ci * 7.31, 889));
-        ctx.fillStyle = tint(U.scale(oprof.ground, 0.40), 0.015, 0.7);
-        ctx.beginPath();
-        ctx.moveTo(sx - rad, h + 40);
-        for (let q = 0; q <= 22; q++) {
-          const tq = q / 22;
-          ctx.lineTo(sx - rad + tq * 2 * rad, domeY(tq));
-        }
-        ctx.lineTo(sx + rad, h + 40);
-        ctx.closePath();
-        ctx.fill();
         const c = colorsFor(oprof, 0.015);
+        const hillFill = tint(U.scale(oprof.ground, 0.40), 0.015, 0.7);
         // huge trees (this hillside is nearer than the car) scatter over
         // the crest AND down the front face; species follow the biome
         const hillTrees = [];
@@ -1092,10 +1092,25 @@ window.Scene = (() => {
           });
         }
         hillTrees.sort((a2, b2) => a2.y - b2.y); // lower on the face = nearer
-        for (const t2 of hillTrees) Assets[t2.type](ctx, t2.x, t2.y, t2.s, c, t2.vv, time);
+        q(D0 / 1.55, () => {
+          ctx.fillStyle = hillFill;
+          ctx.beginPath();
+          ctx.moveTo(sx - rad, h + 40);
+          for (let qi = 0; qi <= 22; qi++) {
+            const tq = qi / 22;
+            ctx.lineTo(sx - rad + tq * 2 * rad, domeY(tq));
+          }
+          ctx.lineTo(sx + rad, h + 40);
+          ctx.closePath();
+          ctx.fill();
+          for (const t2 of hillTrees) Assets[t2.type](ctx, t2.x, t2.y, t2.s, c, t2.vv, time);
+        }, h + 40);
       }
     }
-    void mid;
+
+    /* ---- paint the world: one pass, far to near ---- */
+    Q.sort((a2, b2) => (b2.dist - a2.dist) || (a2.y - b2.y));
+    for (const o of Q) o.fn();
   }
 
   function setFixedBiome(name) {
