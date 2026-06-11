@@ -61,6 +61,11 @@ window.Scene = (() => {
   const FOCAL = METER * DREF; // 0.705 h-units of px per meter at 1 m
   const groundYf = D => (HORIZON + FOCAL * CAM_H / D); // fraction of h
   const hazeAt = D => U.clamp(0.05 + 0.19 * Math.log(D / DREF), 0.008, 0.96);
+  /* a fixed-horizon camera cannot tilt up at near giants the way an eye
+     would, so apparent size rolls off softly: true scale for anything
+     modest, asymptotic compression for things that would tower several
+     screens tall (a 90 m redwood at 18 m reads as huge, not infinite) */
+  const softScale = (px, cap) => cap * Math.tanh(px / cap);
 
   /* landmark display size (fraction of h) and baseline (fraction of h) */
   const LM_CFG = {
@@ -453,8 +458,8 @@ window.Scene = (() => {
           const zq = Math.round(z * 4) / 4;
           const ck = it.prof.key + ':' + zq;
           const c = colorSets[ck] || (colorSets[ck] = colorsFor(it.prof, U.lerp(d0, d1, zq)));
-          // true size: meters at this item's own depth
-          const size = itemMeters(it.type, it.sf) * h * METER * p;
+          // true size at this depth, rolled off so near giants stay framed
+          const size = softScale(itemMeters(it.type, it.sf) * h * METER * p, h * 1.3);
           list.push({ y: groundAt(sx, z), sx, size, c, it, dist: D0 / p });
         }
       }
@@ -1046,7 +1051,7 @@ window.Scene = (() => {
         if (sx < -500 || sx > w + 500) continue;
         // capped: at full true scale the trunk slab swallows half the frame
         q(D0 / 1.45, () => Assets.redwoodTrunk(ctx, sx, h + 30,
-          Math.min(h * 3, itemMeters('redwoodTrunk', vv) * h * METER * 1.45),
+          softScale(itemMeters('redwoodTrunk', vv) * h * METER * 1.45, h * 2.0),
           colorsFor(rprof, 0.012), vv), h + 30);
       }
     }
@@ -1110,7 +1115,7 @@ window.Scene = (() => {
             type, vv,
             x: sx - rad + tq * 2 * rad,
             y: ty + face * face * (h + 20 - ty) * 0.55 + 4,
-            s: Math.min(h * 1.25, itemMeters(type, ts0) * h * METER * 1.55),
+            s: softScale(itemMeters(type, ts0) * h * METER * 1.55, h * 1.2),
           });
         }
         hillTrees.sort((a2, b2) => a2.y - b2.y); // lower on the face = nearer
