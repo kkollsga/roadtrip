@@ -1,4 +1,4 @@
-/* Endless Drive — the cars. Each car is drawn facing right with its wheels on
+/* Roadtrip — the cars. Each car is drawn facing right with its wheels on
    the ground line at o.y, centered on o.x. Cars are a FIXED pixel size — they
    are the scale reference for the whole scene.
 

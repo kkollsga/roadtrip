@@ -1,4 +1,4 @@
-# Endless Drive 🚗
+# Roadtrip 🚗
 
 A relaxing, ambient side-scrolling driving scene rendered on a plain HTML
 canvas. A lone car rolls along a desolate road while biomes, weather, and a

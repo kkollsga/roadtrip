@@ -1,4 +1,4 @@
-// daycycle.js — day/night phase driver for Endless Drive.
+// daycycle.js — day/night phase driver for Roadtrip.
 // Exposes window.DayCycle. No modules, no build step.
 (function () {
   'use strict';

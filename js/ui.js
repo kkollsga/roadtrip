@@ -1,10 +1,10 @@
-// ui.js — compact burger-menu control for Endless Drive.
+// ui.js — compact burger-menu control for Roadtrip.
 // Last script loaded; window.App / window.Cars / window.Weather / window.DayCycle exist.
 // Exposes window.UI. No modules, no build step.
 (function () {
   'use strict';
 
-  var STORAGE_KEY = 'endless-drive-v1';
+  var STORAGE_KEY = 'roadtrip-v1';
   var AUTO_HIDE_MS = 3500;
 
   var UI = {};

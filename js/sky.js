@@ -1,4 +1,4 @@
-/* Endless Drive — sky: gradient, sun/moon, stars, clouds, aurora, birds,
+/* Roadtrip — sky: gradient, sun/moon, stars, clouds, aurora, birds,
    shooting stars. Drawn first each frame; scenery layers paint over it. */
 window.Sky = (() => {
   const { TAU } = U;

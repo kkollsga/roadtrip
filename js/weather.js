@@ -1,4 +1,4 @@
-// Endless Drive - Weather system. Calm, soothing precipitation + fog.
+// Roadtrip - Weather system. Calm, soothing precipitation + fog.
 // Attaches window.Weather. No modules, no deps.
 (function () {
   'use strict';

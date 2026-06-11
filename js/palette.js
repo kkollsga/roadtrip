@@ -1,4 +1,4 @@
-/* Endless Drive — time-of-day palette. Keyframed sky/light colors over the
+/* Roadtrip — time-of-day palette. Keyframed sky/light colors over the
    day phase t in [0,1], interpolated per frame. This file sets the mood. */
 window.Palette = (() => {
   const C = U.col;

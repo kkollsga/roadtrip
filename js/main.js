@@ -1,4 +1,4 @@
-/* Endless Drive — boot, the frame loop, and the App API the UI drives. */
+/* Roadtrip — boot, the frame loop, and the App API the UI drives. */
 (() => {
   const canvas = document.getElementById('scene');
   const ctx = canvas.getContext('2d');

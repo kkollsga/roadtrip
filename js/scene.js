@@ -1,4 +1,4 @@
-/* Endless Drive — the world: parallax ridge layers, biome blending, chunked
+/* Roadtrip — the world: parallax ridge layers, biome blending, chunked
    procedural item placement, the road, the car, and weather ground effects
    (wet asphalt sheen, accumulating snow cover). */
 window.Scene = (() => {

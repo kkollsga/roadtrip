@@ -1,4 +1,4 @@
-/* Endless Drive — procedural scenery art. Every function draws one item with
+/* Roadtrip — procedural scenery art. Every function draws one item with
    its base at (x, y), overall size s, a palette of pre-tinted CSS colors c,
    a deterministic variant v in [0,1), and the running clock (for things that
    move: turbine blades, lighthouse beams). Flat layered-silhouette style. */

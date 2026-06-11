@@ -1,4 +1,4 @@
-/* Endless Drive — shared helpers: math, deterministic hashing/noise, color. */
+/* Roadtrip — shared helpers: math, deterministic hashing/noise, color. */
 window.U = (() => {
   const TAU = Math.PI * 2;
 
