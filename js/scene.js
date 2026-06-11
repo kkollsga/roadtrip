@@ -227,23 +227,34 @@ window.Scene = (() => {
     function ridge(p, seed, freq, baseFrac, ampKey, ampMul, colKey, d, capMul, fringeMul, foamW) {
       const baseY = h * baseFrac;
       const color = tint(effC(cwx, colKey), d, 0.55);
-      const pts = [];
+      /* The crest is sampled on a WORLD-aligned grid (layer space), not on
+         screen columns: between fixed world samples the slope never
+         re-quantizes as the terrain scrolls, so the facet light/shadow is
+         welded to the mountains instead of flickering through a
+         screen-fixed mesh and lagging the terrain. */
       const step = 10;
-      for (let sx = 0; sx <= w + step; sx += step) {
-        const wxs = worldX + sx;
+      const lx = worldX * p;
+      const k0 = Math.floor(lx / step) - 1;
+      const k1 = Math.ceil((lx + w) / step) + 1;
+      const pts = [], xs = [];
+      for (let k = k0; k <= k1; k++) {
+        const sxp = k * step - lx; // screen x of this world sample
+        const wxs = worldX + sxp;  // world position for biome parameters
         const amp = effN(wxs, ampKey) * h * ampMul * ampEnv(wxs, seed);
-        const n = U.fbm((worldX * p + sx) * freq, seed, 3);
+        const n = U.fbm(k * step * freq, seed, 3);
         const rw = effN(wxs, 'ridged');
         const shaped = rw > 0
           ? U.lerp(n, Math.pow(1 - Math.abs(2 * n - 1), 1.35), rw)
           : n;
+        xs.push(sxp);
         pts.push(baseY - amp * shaped);
       }
+      const xLast = xs[xs.length - 1];
       ctx.fillStyle = color;
       ctx.beginPath();
-      ctx.moveTo(0, h);
-      for (let i = 0; i < pts.length; i++) ctx.lineTo(i * step, pts[i]);
-      ctx.lineTo(w + step, h);
+      ctx.moveTo(xs[0], h);
+      for (let i = 0; i < pts.length; i++) ctx.lineTo(xs[i], pts[i]);
+      ctx.lineTo(xLast, h);
       ctx.closePath();
       ctx.fill();
       const cap = effN(cwx, 'snowcap') * capMul;
@@ -255,9 +266,9 @@ window.Scene = (() => {
         ctx.clip();
         ctx.fillStyle = U.css(U.mix(snowLit, pal.fog, effD(d)), Math.min(1, cap));
         ctx.beginPath();
-        ctx.moveTo(0, h);
-        for (let i = 0; i < pts.length; i++) ctx.lineTo(i * step, pts[i]);
-        ctx.lineTo(w + step, h);
+        ctx.moveTo(xs[0], h);
+        for (let i = 0; i < pts.length; i++) ctx.lineTo(xs[i], pts[i]);
+        ctx.lineTo(xLast, h);
         ctx.closePath();
         ctx.fill();
         ctx.restore();
@@ -272,7 +283,7 @@ window.Scene = (() => {
           const hsh = U.hash2(k, seed + 77);
           if (hsh > Math.min(0.9, fringe * 0.16)) continue;
           const fx = k * 16 - lx0;
-          const idx = Math.max(0, Math.min(pts.length - 1, Math.round(fx / step)));
+          const idx = Math.max(0, Math.min(pts.length - 1, Math.round((fx - xs[0]) / step)));
           const fy = pts[idx];
           const fh = h * (0.012 + (hsh * 7 % 1) * 0.016) * (0.7 + (fringeMul || 0) * 0.9);
           ctx.moveTo(fx - 3.2, fy + 1);
@@ -291,9 +302,9 @@ window.Scene = (() => {
           if (pts[wi] < wl) { wi++; continue; }
           let wj = wi;
           while (wj + 1 < pts.length && pts[wj + 1] >= wl) wj++;
-          ctx.moveTo(wi * step, pts[wi]);
-          for (let q = wi + 1; q <= wj; q++) ctx.lineTo(q * step, pts[q]);
-          for (let q = wj; q >= wi; q--) ctx.lineTo(q * step, pts[q] + h * 0.013);
+          ctx.moveTo(xs[wi], pts[wi]);
+          for (let q = wi + 1; q <= wj; q++) ctx.lineTo(xs[q], pts[q]);
+          for (let q = wj; q >= wi; q--) ctx.lineTo(xs[q], pts[q] + h * 0.013);
           ctx.closePath();
           wi = wj + 1;
         }
@@ -305,8 +316,8 @@ window.Scene = (() => {
           let pen = false;
           for (let i = 0; i < pts.length; i++) {
             if (pts[i] >= wl) {
-              if (!pen) { ctx.moveTo(i * step, pts[i] + dy); pen = true; }
-              else ctx.lineTo(i * step, pts[i] + dy);
+              if (!pen) { ctx.moveTo(xs[i], pts[i] + dy); pen = true; }
+              else ctx.lineTo(xs[i], pts[i] + dy);
             } else pen = false;
           }
           ctx.stroke();
@@ -341,10 +352,10 @@ window.Scene = (() => {
             ? `rgba(255,252,244,${(0.11 * f * light * fade).toFixed(3)})`
             : `rgba(10,14,26,${(-0.17 * f * (0.3 + 0.7 * light) * fade).toFixed(3)})`;
           ctx.beginPath();
-          ctx.moveTo(i * step, pts[i]);
-          for (let q = i + 1; q <= j + 1; q++) ctx.lineTo(q * step, pts[q]);
-          ctx.lineTo((j + 1) * step, h);
-          ctx.lineTo(i * step, h);
+          ctx.moveTo(xs[i], pts[i]);
+          for (let q = i + 1; q <= j + 1; q++) ctx.lineTo(xs[q], pts[q]);
+          ctx.lineTo(xs[j + 1], h);
+          ctx.lineTo(xs[i], h);
           ctx.closePath();
           ctx.fill();
           i = j + 1;
@@ -375,7 +386,7 @@ window.Scene = (() => {
       };
     }
 
-    function drawItemSet(p, seed, chunkW, densityKey, tableKey, d, groundY, marg) {
+    function drawItemSet(p, seed, chunkW, densityKey, tableKey, d, groundY, marg, sink) {
       const colorSets = {};
       const lx0 = worldX * p;
       const M = h * METER * p; // px per real-world meter on this layer
@@ -388,8 +399,11 @@ window.Scene = (() => {
           const size = itemMeters(it.type, it.sf) * M;
           const c = colorSets[it.prof.key] || (colorSets[it.prof.key] = colorsFor(it.prof, d));
           const y = groundY(it.x, sx, it);
-          if (it.type === 'mesa') Assets.mesa(ctx, sx, y, size * 2.8, size, c, it.v);
-          else Assets[it.type](ctx, sx, y, size, c, it.v, time);
+          const draw = it.type === 'mesa'
+            ? () => Assets.mesa(ctx, sx, y, size * 2.8, size, c, it.v)
+            : () => Assets[it.type](ctx, sx, y, size, c, it.v, time);
+          if (sink) sink.push({ y, draw });
+          else draw();
         }
       }
     }
@@ -439,6 +453,13 @@ window.Scene = (() => {
     // nearest far ridge ducks low where open water takes over
     ridge(0.165, 44, 1 / 520, 0.697, 'farAmp', 0.32 * (1 - waterWpre * 0.85), 'far', 0.38, 0.7, 0.7, 0);
 
+    /* Everything living between the far ridges and the mid ridge — drifting
+       ice, horizon mesas, wind turbines, famous landmarks — collects into
+       ONE list painted in base-y order: the ground position of an object's
+       base IS its distance, so an iceberg floating lower (nearer) than a
+       landmark's foot must cover it. Same rule as the near field. */
+    const farField = [];
+
     // open water (warm seas, cold fjords, passing lakes)
     const waterW = effN(cwx, 'water');
     if (waterW > 0.02) {
@@ -485,8 +506,6 @@ window.Scene = (() => {
           shade: U.css(U.mix(Palette.lit(C('#9fc0d8'), pal, light), pal.fog, effD(0.38))),
           deep: U.css(U.mix(Palette.lit(C('#2a4660'), pal, light), pal.fog, effD(0.38)), 0.85),
         };
-        ctx.save();
-        ctx.globalAlpha = waterW;
         for (let ci = Math.floor((lx0 - 120) / chunkW); ci <= (lx0 + w + 120) / chunkW; ci++) {
           const r = U.rng(U.hash2(ci, 999));
           const irs = resolve((ci * chunkW + chunkW / 2) / p);
@@ -501,18 +520,24 @@ window.Scene = (() => {
             if (ix < -120 || ix > w + 120) continue;
             const iy = U.lerp(top + (bot - top) * 0.30, bot - 3, fr);
             const pIce = U.lerp(0.06, 0.22, fr); // lower in the band = nearer
-            if (kind < 0.35) Assets.floe(ctx, ix, iy, itemMeters('floe', vv) * h * METER * pIce * 2.0, iceC, vv);
-            else Assets.iceberg(ctx, ix, iy, itemMeters('iceberg', vv) * h * METER * pIce, iceC, vv);
+            const fn = kind < 0.35 ? Assets.floe : Assets.iceberg;
+            const sIce = itemMeters(kind < 0.35 ? 'floe' : 'iceberg', vv)
+              * h * METER * pIce * (kind < 0.35 ? 2.0 : 1);
+            farField.push({ y: iy, draw: () => {
+              const a0 = ctx.globalAlpha;
+              ctx.globalAlpha = a0 * waterW;
+              fn(ctx, ix, iy, sIce, iceC, vv);
+              ctx.globalAlpha = a0;
+            } });
           }
         }
-        ctx.restore();
       }
     }
 
     // horizon set pieces: true-scale mesas (90-220 m) far out where their
     // bulk reads as distance, not as a wall
     drawItemSet(0.03, 999, 1100, 'horizonDensity', 'horizonItems', 0.58,
-      ix => h * 0.652 - h * 0.010 * U.fbm(ix / 240, 99, 2), 900);
+      ix => h * 0.652 - h * 0.010 * U.fbm(ix / 240, 99, 2), 900, farField);
 
     // wind farms: true-scale turbines (110-150 m) far out on the horizon
     // ridges — or offshore — drifting past slowly in groups of 6-10
@@ -544,9 +569,9 @@ window.Scene = (() => {
           });
         }
       }
-      farm.sort((a3, b3) => a3.p - b3.p); // far to near
       for (const t2 of farm) {
-        Assets.turbine(ctx, t2.sx, t2.y, t2.s, colorsFor(t2.prof, t2.d), t2.v, time);
+        farField.push({ y: t2.y, draw: () =>
+          Assets.turbine(ctx, t2.sx, t2.y, t2.s, colorsFor(t2.prof, t2.d), t2.v, time) });
       }
     }
 
@@ -578,9 +603,14 @@ window.Scene = (() => {
           green: tint(C('#2f6b46'), 0.50, 0),
           light,
         };
-        Assets[kind](ctx, sx, h * cfg.y, s, c, vv, time);
+        const ly = h * cfg.y;
+        farField.push({ y: ly, draw: () => Assets[kind](ctx, sx, ly, s, c, vv, time) });
       }
     }
+
+    // the far field paints lowest-base last (nearest on top)
+    farField.sort((a2, b2) => a2.y - b2.y);
+    for (const o of farField) o.draw();
 
     // mid ridge + its landmarks (mesas, lighthouse)
     const mid = ridge(0.24, 33, 1 / 360, 0.725, 'midAmp', 1.0, 'mid', 0.26, 0.6, 1.0, waterWpre);
