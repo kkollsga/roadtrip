@@ -1,0 +1,77 @@
+# Roadtrip biome definition. Compiled by `node tools/build.js` into
+# js/gen/data.js — run the build (or its --watch mode) after editing.
+#
+# colors are full-daylight bases; the engine grades them per frame by time
+# of day, depth haze, vibrance and weather. Bands:
+#   near     items between the tree line and the road shoulder (depth-staggered)
+#   front    items in front of the road, nearest the camera
+#   midridge rare structures on the mid ridge (mesas, lighthouses...)
+#   forest   distant wooded bands; depth = how deep the woods reach
+# table entries: { asset, w } plus optional depth: [z0, z1] limiting the item
+# to a slice of the band (0 = far edge, 1 = nearest).
+name: tropics
+order: 9
+terrain:
+  far: '#6a9a8c'
+  mid: '#e6d3a0'
+  ground: '#4d8a52'
+  farAmp: 0.1
+  midAmp: 0.04
+  ridged: 0.25
+  snowcap: 0
+  water: 0.9
+  waterCol: '#2a9db0'
+flora:
+  foliage: '#1f6b3a'
+  foliage2: '#2f8a4a'
+  trunk: '#6a553e'
+  avenue: palm
+light:
+  grade: { tint: '#e8f0a8', strength: 0.15, multiplier: 1.05 }
+  aurora: 0
+weather:
+  clear: 5
+  overcast: 1.5
+  rain: 3
+near:
+  density: 3
+  table:
+    - { asset: canopyTree, w: 0.35 }
+    - { asset: palm, w: 0.3 }
+    - { asset: fern, w: 0.15 }
+    - { asset: bush, w: 0.12 }
+    - { asset: roundTree, w: 0.08 }
+front:
+  density: 1.8
+  table:
+    - { asset: fern, w: 0.34 }
+    - { asset: tuft, w: 0.26 }
+    - { asset: bush, w: 0.22 }
+    - { asset: palm, w: 0.08 }
+midridge:
+  density: 0
+forest:
+  depth: 2
+  table:
+    - { asset: canopyTree, w: 0.5 }
+    - { asset: roundTree, w: 0.3 }
+    - { asset: palm, w: 0.2 }
+extras:
+  landmarks:
+    - sugarloaf
+  occluder: 0.04
+variants:
+  - key: jungle
+    weight: 3
+    terrain: { mid: '#3f7a52', midAmp: 0.07, water: 0 }
+    near: { density: 4 }
+    forest: { depth: 6 }
+  - key: cove
+    weight: 1.5
+    terrain: { water: 0.95 }
+    near:
+      density: 2
+      table:
+        - { asset: palm, w: 0.6 }
+        - { asset: fern, w: 0.2 }
+        - { asset: bush, w: 0.2 }

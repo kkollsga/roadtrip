@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-102 -97 204 99">
+  <g class="variant">
+    <path class="rock" fill="#8c9cb2" d="M-100 0Q-55 -18 -42 -34L-30 -95L30 -95L42 -34Q55 -18 100 0Z"/>
+    <path class="shadow" fill="none" stroke="#5c6a7e" stroke-width="1.8" stroke-opacity="0.45" d="M-24.6 -93L-28.8 -36"/>
+    <path class="shadow" fill="none" stroke="#5c6a7e" stroke-width="1.8" stroke-opacity="0.45" d="M-16.4 -93L-19.2 -36"/>
+    <path class="shadow" fill="none" stroke="#5c6a7e" stroke-width="1.8" stroke-opacity="0.45" d="M-8.2 -93L-9.6 -36"/>
+    <path class="shadow" fill="none" stroke="#5c6a7e" stroke-width="1.8" stroke-opacity="0.45" d="M0 -93L0 -36"/>
+    <path class="shadow" fill="none" stroke="#5c6a7e" stroke-width="1.8" stroke-opacity="0.45" d="M8.2 -93L9.6 -36"/>
+    <path class="shadow" fill="none" stroke="#5c6a7e" stroke-width="1.8" stroke-opacity="0.45" d="M16.4 -93L19.2 -36"/>
+    <path class="shadow" fill="none" stroke="#5c6a7e" stroke-width="1.8" stroke-opacity="0.45" d="M24.6 -93L28.8 -36"/>
+  </g>
+</svg>

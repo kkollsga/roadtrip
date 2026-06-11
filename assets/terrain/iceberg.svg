@@ -1,0 +1,12 @@
+<svg data-meters="8 25" xmlns="http://www.w3.org/2000/svg" viewBox="-125.28 -118.21 236.23 140.21">
+  <g class="variant">
+    <path class="ice" fill="#dfe8f2" d="M-82.68 0L-45.47 -42.77L16.98 -116.21L54.48 -26.88L108.95 0Z"/>
+    <path class="shade" fill="#9fc0d8" d="M16.98 -116.21L54.48 -26.88L108.95 0L5.94 0Z"/>
+    <path class="deep" fill="#2a4660" d="M-66.14 0L-13.04 20L87.16 0Z"/>
+  </g>
+  <g class="variant">
+    <path class="ice" fill="#dfe8f2" d="M-123.28 0L-67.8 -35.85L7.63 -115.54L52.87 -38.53L105.73 0Z"/>
+    <path class="shade" fill="#9fc0d8" d="M7.63 -115.54L52.87 -38.53L105.73 0L2.67 0Z"/>
+    <path class="deep" fill="#2a4660" d="M-98.62 0L4.31 20L84.58 0Z"/>
+  </g>
+</svg>

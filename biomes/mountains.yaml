@@ -1,0 +1,74 @@
+# Roadtrip biome definition. Compiled by `node tools/build.js` into
+# js/gen/data.js — run the build (or its --watch mode) after editing.
+#
+# colors are full-daylight bases; the engine grades them per frame by time
+# of day, depth haze, vibrance and weather. Bands:
+#   near     items between the tree line and the road shoulder (depth-staggered)
+#   front    items in front of the road, nearest the camera
+#   midridge rare structures on the mid ridge (mesas, lighthouses...)
+#   forest   distant wooded bands; depth = how deep the woods reach
+# table entries: { asset, w } plus optional depth: [z0, z1] limiting the item
+# to a slice of the band (0 = far edge, 1 = nearest).
+name: mountains
+order: 3
+terrain:
+  far: '#8c9cb2'
+  mid: '#67788a'
+  ground: '#5e7a52'
+  farAmp: 0.3
+  midAmp: 0.13
+  ridged: 1
+  snowcap: 1
+  water: 0
+  waterCol: '#3c6f95'
+flora:
+  foliage: '#35594a'
+  foliage2: '#42685a'
+  trunk: '#4f4438'
+  avenue: pine
+light:
+  grade: { tint: '#b9c8e8', strength: 0.15, multiplier: 1 }
+  aurora: 0
+weather:
+  clear: 5
+  overcast: 2
+  snow: 2
+  fog: 1
+near:
+  density: 2.2
+  table:
+    - { asset: pine, w: 0.62 }
+    - { asset: rock, w: 0.26 }
+    - { asset: deadTree, w: 0.06 }
+    - { asset: tuft, w: 0.06 }
+front:
+  density: 1.2
+  table:
+    - { asset: rock, w: 0.52 }
+    - { asset: tuft, w: 0.36 }
+    - { asset: pine, w: 0.06 }
+midridge:
+  density: 0
+forest:
+  depth: 1.5
+extras:
+  landmarks:
+    - matterhorn
+    - everest
+    - halfDome
+    - glacier
+  occluder: 0.1
+variants:
+  - key: alpineLake
+    weight: 1.5
+    terrain: { water: 0.5, waterCol: '#3f7a90' }
+  - key: forestedValley
+    weight: 2
+    terrain: { farAmp: 0.2, midAmp: 0.09 }
+    near:
+      density: 2.8
+      table:
+        - { asset: pine, w: 0.8 }
+        - { asset: rock, w: 0.12 }
+        - { asset: tuft, w: 0.08 }
+    forest: { depth: 5 }

@@ -1,0 +1,73 @@
+# Roadtrip biome definition. Compiled by `node tools/build.js` into
+# js/gen/data.js — run the build (or its --watch mode) after editing.
+#
+# colors are full-daylight bases; the engine grades them per frame by time
+# of day, depth haze, vibrance and weather. Bands:
+#   near     items between the tree line and the road shoulder (depth-staggered)
+#   front    items in front of the road, nearest the camera
+#   midridge rare structures on the mid ridge (mesas, lighthouses...)
+#   forest   distant wooded bands; depth = how deep the woods reach
+# table entries: { asset, w } plus optional depth: [z0, z1] limiting the item
+# to a slice of the band (0 = far edge, 1 = nearest).
+name: redwood
+order: 6
+terrain:
+  far: '#5e7e88'
+  mid: '#41614f'
+  ground: '#3c5a44'
+  farAmp: 0.13
+  midAmp: 0.075
+  ridged: 0.1
+  snowcap: 0
+  water: 0
+  waterCol: '#3c6f95'
+flora:
+  foliage: '#2c5a3c'
+  foliage2: '#3e7050'
+  trunk: '#7a4634'
+  avenue: pine
+light:
+  grade: { tint: '#9bbf9e', strength: 0.18, multiplier: 0.93 }
+  aurora: 0
+weather:
+  clear: 4
+  overcast: 2.5
+  rain: 2
+  fog: 2.5
+near:
+  density: 1.8
+  table:
+    - { asset: redwood, w: 0.42 }
+    - { asset: pine, w: 0.18 }
+    - { asset: fern, w: 0.16 }
+    - { asset: roundTree, w: 0.1 }
+    - { asset: bush, w: 0.14 }
+front:
+  density: 1.7
+  table:
+    - { asset: fern, w: 0.46 }
+    - { asset: bush, w: 0.28 }
+    - { asset: tuft, w: 0.18 }
+    - { asset: pine, w: 0.04 }
+midridge:
+  density: 0
+forest:
+  depth: 4
+  table:
+    - { asset: pine, w: 0.8 }
+    - { asset: roundTree, w: 0.2 }
+extras:
+  landmarks:
+    - halfDome
+  occluder: 0.05
+  baseWeight: 6
+variants:
+  - key: clearing
+    weight: 1.5
+    near:
+      density: 1.2
+      table:
+        - { asset: fern, w: 0.4 }
+        - { asset: bush, w: 0.3 }
+        - { asset: roundTree, w: 0.2 }
+        - { asset: rock, w: 0.1 }

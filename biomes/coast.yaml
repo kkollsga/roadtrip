@@ -1,0 +1,74 @@
+# Roadtrip biome definition. Compiled by `node tools/build.js` into
+# js/gen/data.js — run the build (or its --watch mode) after editing.
+#
+# colors are full-daylight bases; the engine grades them per frame by time
+# of day, depth haze, vibrance and weather. Bands:
+#   near     items between the tree line and the road shoulder (depth-staggered)
+#   front    items in front of the road, nearest the camera
+#   midridge rare structures on the mid ridge (mesas, lighthouses...)
+#   forest   distant wooded bands; depth = how deep the woods reach
+# table entries: { asset, w } plus optional depth: [z0, z1] limiting the item
+# to a slice of the band (0 = far edge, 1 = nearest).
+name: coast
+order: 4
+terrain:
+  far: '#6f93ae'
+  mid: '#cbb98a'
+  ground: '#86a868'
+  farAmp: 0.02
+  midAmp: 0.03
+  ridged: 0
+  snowcap: 0
+  water: 1
+  waterCol: '#3c6f95'
+flora:
+  foliage: '#4e7d4a'
+  foliage2: '#6f9c54'
+  trunk: '#7a6a4e'
+  avenue: palm
+light:
+  grade: { tint: '#b8e4de', strength: 0.15, multiplier: 1.04 }
+  aurora: 0
+weather:
+  clear: 5
+  overcast: 2
+  rain: 2
+  fog: 1
+near:
+  density: 1.4
+  table:
+    - { asset: palm, w: 0.42 }
+    - { asset: bush, w: 0.2 }
+    - { asset: tuft, w: 0.2 }
+    - { asset: rock, w: 0.12 }
+    - { asset: sign, w: 0.06 }
+front:
+  density: 1.2
+  table:
+    - { asset: tuft, w: 0.5 }
+    - { asset: rock, w: 0.18 }
+    - { asset: bush, w: 0.17 }
+    - { asset: palm, w: 0.07 }
+midridge:
+  density: 0.12
+  table:
+    - { asset: lighthouse, w: 1 }
+extras:
+  landmarks:
+    - hawaii
+    - etna
+  occluder: 0
+variants:
+  - key: headland
+    weight: 2
+    terrain: { farAmp: 0.07, water: 0.3 }
+    near: { density: 2 }
+    midridge: { density: 0 }
+  - key: palmGrove
+    weight: 1.5
+    near:
+      density: 2.2
+      table:
+        - { asset: palm, w: 0.7 }
+        - { asset: bush, w: 0.2 }
+        - { asset: tuft, w: 0.1 }

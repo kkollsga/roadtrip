@@ -1,0 +1,53 @@
+<svg data-meters="10 22" xmlns="http://www.w3.org/2000/svg" viewBox="-30 -100 60 102">
+  <!-- Variant 1: classic symmetric layered conifer (Kenney foliagePack_004/005) -->
+  <g class="variant">
+    <path class="trunk" fill="#6b5340" d="M-3 -16Q-3.4 -8 -3 0L3 0Q3.4 -8 3 -16Z"/>
+    <path fill="rgba(0,0,0,0.16)" d="M0 -16L3 -16Q3.4 -8 3 0L0 0Z"/>
+    <path class="foliage" fill="#55844a" d="M0 -18Q-21 -16 -24 -22Q-12 -26 0 -28Q12 -26 24 -22Q21 -16 0 -18Z"/>
+    <path class="foliage" fill="#55844a" d="M0 -32Q-17 -30 -20 -36Q-10 -41 0 -43Q10 -41 20 -36Q17 -30 0 -32Z"/>
+    <path class="foliage" fill="#55844a" d="M0 -47Q-13 -45 -16 -51Q-8 -57 0 -60Q8 -57 16 -51Q13 -45 0 -47Z"/>
+    <path class="foliage" fill="#55844a" d="M0 -62Q-9 -60 -12 -66Q-6 -74 0 -78Q6 -74 9 -66Q9 -60 0 -62Z"/>
+    <path class="foliage" fill="#55844a" d="M0 -76Q-6 -73 -7 -80Q-3.5 -90 0 -97Q3.5 -90 7 -80Q6 -73 0 -76Z"/>
+    <!-- shaded right halves of each tier -->
+    <path fill="rgba(0,0,0,0.14)" d="M0 -18Q12 -16 24 -22Q12 -26 0 -28Z"/>
+    <path fill="rgba(0,0,0,0.14)" d="M0 -32Q10 -30 20 -36Q10 -41 0 -43Z"/>
+    <path fill="rgba(0,0,0,0.14)" d="M0 -47Q8 -45 16 -51Q8 -57 0 -60Z"/>
+    <path fill="rgba(0,0,0,0.14)" d="M0 -62Q6 -60 9 -66Q6 -74 0 -78Z"/>
+    <path fill="rgba(0,0,0,0.14)" d="M0 -76Q6 -73 7 -80Q3.5 -90 0 -97Z"/>
+    <!-- top-left highlight on the crown -->
+    <path fill="rgba(255,255,255,0.10)" d="M0 -97Q-3.5 -90 -7 -80Q-2 -82 0 -90Z"/>
+    <path fill="rgba(255,255,255,0.08)" d="M0 -60Q-8 -57 -16 -51Q-8 -53 0 -55Z"/>
+  </g>
+  <!-- Variant 2: taller, narrower spruce with more tiers -->
+  <g class="variant">
+    <path class="trunk" fill="#6b5340" d="M-2.6 -14Q-3 -7 -2.6 0L2.6 0Q3 -7 2.6 -14Z"/>
+    <path fill="rgba(0,0,0,0.16)" d="M0 -14L2.6 -14Q3 -7 2.6 0L0 0Z"/>
+    <path class="foliage2" fill="#6f9c54" d="M0 -16Q-17 -14 -19 -19Q-9.5 -23 0 -24Q9.5 -23 19 -19Q17 -14 0 -16Z"/>
+    <path class="foliage2" fill="#6f9c54" d="M0 -28Q-14 -26 -16 -31Q-8 -36 0 -38Q8 -36 16 -31Q14 -26 0 -28Z"/>
+    <path class="foliage2" fill="#6f9c54" d="M0 -41Q-11 -39 -13 -45Q-6.5 -50 0 -52Q6.5 -50 13 -45Q11 -39 0 -41Z"/>
+    <path class="foliage2" fill="#6f9c54" d="M0 -55Q-8.5 -53 -10 -59Q-5 -64 0 -66Q5 -64 10 -59Q8.5 -53 0 -55Z"/>
+    <path class="foliage2" fill="#6f9c54" d="M0 -68Q-6 -66 -7.5 -72Q-3.5 -78 0 -80Q3.5 -78 7.5 -72Q6 -66 0 -68Z"/>
+    <path class="foliage2" fill="#6f9c54" d="M0 -80Q-4.5 -78 -5.5 -84Q-2.7 -92 0 -99Q2.7 -92 5.5 -84Q4.5 -78 0 -80Z"/>
+    <path fill="rgba(0,0,0,0.14)" d="M0 -16Q9.5 -14 19 -19Q9.5 -23 0 -24Z"/>
+    <path fill="rgba(0,0,0,0.14)" d="M0 -28Q8 -26 16 -31Q8 -36 0 -38Z"/>
+    <path fill="rgba(0,0,0,0.14)" d="M0 -41Q6.5 -39 13 -45Q6.5 -50 0 -52Z"/>
+    <path fill="rgba(0,0,0,0.14)" d="M0 -55Q5 -53 10 -59Q5 -64 0 -66Z"/>
+    <path fill="rgba(0,0,0,0.14)" d="M0 -68Q3.5 -66 7.5 -72Q3.5 -78 0 -80Z"/>
+    <path fill="rgba(0,0,0,0.14)" d="M0 -80Q2.7 -78 5.5 -84Q2.7 -92 0 -99Z"/>
+    <path fill="rgba(255,255,255,0.10)" d="M0 -99Q-2.7 -92 -5.5 -84Q-1.5 -86 0 -92Z"/>
+  </g>
+  <!-- Variant 3: stout windswept pine, fewer broad tiers, slight lean -->
+  <g class="variant">
+    <path class="trunk" fill="#6b5340" d="M-3.2 -15Q-3 -7 -3.4 0L2.6 0Q3 -7 2.8 -15Z"/>
+    <path fill="rgba(0,0,0,0.16)" d="M-0.2 -15L2.8 -15Q3 -7 2.6 0L-0.4 0Z"/>
+    <path class="foliage" fill="#55844a" d="M-1 -17Q-24 -15 -27 -22Q-13 -27 -1 -29Q13 -27 25 -22Q22 -15 -1 -17Z"/>
+    <path class="foliage" fill="#55844a" d="M-0.5 -34Q-16 -32 -19 -39Q-9 -45 -0.5 -48Q9 -45 18 -39Q15 -32 -0.5 -34Z"/>
+    <path class="foliage" fill="#55844a" d="M0 -50Q-11 -48 -13 -55Q-6 -64 0 -69Q7 -63 12 -55Q10 -48 0 -50Z"/>
+    <path class="foliage" fill="#55844a" d="M0.5 -65Q-7 -62 -8 -71Q-3 -86 1 -98Q5 -85 8 -71Q7 -62 0.5 -65Z"/>
+    <path fill="rgba(0,0,0,0.14)" d="M-1 -17Q12 -15 25 -22Q13 -27 -1 -29Z"/>
+    <path fill="rgba(0,0,0,0.14)" d="M-0.5 -34Q9 -32 18 -39Q9 -45 -0.5 -48Z"/>
+    <path fill="rgba(0,0,0,0.14)" d="M0 -50Q7 -48 12 -55Q7 -63 0 -69Z"/>
+    <path fill="rgba(0,0,0,0.14)" d="M0.5 -65Q5 -62 8 -71Q5 -85 1 -98Z"/>
+    <path fill="rgba(255,255,255,0.10)" d="M1 -98Q-3 -86 -8 -71Q-2.5 -74 0 -82Z"/>
+  </g>
+</svg>

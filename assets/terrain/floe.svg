@@ -1,0 +1,10 @@
+<svg data-meters="0.6 2" xmlns="http://www.w3.org/2000/svg" viewBox="-102 -15 199 22">
+  <g class="variant">
+    <path class="ice" fill="#dfe8f2" d="M-100 0L-72 -10L36 -13L95 0Z"/>
+    <path class="deep" fill="#2a4660" d="M-85 0L85 0L85 5L-85 5Z"/>
+  </g>
+  <g class="variant">
+    <path class="ice" fill="#dfe8f2" d="M-100 0L-72 -10L49.5 -13L95 0Z"/>
+    <path class="deep" fill="#2a4660" d="M-85 0L85 0L85 5L-85 5Z"/>
+  </g>
+</svg>

@@ -114,39 +114,62 @@ window.Sky = (() => {
       ctx.stroke();
     }
 
-    // -- aurora (high-latitude nights): one sinuous band with glowing
-    // patches and dark gaps — part of the night sky, never a wallpaper --
+    // -- aurora (high-latitude nights): arcs of dancing curtains. Long
+    // glowing stretches with dark sky between — bands, never a wallpaper.
+    // Bright stretches send up tall rays, green at the base rising through
+    // teal into violet tops, and the whole curtain sways and shimmers. --
     if (env.aurora > 0.02 && pal.stars > 0.3) {
       ctx.save();
       ctx.globalCompositeOperation = 'lighter';
       const A = env.aurora * pal.stars;
-      const ax = env.worldX * 0.01 + time * 5; // slow celestial drift
-      const colW = 8;
-      // shared vertical gradient: faint top, bright lower rim
-      const gTop = h * 0.04, gBot = h * 0.30;
-      const grad = ctx.createLinearGradient(0, gTop, 0, gBot);
-      grad.addColorStop(0, 'rgba(96,220,160,0)');
-      grad.addColorStop(0.6, 'rgba(96,220,160,0.14)');
-      grad.addColorStop(0.96, 'rgba(116,230,172,0.30)');
-      grad.addColorStop(1, 'rgba(96,220,160,0.06)');
-      for (let x = 0; x <= w; x += colW) {
-        // long-wave envelope makes glowing stretches with dark sky between;
-        // faster shimmer adds ray striations inside them
-        const patch = Math.pow(U.noise1((x + ax) * 0.0016, 611), 1.6);
-        const ray = 0.45 + 0.55 * U.noise1((x + ax * 1.4) * 0.006 + time * 0.06, 622);
-        const a = A * patch * ray * 2.0;
-        if (a < 0.03) continue;
-        const baseY = h * (0.15
-          + 0.07 * U.noise1((x + ax) * 0.0011 + 31, 633)
-          + 0.013 * Math.sin(time * 0.09 + x * 0.002));
-        const len = h * (0.05 + 0.13 * U.noise1((x + ax) * 0.004 - time * 0.03, 644));
-        ctx.globalAlpha = Math.min(0.7, a);
-        ctx.fillStyle = grad;
-        ctx.fillRect(x, baseY - len, colW, len);
-        // faint magenta fringe along the bright lower edge
-        ctx.globalAlpha = Math.min(0.35, a * 0.45);
-        ctx.fillStyle = 'rgba(206,128,210,1)';
-        ctx.fillRect(x, baseY - h * 0.006, colW, h * 0.011);
+      const colW = 6;
+      // one normalized curtain gradient, scaled per ray to its height
+      const grad = ctx.createLinearGradient(0, -1, 0, 0);
+      grad.addColorStop(0.00, 'rgba(160,95,225,0)');
+      grad.addColorStop(0.25, 'rgba(160,100,228,0.16)');
+      grad.addColorStop(0.55, 'rgba(110,210,200,0.22)');
+      grad.addColorStop(0.85, 'rgba(115,235,165,0.34)');
+      grad.addColorStop(1.00, 'rgba(110,235,160,0.06)');
+      for (let band = 0; band < 2; band++) {
+        // the second arc hangs higher and fainter, drifting at its own pace
+        const ax = env.worldX * 0.01 + time * (4 + band * 3) + band * 1700;
+        const bandA = band ? A * 0.5 : A;
+        const yArc = band ? 0.10 : 0.18;
+        for (let x = 0; x <= w; x += colW) {
+          // envelope: a few glowing stretches with dark sky between them
+          const patch = Math.pow(U.noise1((x + ax) * 0.0042, 611 + band * 57), 2.6);
+          if (patch < 0.10) continue;
+          // soft shoulder: each stretch fades in from the dark sky instead
+          // of being cut off at the gate (hard vertical edges read as boxes)
+          const edge = U.smooth(U.clamp((patch - 0.10) / 0.14, 0, 1));
+          // rays dance: striations + a slower wave sliding against them
+          const stri = U.noise1((x + ax * 1.4) * 0.012 + time * 0.35, 622);
+          const ray = Math.pow(0.25 + 0.75 * stri, 2)
+            * (0.5 + 0.5 * U.noise1((x - ax) * 0.005 - time * 0.22, 655));
+          const a = bandA * patch * ray * 3.2 * edge;
+          if (a < 0.03) continue;
+          const baseY = h * (yArc
+            + 0.06 * U.noise1((x + ax) * 0.0016 + 31, 633)
+            + 0.035 * U.noise1((x + ax) * 0.005 + time * 0.1, 677)
+            + 0.015 * Math.sin(time * 0.5 + x * 0.004)); // visible sway
+          // bright striations shoot up as tall pillars; quiet stretches
+          // stay a low glow hugging the arc
+          const len = h * (0.08 + (0.55 + 0.5 * stri) * patch
+            * Math.pow(U.noise1((x + ax) * 0.006 - time * 0.16, 644), 1.2));
+          ctx.globalAlpha = Math.min(0.65, a);
+          ctx.save();
+          ctx.translate(x, baseY);
+          ctx.scale(1, len);
+          ctx.fillStyle = grad;
+          ctx.fillRect(0, -1, colW, 1);
+          ctx.restore();
+          // magenta fringe along the bright stretches of the lower rim
+          if (a > 0.07) {
+            ctx.globalAlpha = Math.min(0.32, a * 0.45);
+            ctx.fillStyle = 'rgba(216,128,210,1)';
+            ctx.fillRect(x, baseY - h * 0.006, colW, h * 0.011);
+          }
+        }
       }
       ctx.globalAlpha = 1;
       ctx.restore();

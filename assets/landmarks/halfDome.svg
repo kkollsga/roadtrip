@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-112 -106 229 108">
+  <g class="variant">
+    <path class="rock" fill="#8c9cb2" d="M-110 0L-45 -28L-30 -92Q12 -104 45 -76Q78 -42 115 0Z"/>
+    <path class="snow" fill="#eef3f8" fill-opacity="0.3" d="M-45 -28L-30 -92L-4 -97L-16 -30Z"/>
+  </g>
+</svg>

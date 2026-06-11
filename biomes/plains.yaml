@@ -1,0 +1,87 @@
+# Roadtrip biome definition. Compiled by `node tools/build.js` into
+# js/gen/data.js — run the build (or its --watch mode) after editing.
+#
+# colors are full-daylight bases; the engine grades them per frame by time
+# of day, depth haze, vibrance and weather. Bands:
+#   near     items between the tree line and the road shoulder (depth-staggered)
+#   front    items in front of the road, nearest the camera
+#   midridge rare structures on the mid ridge (mesas, lighthouses...)
+#   forest   distant wooded bands; depth = how deep the woods reach
+# table entries: { asset, w } plus optional depth: [z0, z1] limiting the item
+# to a slice of the band (0 = far edge, 1 = nearest).
+name: plains
+order: 0
+terrain:
+  far: '#7d92aa'
+  mid: '#8fae70'
+  ground: '#79a35d'
+  farAmp: 0.1
+  midAmp: 0.055
+  ridged: 0
+  snowcap: 0
+  water: 0
+  waterCol: '#3c6f95'
+flora:
+  foliage: '#55844a'
+  foliage2: '#6f9c54'
+  trunk: '#6b5340'
+  avenue: roundTree
+light:
+  grade: { tint: '#ffe3a8', strength: 0.12, multiplier: 1 }
+  aurora: 0
+weather:
+  clear: 5
+  overcast: 2
+  rain: 2
+  fog: 0.5
+near:
+  density: 2
+  table:
+    - { asset: roundTree, w: 0.44 }
+    - { asset: bush, w: 0.2 }
+    - { asset: tuft, w: 0.15 }
+    - { asset: pine, w: 0.06 }
+    - { asset: barn, w: 0.07 }
+    - { asset: sign, w: 0.05 }
+    - { asset: rock, w: 0.03 }
+front:
+  density: 1.8
+  table:
+    - { asset: tuft, w: 0.52 }
+    - { asset: bush, w: 0.26 }
+    - { asset: roundTree, w: 0.06 }
+    - { asset: rock, w: 0.1 }
+midridge:
+  density: 0
+forest:
+  depth: 0.5
+extras:
+  landmarks:
+    - devilsTower
+    - oldFaithful
+  occluder: 0
+  windfarm: 0.55
+variants:
+  - key: groves
+    weight: 2
+    near:
+      density: 2.8
+      table:
+        - { asset: roundTree, w: 0.5 }
+        - { asset: pine, w: 0.2 }
+        - { asset: bush, w: 0.2 }
+        - { asset: tuft, w: 0.1 }
+    forest: { depth: 2 }
+  - key: farmland
+    weight: 2
+    near:
+      density: 2.2
+      table:
+        - { asset: barn, w: 0.3 }
+        - { asset: roundTree, w: 0.28 }
+        - { asset: tuft, w: 0.26 }
+        - { asset: sign, w: 0.16 }
+    extras: { windfarm: 0.95 }
+  - key: lakeside
+    weight: 1.5
+    terrain: { farAmp: 0.07, water: 0.55, waterCol: '#447a99' }

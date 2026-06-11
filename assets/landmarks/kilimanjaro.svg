@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-150 -104 300 106">
+  <!-- Kilimanjaro: broad savanna massif. Main dome (Kibo) centre-right carries
+       the snowcap; a lower jagged shoulder (Mawenzi) sits left; both flanks
+       taper gracefully to the ground (y=0) at the edges. Adapted from the
+       source scene's mountain, re-traced in the project's flat layered style. -->
+  <g class="variant">
+    <!-- foothill / haze apron behind the main massif, anchored both edges -->
+    <path class="shadow" fill="#7a899c" d="M-148 0Q-120 -10 -96 -22Q-72 -34 -50 -40Q-24 -48 4 -48Q34 -48 62 -40Q90 -32 114 -20Q134 -10 148 0Z"/>
+    <!-- main massif: long gradual right shoulder, broad flat-ish dome, lower
+         Mawenzi shoulder on the left, short left flank to ground -->
+    <path class="rock" fill="#8c9cb2" d="M-142 0
+      Q-118 -8 -98 -24
+      Q-82 -38 -66 -48
+      Q-56 -54 -48 -58
+      L-42 -53 L-37 -61 L-31 -55 L-26 -64
+      Q-18 -76 -8 -82
+      Q-2 -86 6 -88
+      Q22 -92 40 -90
+      Q52 -88 60 -82
+      L66 -86 L72 -80
+      Q86 -68 98 -52
+      Q116 -28 142 0 Z"/>
+    <!-- shaded right flank (baked) -->
+    <path fill="rgba(0,0,0,0.12)" d="M60 -82Q52 -88 40 -90Q22 -92 6 -88L6 0L142 0Q116 -28 98 -52Q86 -68 72 -80L66 -86Z"/>
+    <!-- darker shaded foot on the right, broad shoulder -->
+    <path class="shadow" fill="#6f7e92" d="M44 -54Q66 -50 84 -34Q108 -14 138 0L44 0Z"/>
+    <!-- left lower shoulder shading (Mawenzi flank) -->
+    <path fill="rgba(0,0,0,0.10)" d="M-48 -58Q-66 -48 -82 -38Q-100 -24 -120 -10Q-132 -4 -142 0L-66 0Q-58 -28 -52 -46Z"/>
+    <!-- snowcap on the summit dome, glacier fingers streaking down -->
+    <path class="snow" fill="#eef3f8" d="M-26 -64
+      Q-18 -76 -8 -82 Q-2 -86 6 -88 Q22 -92 40 -90 Q52 -88 60 -82 L66 -86 L60 -78
+      Q50 -74 40 -75 L45 -68 Q41 -71 37 -72 L34 -65 Q31 -70 27 -71 L24 -64
+      Q19 -69 15 -70 L11 -63 Q7 -69 2 -70 L-1 -62 Q-6 -68 -10 -69 L-14 -62
+      Q-18 -67 -22 -66 L-23 -61 Z"/>
+    <!-- snow highlight on the sunlit upper-left of the cap -->
+    <path fill="rgba(255,255,255,0.10)" d="M-26 -64Q-18 -76 -8 -82Q-2 -86 6 -88L2 -82Q-8 -78 -16 -70Q-22 -64 -22 -61Z"/>
+  </g>
+</svg>

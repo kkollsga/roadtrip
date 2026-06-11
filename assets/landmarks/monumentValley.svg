@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-153.5 -97 288.1 99">
+  <g class="variant">
+    <path class="warm" fill="#b4593a" d="M-151.5 0L-135 -16.5L-133.9 -55L-76.1 -55L-75 -16.5L-58.5 0Z"/>
+    <path class="warm" fill="#b4593a" d="M-39.5 0L-11 -28.5L-9.1 -95L9.1 -95L11 -28.5L39.5 0Z"/>
+    <path class="warm" fill="#b4593a" d="M57.4 0L79 -21.6L80.44 -72L109.56 -72L111 -21.6L132.6 0Z"/>
+    <path class="shadow" fill="#5c6a7e" d="M-132 -36L-76 -36L-76 -34L-132 -34Z"/>
+    <path class="shadow" fill="#5c6a7e" d="M-10 -60L11 -60L11 -58L-10 -58Z"/>
+  </g>
+</svg>

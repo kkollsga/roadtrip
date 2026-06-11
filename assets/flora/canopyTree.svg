@@ -1,0 +1,40 @@
+<svg data-meters="15 28" xmlns="http://www.w3.org/2000/svg" viewBox="-46 -100 92 102">
+  <!-- Variant 1: huge spreading oak, thick trunk + forking limbs (Kenney foliagePack_010 scaled) -->
+  <g class="variant">
+    <path class="trunk" fill="#6b5340" d="M-5 0Q-5.4 -22 -3.4 -40Q-7 -50 -11 -56L-8 -58Q-4 -52 -1.4 -46Q-0.6 -52 0.4 -46Q3 -52 7 -58L10 -56Q5 -50 2.4 -40Q4.6 -22 5 0Z"/>
+    <path fill="rgba(0,0,0,0.18)" d="M0.4 -46Q3 -52 7 -58L10 -56Q5 -50 2.4 -40Q4.6 -22 5 0L1.8 0Q1 -26 0 -44Z"/>
+    <path class="foliage" fill="#55844a" d="M0 -38Q-26 -40 -38 -56Q-45 -70 -37 -82Q-30 -92 -18 -91Q-10 -98 2 -94Q14 -99 26 -90Q40 -84 41 -68Q42 -54 30 -45Q20 -38 0 -38Z"/>
+    <!-- scalloped leafy lumps -->
+    <path class="foliage" fill="#55844a" d="M-32 -78Q-27 -88 -18 -88Q-23 -78 -32 -78ZM-10 -92Q-2 -99 6 -93Q-2 -88 -10 -92ZM18 -90Q28 -90 32 -78Q23 -82 18 -90ZM-40 -62Q-38 -72 -30 -72Q-34 -62 -40 -62Z"/>
+    <!-- secondary hue lobe (sunlit upper-left) -->
+    <path class="foliage2" fill="#6f9c54" d="M-18 -91Q-30 -92 -37 -82Q-43 -72 -39 -62Q-34 -76 -24 -84Q-18 -90 -10 -90Q-14 -92 -18 -91Z"/>
+    <!-- shaded right half -->
+    <path fill="rgba(0,0,0,0.15)" d="M0 -38Q20 -38 30 -45Q42 -54 41 -68Q40 -84 26 -90Q14 -99 2 -94Q12 -90 18 -78Q24 -62 16 -50Q10 -40 0 -38Z"/>
+    <!-- occlusion where canopy meets trunk -->
+    <path fill="rgba(0,0,0,0.12)" d="M-14 -42Q0 -36 14 -42Q0 -33 -14 -42Z"/>
+    <!-- top-left highlight -->
+    <path fill="rgba(255,255,255,0.12)" d="M2 -94Q-10 -98 -18 -91Q-28 -90 -34 -80Q-26 -88 -16 -90Q-6 -94 2 -94Z"/>
+  </g>
+  <!-- Variant 2: tall domed elm, narrower and higher (Kenney foliagePack_006 scaled) -->
+  <g class="variant">
+    <path class="trunk" fill="#6b5340" d="M-4.4 0Q-4.6 -24 -2.6 -44Q-5 -50 -7 -54L-4.4 -56Q-1.6 -50 -0.4 -44Q1 -50 1.6 -56L4.6 -54Q2 -48 1.6 -42Q3.6 -22 4.4 0Z"/>
+    <path fill="rgba(0,0,0,0.18)" d="M-0.4 -44Q1 -50 1.6 -56L4.6 -54Q2 -48 1.6 -42Q3.6 -22 4.4 0L1.4 0Q0.6 -26 0 -46Z"/>
+    <path class="foliage" fill="#55844a" d="M0 -40Q-22 -42 -31 -58Q-37 -74 -28 -88Q-18 -100 0 -98Q18 -100 28 -88Q37 -74 31 -58Q22 -42 0 -40Z"/>
+    <path class="foliage" fill="#55844a" d="M-27 -80Q-22 -90 -13 -90Q-18 -80 -27 -80ZM-6 -96Q2 -101 9 -95Q1 -90 -6 -96ZM16 -90Q25 -88 27 -76Q19 -82 16 -90Z"/>
+    <path class="foliage2" fill="#6f9c54" d="M0 -98Q-18 -100 -28 -88Q-35 -76 -32 -64Q-26 -80 -14 -90Q-6 -96 0 -98Z"/>
+    <path fill="rgba(0,0,0,0.15)" d="M0 -40Q22 -42 31 -58Q37 -74 28 -88Q18 -100 0 -98Z"/>
+    <path fill="rgba(0,0,0,0.12)" d="M-12 -44Q0 -38 12 -44Q0 -35 -12 -44Z"/>
+    <path fill="rgba(255,255,255,0.12)" d="M0 -98Q-18 -100 -28 -88Q-34 -78 -32 -68Q-25 -82 -14 -91Q-7 -97 0 -98Z"/>
+  </g>
+  <!-- Variant 3: broad asymmetric beech, lower canopy + heavy side limb (Kenney foliagePack_007 scaled) -->
+  <g class="variant">
+    <path class="trunk" fill="#6b5340" d="M-5.2 0Q-5 -20 -3 -36Q-8 -46 -13 -50L-10 -53Q-4 -47 -1 -40Q0 -44 1 -40Q5 -48 11 -52L13.6 -49Q7 -45 2.6 -36Q4.8 -20 5.2 0Z"/>
+    <path fill="rgba(0,0,0,0.18)" d="M1 -40Q5 -48 11 -52L13.6 -49Q7 -45 2.6 -36Q4.8 -20 5.2 0L2 0Q1.2 -22 0 -40Z"/>
+    <path class="foliage" fill="#55844a" d="M0 -32Q-28 -34 -40 -50Q-46 -64 -37 -74Q-30 -82 -20 -80Q-14 -90 0 -86Q14 -92 28 -82Q42 -74 40 -58Q38 -44 24 -36Q14 -32 0 -32Z"/>
+    <path class="foliage" fill="#55844a" d="M-34 -66Q-30 -76 -22 -76Q-26 -66 -34 -66ZM-10 -84Q-2 -90 6 -84Q-2 -80 -10 -84ZM18 -84Q26 -84 28 -72Q21 -78 18 -84Z"/>
+    <path class="foliage2" fill="#6f9c54" d="M-20 -80Q-30 -82 -37 -74Q-43 -65 -39 -56Q-34 -68 -26 -76Q-22 -80 -16 -81Q-18 -81 -20 -80Z"/>
+    <path fill="rgba(0,0,0,0.15)" d="M0 -32Q14 -32 24 -36Q38 -44 40 -58Q42 -74 28 -82Q14 -92 0 -86Q12 -82 18 -70Q24 -54 16 -44Q10 -34 0 -32Z"/>
+    <path fill="rgba(0,0,0,0.12)" d="M-14 -36Q0 -30 14 -36Q0 -28 -14 -36Z"/>
+    <path fill="rgba(255,255,255,0.12)" d="M0 -86Q-14 -90 -20 -80Q-30 -82 -36 -72Q-28 -80 -18 -82Q-8 -86 0 -86Z"/>
+  </g>
+</svg>

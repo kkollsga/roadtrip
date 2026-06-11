@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-102 -99.19 204 101.19">
+  <g class="variant">
+    <path class="warm" fill="#b4593a" d="M-78.28 0L-71.26 -62.09L-73.36 -73.05L-59.31 -73.05L-61.42 -62.09L-54.39 0Z"/>
+    <path class="warm" fill="#b4593a" d="M-47.22 0L-40.2 -82.61L-42.3 -97.19L-28.27 -97.19L-30.37 -82.61L-23.35 0Z"/>
+    <path class="warm" fill="#b4593a" d="M-13.45 0L-3.68 -63.89L-6.61 -75.16L12.92 -75.16L9.99 -63.89L19.75 0Z"/>
+    <path class="warm" fill="#b4593a" d="M20.45 0L30.95 -51.11L27.8 -60.13L48.8 -60.13L45.65 -51.11L56.14 0Z"/>
+    <path class="warm" fill="#b4593a" d="M56.8 0L66.77 -67.99L63.78 -79.99L83.71 -79.99L80.72 -67.99L90.69 0Z"/>
+    <path class="shadow" fill="#5c6a7e" fill-opacity="0.35" d="M-100 -30L100 -30L100 -27.8L-100 -27.8Z"/>
+  </g>
+</svg>

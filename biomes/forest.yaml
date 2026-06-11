@@ -1,0 +1,78 @@
+# Roadtrip biome definition. Compiled by `node tools/build.js` into
+# js/gen/data.js — run the build (or its --watch mode) after editing.
+#
+# colors are full-daylight bases; the engine grades them per frame by time
+# of day, depth haze, vibrance and weather. Bands:
+#   near     items between the tree line and the road shoulder (depth-staggered)
+#   front    items in front of the road, nearest the camera
+#   midridge rare structures on the mid ridge (mesas, lighthouses...)
+#   forest   distant wooded bands; depth = how deep the woods reach
+# table entries: { asset, w } plus optional depth: [z0, z1] limiting the item
+# to a slice of the band (0 = far edge, 1 = nearest).
+name: forest
+order: 1
+terrain:
+  far: '#5e7b94'
+  mid: '#557e62'
+  ground: '#47714f'
+  farAmp: 0.14
+  midAmp: 0.07
+  ridged: 0.15
+  snowcap: 0
+  water: 0
+  waterCol: '#3c6f95'
+flora:
+  foliage: '#2f5d3e'
+  foliage2: '#3d7050'
+  trunk: '#4a3a2c'
+  avenue: roundTree
+light:
+  grade: { tint: '#7fae84', strength: 0.14, multiplier: 0.94 }
+  aurora: 0
+weather:
+  clear: 5
+  overcast: 2
+  rain: 2
+  fog: 1
+near:
+  density: 3.5
+  table:
+    - { asset: pine, w: 0.5 }
+    - { asset: roundTree, w: 0.25 }
+    - { asset: birch, w: 0.14 }
+    - { asset: deadTree, w: 0.04 }
+    - { asset: bush, w: 0.05 }
+    - { asset: cabin, w: 0.02 }
+front:
+  density: 1.8
+  table:
+    - { asset: bush, w: 0.42 }
+    - { asset: tuft, w: 0.28 }
+    - { asset: pine, w: 0.07 }
+    - { asset: rock, w: 0.15 }
+midridge:
+  density: 0
+forest:
+  depth: 5
+  table:
+    - { asset: pine, w: 0.7 }
+    - { asset: roundTree, w: 0.3 }
+extras:
+  landmarks: []
+  occluder: 0.035
+variants:
+  - key: clearing
+    weight: 2
+    near:
+      density: 1.5
+      table:
+        - { asset: bush, w: 0.35 }
+        - { asset: tuft, w: 0.25 }
+        - { asset: roundTree, w: 0.2 }
+        - { asset: deadTree, w: 0.1 }
+        - { asset: rock, w: 0.1 }
+    forest: { depth: 2 }
+  - key: lakeside
+    weight: 1.5
+    terrain: { water: 0.6, waterCol: '#3f7390' }
+    near: { density: 2.5 }

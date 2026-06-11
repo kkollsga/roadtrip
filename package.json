@@ -1,0 +1,12 @@
+{
+  "name": "roadtrip",
+  "private": true,
+  "description": "Ambient driving scene. Runtime is dependency-free; js-yaml is only used by tools/build.js to compile biomes/*.yaml.",
+  "scripts": {
+    "build": "node tools/build.js",
+    "watch": "node tools/build.js --watch"
+  },
+  "devDependencies": {
+    "js-yaml": "^4.1.0"
+  }
+}

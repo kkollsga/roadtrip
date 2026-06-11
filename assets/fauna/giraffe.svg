@@ -1,0 +1,97 @@
+<svg data-meters="4.2 5.5" xmlns="http://www.w3.org/2000/svg" viewBox="-40 -102 90 106">
+  <!-- Variant 1: standing, head turned to the RIGHT -->
+  <g class="variant">
+    <!-- far legs (slightly darker, drawn first) -->
+    <path class="tan" fill="#c89e62" d="M-14 -47L-15 0L-10 0L-10 -47Z"/>
+    <path class="tan" fill="#c89e62" d="M11 -47L11 0L16 0L15 -47Z"/>
+    <path fill="rgba(0,0,0,0.14)" d="M-14 -47L-15 0L-10 0L-10 -47Z"/>
+    <path fill="rgba(0,0,0,0.14)" d="M11 -47L11 0L16 0L15 -47Z"/>
+    <!-- near legs -->
+    <path class="tan" fill="#c89e62" d="M-9 -49L-10 0L-4 0L-4 -49Z"/>
+    <path class="tan" fill="#c89e62" d="M5 -49L5 0L11 0L10 -49Z"/>
+    <!-- tail hanging down from the rump -->
+    <path class="tan" fill="#c89e62" d="M-15 -58Q-19 -46 -18 -34L-15 -34Q-15 -46 -13 -57Z"/>
+    <path class="brown" fill="#7a5a3c" d="M-18 -36Q-20 -28 -16 -26Q-14 -31 -15 -36Z"/>
+    <!-- deep chest/torso: high at shoulders (right), sloping to lower rump (left) -->
+    <path class="tan" fill="#c89e62" d="M-15 -48Q-18 -62 -6 -64Q8 -65 16 -60Q20 -56 19 -50Q17 -47 12 -49Q0 -50 -6 -49Q-11 -49 -15 -48Z"/>
+    <!-- neck: thick column rising up-right from the shoulders -->
+    <path class="tan" fill="#c89e62" d="M11 -60Q12 -74 18 -86Q21 -92 26 -91Q23 -82 22 -72Q21 -63 18 -56Q14 -57 11 -60Z"/>
+    <!-- short upright mane along the back of the neck -->
+    <path class="brown" fill="#7a5a3c" d="M11 -60Q11 -74 16 -86Q18 -90 20 -89Q15 -77 14 -62Z"/>
+    <!-- ONE clean head: rounded crown with muzzle protruding up-right -->
+    <path class="tan" fill="#c89e62" d="M22 -90Q21 -95 25 -96Q30 -96 32 -92Q36 -91 37 -86Q37 -82 33 -82Q29 -83 26 -85Q23 -86 22 -90Z"/>
+    <!-- muzzle tip (slightly darker, gives a protruding snout) -->
+    <path class="brown" fill="#7a5a3c" fill-opacity="0.45" d="M33 -83Q37 -83 37 -86Q35 -82 32 -82Z"/>
+    <!-- ear, flaring back-down from the crown -->
+    <path class="tan" fill="#c89e62" d="M22 -91Q17 -93 18 -88Q21 -87 23 -89Z"/>
+    <!-- ossicones: two thin stalks with knobs, growing from the crown -->
+    <path class="tan" fill="#c89e62" d="M24 -95L23 -100L25 -100L26 -95Z"/>
+    <path class="brown" fill="#7a5a3c" d="M22 -99Q24 -103 26 -100Q26 -99 24 -99Z"/>
+    <path class="tan" fill="#c89e62" d="M29 -94L28 -99L30 -99L31 -94Z"/>
+    <path class="brown" fill="#7a5a3c" d="M27 -98Q29 -102 31 -99Q31 -98 29 -98Z"/>
+    <!-- eye -->
+    <path class="dark" fill="#3a2c20" d="M27 -90Q29 -90 29 -88Q27 -87 26 -89Z"/>
+    <!-- coat patches: a connected reticulated network over body and neck -->
+    <path class="brown" fill="#7a5a3c" d="M-12 -60Q-8 -62 -4 -60Q-3 -56 -7 -55Q-11 -56 -12 -60Z"/>
+    <path class="brown" fill="#7a5a3c" d="M-2 -62Q4 -63 7 -60Q6 -56 1 -56Q-3 -58 -2 -62Z"/>
+    <path class="brown" fill="#7a5a3c" d="M10 -61Q15 -61 17 -57Q14 -53 9 -54Q8 -58 10 -61Z"/>
+    <path class="brown" fill="#7a5a3c" d="M-13 -53Q-9 -54 -6 -52Q-7 -49 -12 -50Q-14 -51 -13 -53Z"/>
+    <path class="brown" fill="#7a5a3c" d="M-1 -54Q4 -55 7 -52Q4 -49 0 -50Q-2 -52 -1 -54Z"/>
+    <path class="brown" fill="#7a5a3c" d="M-14 -44Q-11 -46 -11 -36Q-13 -32 -15 -37Z"/>
+    <path class="brown" fill="#7a5a3c" d="M-7 -45Q-4 -45 -4 -36Q-6 -31 -8 -36Z"/>
+    <path class="brown" fill="#7a5a3c" d="M5 -45Q8 -45 8 -36Q6 -31 4 -36Z"/>
+    <path class="brown" fill="#7a5a3c" d="M12 -45Q15 -45 15 -36Q13 -31 11 -36Z"/>
+    <!-- neck patches -->
+    <path class="brown" fill="#7a5a3c" d="M13 -62Q17 -64 17 -58Q14 -56 12 -59Z"/>
+    <path class="brown" fill="#7a5a3c" d="M14 -73Q18 -74 18 -68Q15 -67 13 -70Z"/>
+    <path class="brown" fill="#7a5a3c" d="M16 -84Q20 -85 20 -79Q17 -78 15 -81Z"/>
+    <!-- hooves -->
+    <path class="dark" fill="#3a2c20" d="M-15 -3L-10 -3L-10 0L-15 0Z"/>
+    <path class="dark" fill="#3a2c20" d="M11 -3L16 -3L16 0L11 0Z"/>
+    <path class="dark" fill="#3a2c20" d="M-10 -3L-4 -3L-4 0L-10 0Z"/>
+    <path class="dark" fill="#3a2c20" d="M5 -3L11 -3L11 0L5 0Z"/>
+    <!-- top-left highlight -->
+    <path fill="rgba(255,255,255,0.08)" d="M-15 -48Q-18 -62 -6 -64Q2 -65 0 -62Q-10 -61 -12 -50Z"/>
+    <path fill="rgba(255,255,255,0.08)" d="M11 -60Q12 -74 18 -86Q20 -89 21 -87Q15 -76 14 -61Z"/>
+  </g>
+  <!-- Variant 2: standing, head turned to the LEFT (mirror of v1) -->
+  <g class="variant">
+    <path class="tan" fill="#c89e62" d="M14 -47L15 0L10 0L10 -47Z"/>
+    <path class="tan" fill="#c89e62" d="M-11 -47L-11 0L-16 0L-15 -47Z"/>
+    <path fill="rgba(0,0,0,0.14)" d="M14 -47L15 0L10 0L10 -47Z"/>
+    <path fill="rgba(0,0,0,0.14)" d="M-11 -47L-11 0L-16 0L-15 -47Z"/>
+    <path class="tan" fill="#c89e62" d="M9 -49L10 0L4 0L4 -49Z"/>
+    <path class="tan" fill="#c89e62" d="M-5 -49L-5 0L-11 0L-10 -49Z"/>
+    <path class="tan" fill="#c89e62" d="M15 -58Q19 -46 18 -34L15 -34Q15 -46 13 -57Z"/>
+    <path class="brown" fill="#7a5a3c" d="M18 -36Q20 -28 16 -26Q14 -31 15 -36Z"/>
+    <path class="tan" fill="#c89e62" d="M15 -48Q18 -62 6 -64Q-8 -65 -16 -60Q-20 -56 -19 -50Q-17 -47 -12 -49Q0 -50 6 -49Q11 -49 15 -48Z"/>
+    <path class="tan" fill="#c89e62" d="M-11 -60Q-12 -74 -18 -86Q-21 -92 -26 -91Q-23 -82 -22 -72Q-21 -63 -18 -56Q-14 -57 -11 -60Z"/>
+    <path class="brown" fill="#7a5a3c" d="M-11 -60Q-11 -74 -16 -86Q-18 -90 -20 -89Q-15 -77 -14 -62Z"/>
+    <path class="tan" fill="#c89e62" d="M-22 -90Q-21 -95 -25 -96Q-30 -96 -32 -92Q-36 -91 -37 -86Q-37 -82 -33 -82Q-29 -83 -26 -85Q-23 -86 -22 -90Z"/>
+    <path class="brown" fill="#7a5a3c" fill-opacity="0.45" d="M-33 -83Q-37 -83 -37 -86Q-35 -82 -32 -82Z"/>
+    <path class="tan" fill="#c89e62" d="M-22 -91Q-17 -93 -18 -88Q-21 -87 -23 -89Z"/>
+    <path class="tan" fill="#c89e62" d="M-24 -95L-23 -100L-25 -100L-26 -95Z"/>
+    <path class="brown" fill="#7a5a3c" d="M-22 -99Q-24 -103 -26 -100Q-26 -99 -24 -99Z"/>
+    <path class="tan" fill="#c89e62" d="M-29 -94L-28 -99L-30 -99L-31 -94Z"/>
+    <path class="brown" fill="#7a5a3c" d="M-27 -98Q-29 -102 -31 -99Q-31 -98 -29 -98Z"/>
+    <path class="dark" fill="#3a2c20" d="M-27 -90Q-29 -90 -29 -88Q-27 -87 -26 -89Z"/>
+    <path class="brown" fill="#7a5a3c" d="M12 -60Q8 -62 4 -60Q3 -56 7 -55Q11 -56 12 -60Z"/>
+    <path class="brown" fill="#7a5a3c" d="M2 -62Q-4 -63 -7 -60Q-6 -56 -1 -56Q3 -58 2 -62Z"/>
+    <path class="brown" fill="#7a5a3c" d="M-10 -61Q-15 -61 -17 -57Q-14 -53 -9 -54Q-8 -58 -10 -61Z"/>
+    <path class="brown" fill="#7a5a3c" d="M13 -53Q9 -54 6 -52Q7 -49 12 -50Q14 -51 13 -53Z"/>
+    <path class="brown" fill="#7a5a3c" d="M1 -54Q-4 -55 -7 -52Q-4 -49 0 -50Q2 -52 1 -54Z"/>
+    <path class="brown" fill="#7a5a3c" d="M14 -44Q11 -46 11 -36Q13 -32 15 -37Z"/>
+    <path class="brown" fill="#7a5a3c" d="M7 -45Q4 -45 4 -36Q6 -31 8 -36Z"/>
+    <path class="brown" fill="#7a5a3c" d="M-5 -45Q-8 -45 -8 -36Q-6 -31 -4 -36Z"/>
+    <path class="brown" fill="#7a5a3c" d="M-12 -45Q-15 -45 -15 -36Q-13 -31 -11 -36Z"/>
+    <path class="brown" fill="#7a5a3c" d="M-13 -62Q-17 -64 -17 -58Q-14 -56 -12 -59Z"/>
+    <path class="brown" fill="#7a5a3c" d="M-14 -73Q-18 -74 -18 -68Q-15 -67 -13 -70Z"/>
+    <path class="brown" fill="#7a5a3c" d="M-16 -84Q-20 -85 -20 -79Q-17 -78 -15 -81Z"/>
+    <path class="dark" fill="#3a2c20" d="M15 -3L10 -3L10 0L15 0Z"/>
+    <path class="dark" fill="#3a2c20" d="M-11 -3L-16 -3L-16 0L-11 0Z"/>
+    <path class="dark" fill="#3a2c20" d="M10 -3L4 -3L4 0L10 0Z"/>
+    <path class="dark" fill="#3a2c20" d="M-5 -3L-11 -3L-11 0L-5 0Z"/>
+    <path fill="rgba(255,255,255,0.08)" d="M-11 -60Q-12 -74 -18 -86Q-20 -89 -21 -87Q-15 -76 -14 -61Z"/>
+    <path fill="rgba(0,0,0,0.10)" d="M15 -48Q18 -62 6 -64Q-2 -65 0 -62Q10 -61 12 -50Z"/>
+  </g>
+</svg>

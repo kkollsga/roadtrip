@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-142 -112 284 114">
+  <defs><clipPath id="clip0"><path d="M-140 -110L140 -110L140 -48L-140 -48Z"/></clipPath></defs>
+  <g class="variant">
+    <path class="rock" fill="#8c9cb2" d="M-130 0L-85 -45L-55 -38L-25 -72L0 -100L20 -62L50 -78L80 -40L130 0Z"/>
+    <path class="snow" fill="#eef3f8" clip-path="url(#clip0)" d="M-130 0L-85 -45L-55 -38L-25 -72L0 -100L20 -62L50 -78L80 -40L130 0Z"/>
+    <path class="snow" fill="#eef3f8" fill-opacity="0.5" d="M49.95 -95.44C49.85 -93.68 38.14 -92.94 23.81 -93.81C9.47 -94.67 -2.06 -96.79 -1.95 -98.56C-1.85 -100.32 9.86 -101.06 24.19 -100.19C38.53 -99.33 50.06 -97.21 49.95 -95.44"/>
+  </g>
+</svg>

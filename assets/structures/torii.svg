@@ -1,0 +1,12 @@
+<svg data-meters="4 7" xmlns="http://www.w3.org/2000/svg" viewBox="-55.04 -92 110.08 94">
+  <g class="variant">
+    <path class="accent" fill="none" stroke="#9a4538" stroke-width="7" d="M-39 0L-35 -78M39 0L35 -78"/>
+    <path class="accent" fill="#9a4538" d="M-53.04 -90Q0 -81 53.04 -90L51.48 -80Q0 -73 -51.48 -80Z"/>
+    <path class="accent" fill="#9a4538" d="M-43.68 -62L43.68 -62L43.68 -56.5L-43.68 -56.5Z"/>
+  </g>
+  <g class="variant">
+    <path class="accent" fill="none" stroke="#9a4538" stroke-width="7" d="M-39 0L-35 -78M39 0L35 -78"/>
+    <path class="accent" fill="#9a4538" d="M-53.04 -90Q0 -81 53.04 -90L51.48 -80Q0 -73 -51.48 -80Z"/>
+    <path class="accent" fill="#9a4538" d="M-43.68 -62L43.68 -62L43.68 -56.5L-43.68 -56.5Z"/>
+  </g>
+</svg>

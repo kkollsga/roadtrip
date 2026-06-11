@@ -1,0 +1,26 @@
+<svg data-meters="18 30" xmlns="http://www.w3.org/2000/svg" viewBox="-71 -106 142 108">
+  <g class="variant">
+    <path class="accent" fill="#9a4538" d="M-32.2 -20L32.2 -20L32.2 0L-32.2 0Z"/>
+    <path class="window" fill="#3c3a36" d="M-7.36 -16L7.36 -16L7.36 -5L-7.36 -5Z"/>
+    <path class="dark" fill="#3c3a36" d="M-69 -21.5Q-41.4 -30 0 -31.5Q41.4 -30 69 -21.5Q34.5 -25.5 0 -25Q-34.5 -25.5 -69 -21.5Z"/>
+    <path class="accent" fill="#9a4538" d="M-25.9 -50L25.9 -50L25.9 -30L-25.9 -30Z"/>
+    <path class="window" fill="#3c3a36" d="M-5.92 -46L5.92 -46L5.92 -35L-5.92 -35Z"/>
+    <path class="dark" fill="#3c3a36" d="M-55.5 -51.5Q-33.3 -60 0 -61.5Q33.3 -60 55.5 -51.5Q27.75 -55.5 0 -55Q-27.75 -55.5 -55.5 -51.5Z"/>
+    <path class="accent" fill="#9a4538" d="M-19.6 -80L19.6 -80L19.6 -60L-19.6 -60Z"/>
+    <path class="window" fill="#3c3a36" d="M-4.48 -76L4.48 -76L4.48 -65L-4.48 -65Z"/>
+    <path class="dark" fill="#3c3a36" d="M-42 -81.5Q-25.2 -90 0 -91.5Q25.2 -90 42 -81.5Q21 -85.5 0 -85Q-21 -85.5 -42 -81.5Z"/>
+    <path class="dark" fill="none" stroke="#3c3a36" stroke-width="2" d="M0 -90L0 -104"/>
+  </g>
+  <g class="variant">
+    <path class="accent" fill="#9a4538" d="M-32.2 -20L32.2 -20L32.2 0L-32.2 0Z"/>
+    <path class="window" fill="#3c3a36" d="M-7.36 -16L7.36 -16L7.36 -5L-7.36 -5Z"/>
+    <path class="dark" fill="#3c3a36" d="M-69 -21.5Q-41.4 -30 0 -31.5Q41.4 -30 69 -21.5Q34.5 -25.5 0 -25Q-34.5 -25.5 -69 -21.5Z"/>
+    <path class="accent" fill="#9a4538" d="M-25.9 -50L25.9 -50L25.9 -30L-25.9 -30Z"/>
+    <path class="window" fill="#3c3a36" d="M-5.92 -46L5.92 -46L5.92 -35L-5.92 -35Z"/>
+    <path class="dark" fill="#3c3a36" d="M-55.5 -51.5Q-33.3 -60 0 -61.5Q33.3 -60 55.5 -51.5Q27.75 -55.5 0 -55Q-27.75 -55.5 -55.5 -51.5Z"/>
+    <path class="accent" fill="#9a4538" d="M-19.6 -80L19.6 -80L19.6 -60L-19.6 -60Z"/>
+    <path class="window" fill="#3c3a36" d="M-4.48 -76L4.48 -76L4.48 -65L-4.48 -65Z"/>
+    <path class="dark" fill="#3c3a36" d="M-42 -81.5Q-25.2 -90 0 -91.5Q25.2 -90 42 -81.5Q21 -85.5 0 -85Q-21 -85.5 -42 -81.5Z"/>
+    <path class="dark" fill="none" stroke="#3c3a36" stroke-width="2" d="M0 -90L0 -104"/>
+  </g>
+</svg>

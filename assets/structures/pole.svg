@@ -1,0 +1,6 @@
+<svg data-meters="9 11" xmlns="http://www.w3.org/2000/svg" viewBox="-18 -102 36 104">
+  <g class="variant">
+    <path class="dark" fill="none" stroke="#3c3a36" stroke-width="3.5" d="M0 0L0 -100"/>
+    <path class="dark" fill="none" stroke="#3c3a36" stroke-width="2.5" d="M-16 -92L16 -92M-11 -80L11 -80"/>
+  </g>
+</svg>

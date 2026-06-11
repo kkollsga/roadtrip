@@ -6,8 +6,9 @@ full day/night cycle drift slowly by. It is designed to live in a background
 tab or on a second monitor — something gentle to glance at while you work or
 listen to music. No goals, no score, no noise.
 
-Everything runs from a single page in plain JavaScript: no modules, no build
-step, no frameworks, no external fonts or CDNs. It works straight off the disk.
+Everything runs from a single page in plain JavaScript: no modules, no
+frameworks, no runtime dependencies, no external fonts or CDNs. It works
+straight off the disk.
 
 ## Running it
 
@@ -22,6 +23,35 @@ python3 -m http.server
 ```
 
 Then visit <http://localhost:8000>.
+
+## Editing the world
+
+The scenery and the biomes are data, not code:
+
+- **`assets/`** — every tree, rock, building and landmark is an individual
+  SVG (animated things like wind turbines are small JS modules in
+  `assets/animated/`). Each asset declares its real-world height range in
+  meters (`data-meters`); the engine converts meters to pixels by distance,
+  calibrated against the car, so a bush, a pine and a wind turbine always
+  stand in true proportion at whatever depth they're placed. See
+  `assets/README.md` for the conventions. Tree and ground-cover art is
+  adapted from Kenney's CC0 Foliage Pack (kenney.nl).
+- **`biomes/`** — one YAML file per biome: terrain colors and ridge shapes,
+  lighting grade, weather odds, and the item tables (which assets appear in
+  which band, how often, and optionally limited to a depth slice).
+
+After editing either, regenerate the checked-in bundles in `js/gen/`:
+
+```sh
+npm install        # once; js-yaml for the build script only
+npm run build      # or: npm run watch
+```
+
+Running the page itself never needs node — `js/gen/` is committed, so a
+fresh checkout double-clicks straight into the scene. At boot the SVGs are
+parsed once into `Path2D` layers; the frame loop only fills prebuilt paths
+with live time-of-day/depth colors, so the data-driven world costs nothing
+per frame.
 
 ## Controls
 

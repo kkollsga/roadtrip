@@ -1,0 +1,34 @@
+<svg data-meters="8 16" xmlns="http://www.w3.org/2000/svg" viewBox="-30 -100 60 102">
+  <!-- Variant 1: slender upright birch, airy oval crown -->
+  <g class="variant">
+    <path class="light" fill="#e6e2d4" d="M-2.4 0Q-2 -30 -1.6 -58L1.2 -58Q1.8 -30 2.4 0Z"/>
+    <path fill="rgba(0,0,0,0.16)" d="M0 -58L1.2 -58Q1.8 -30 2.4 0L0.6 0Z"/>
+    <!-- dark bark flecks -->
+    <path fill="rgba(0,0,0,0.30)" d="M-1.4 -20L0.6 -20L0.4 -17L-1.6 -17ZM-0.8 -36L1.2 -35L1 -32L-1 -33ZM-1.6 -48L0.4 -48L0.2 -46L-1.8 -46Z"/>
+    <path class="foliage2" fill="#6f9c54" d="M0 -52Q-15 -54 -20 -68Q-23 -82 -14 -92Q-6 -100 0 -97Q6 -100 14 -92Q23 -82 20 -68Q15 -54 0 -52Z"/>
+    <path class="foliage2" fill="#6f9c54" d="M-17 -78Q-14 -88 -7 -90Q-11 -80 -17 -78ZM-2 -96Q2 -100 6 -96Q2 -92 -2 -96ZM10 -90Q17 -86 18 -76Q12 -82 10 -90Z"/>
+    <path fill="rgba(0,0,0,0.14)" d="M0 -52Q15 -54 20 -68Q23 -82 14 -92Q6 -100 0 -97Z"/>
+    <path fill="rgba(255,255,255,0.12)" d="M0 -97Q-6 -100 -14 -92Q-21 -83 -19 -72Q-15 -84 -7 -91Q-3 -95 0 -97Z"/>
+  </g>
+  <!-- Variant 2: leaning birch with a smaller, higher crown -->
+  <g class="variant">
+    <path class="light" fill="#e6e2d4" d="M-2.2 0Q-1 -28 1.6 -56L4.4 -55.5Q2 -28 2.2 0Z"/>
+    <path fill="rgba(0,0,0,0.16)" d="M0.4 -56L4.4 -55.5Q2 -28 2.2 0L0.2 0Z"/>
+    <path fill="rgba(0,0,0,0.30)" d="M-1 -18L1 -18L0.9 -15L-1.1 -15ZM0.3 -34L2.3 -33.6L2.1 -31L0.1 -31.4ZM1.4 -47L3.4 -46.6L3.2 -44L1.2 -44.4Z"/>
+    <path class="foliage2" fill="#6f9c54" d="M3 -50Q-9 -52 -13 -64Q-16 -78 -8 -88Q-1 -96 4 -93Q10 -96 16 -88Q23 -78 19 -65Q15 -53 3 -50Z"/>
+    <path class="foliage2" fill="#6f9c54" d="M-10 -74Q-8 -84 -2 -86Q-5 -76 -10 -74ZM2 -92Q6 -96 10 -92Q6 -88 2 -92ZM13 -86Q19 -82 18 -73Q13 -79 13 -86Z"/>
+    <path fill="rgba(0,0,0,0.14)" d="M3 -50Q15 -53 19 -65Q23 -78 16 -88Q10 -96 4 -93Z"/>
+    <path fill="rgba(255,255,255,0.12)" d="M4 -93Q-1 -96 -8 -88Q-15 -79 -13 -69Q-9 -80 -2 -87Q1 -91 4 -93Z"/>
+  </g>
+  <!-- Variant 3: full mature birch, broad twin-lobed crown -->
+  <g class="variant">
+    <path class="light" fill="#e6e2d4" d="M-2.6 0Q-2.2 -30 -2 -54L1.6 -54Q2 -30 2.6 0Z"/>
+    <path fill="rgba(0,0,0,0.16)" d="M-0.2 -54L1.6 -54Q2 -30 2.6 0L0.8 0Z"/>
+    <path fill="rgba(0,0,0,0.30)" d="M-1.6 -22L0.4 -22L0.3 -19L-1.7 -19ZM-1 -38L1 -37.6L0.8 -35L-1.2 -35.4ZM-1.8 -50L0.2 -50L0.1 -48L-1.9 -48Z"/>
+    <path class="foliage2" fill="#6f9c54" d="M0 -50Q-18 -52 -24 -66Q-28 -80 -18 -90Q-9 -98 0 -94Q9 -98 18 -90Q28 -80 24 -66Q18 -52 0 -50Z"/>
+    <path class="foliage" fill="#55844a" d="M0 -78Q-9 -84 -10 -94Q-4 -100 0 -96Q4 -100 10 -94Q9 -84 0 -78Z"/>
+    <path class="foliage2" fill="#6f9c54" d="M-20 -76Q-17 -86 -10 -88Q-14 -78 -20 -76ZM13 -88Q20 -84 21 -74Q15 -80 13 -88Z"/>
+    <path fill="rgba(0,0,0,0.14)" d="M0 -50Q18 -52 24 -66Q28 -80 18 -90Q9 -98 0 -94Z"/>
+    <path fill="rgba(255,255,255,0.12)" d="M0 -94Q-9 -98 -18 -90Q-27 -81 -24 -69Q-19 -82 -10 -90Q-5 -93 0 -94Z"/>
+  </g>
+</svg>

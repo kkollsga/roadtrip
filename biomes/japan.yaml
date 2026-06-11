@@ -1,0 +1,86 @@
+# Roadtrip biome definition. Compiled by `node tools/build.js` into
+# js/gen/data.js — run the build (or its --watch mode) after editing.
+#
+# colors are full-daylight bases; the engine grades them per frame by time
+# of day, depth haze, vibrance and weather. Bands:
+#   near     items between the tree line and the road shoulder (depth-staggered)
+#   front    items in front of the road, nearest the camera
+#   midridge rare structures on the mid ridge (mesas, lighthouses...)
+#   forest   distant wooded bands; depth = how deep the woods reach
+# table entries: { asset, w } plus optional depth: [z0, z1] limiting the item
+# to a slice of the band (0 = far edge, 1 = nearest).
+name: japan
+order: 10
+terrain:
+  far: '#8a9bc0'
+  mid: '#6f9a78'
+  ground: '#7da877'
+  farAmp: 0.3
+  midAmp: 0.1
+  ridged: 0.85
+  snowcap: 0.45
+flora:
+  foliage: '#3a6d4e'
+  foliage2: '#4d7f5c'
+  trunk: '#4a3a32'
+  avenue: sakura
+light:
+  grade: { tint: '#f4cfd8', strength: 0.16, multiplier: 1 }
+weather:
+  clear: 5
+  overcast: 2
+  rain: 2
+  fog: 1.5
+near:
+  density: 3
+  table:
+    - { asset: sakura, w: 0.34 }
+    - { asset: pine, w: 0.24 }
+    - { asset: roundTree, w: 0.08 }
+    - { asset: teahouse, w: 0.08 }
+    - { asset: torii, w: 0.06 }
+    - { asset: bush, w: 0.2 }
+front:
+  density: 1.6
+  table:
+    - { asset: bush, w: 0.36 }
+    - { asset: tuft, w: 0.34 }
+    - { asset: sakura, w: 0.07 }
+    - { asset: rock, w: 0.23 }
+midridge:
+  density: 0.12
+  table:
+    - { asset: pagoda, w: 1 }
+forest:
+  depth: 4.5
+  table:
+    - { asset: sakura, w: 0.45 }
+    - { asset: pine, w: 0.55 }
+extras:
+  landmarks:
+    - fuji
+  occluder: 0.06
+variants:
+  - key: sakuraGrove
+    weight: 2
+    near:
+      density: 3.5
+      table:
+        - { asset: sakura, w: 0.68 }
+        - { asset: bush, w: 0.22 }
+        - { asset: teahouse, w: 0.1 }
+    forest: { depth: 6 }
+  - key: village
+    weight: 1.5
+    near:
+      density: 2.5
+      table:
+        - { asset: teahouse, w: 0.34 }
+        - { asset: sakura, w: 0.26 }
+        - { asset: torii, w: 0.14 }
+        - { asset: pine, w: 0.26 }
+    midridge: { density: 0.3 }
+  - key: lakeside
+    weight: 1.5
+    terrain: { water: 0.55, waterCol: '#4a7d96' }
+    near: { density: 4 }

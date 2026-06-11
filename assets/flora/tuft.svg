@@ -1,0 +1,30 @@
+<svg data-meters="0.3 0.6" xmlns="http://www.w3.org/2000/svg" viewBox="-48 -96 96 98">
+  <!-- Kenney-style grass clump: dense fan of tapered blades from the base. -->
+  <g class="variant">
+    <!-- back blades, secondary hue -->
+    <path class="foliage2" fill="#6f9c54" d="M-2 0Q-10 -38 -34 -68Q-18 -50 -8 -28Q-12 -50 -22 -78Q-6 -52 -2 -28Q-2 -54 4 -88Q8 -54 6 -26Q12 -50 28 -72Q14 -44 8 -16Q18 -42 38 -60Q20 -34 12 -10Z"/>
+    <!-- front blades, main hue -->
+    <path class="foliage" fill="#55844a" d="M0 0Q-8 -34 -26 -56Q-12 -40 -4 -22Q-8 -46 -14 -72Q-2 -44 0 -22Q-2 -50 2 -90Q8 -50 6 -20Q12 -44 24 -62Q12 -36 8 -12Q16 -36 32 -50Q18 -30 12 -8Z"/>
+    <!-- left highlight blade -->
+    <path fill="rgba(255,255,255,0.08)" d="M0 -22Q-2 -50 2 -90Q0 -52 2 -24Z"/>
+    <!-- right shaded blades -->
+    <path fill="rgba(0,0,0,0.14)" d="M12 -8Q16 -36 32 -50Q20 -32 16 -6Z"/>
+    <path fill="rgba(0,0,0,0.14)" d="M8 -12Q12 -36 24 -62Q14 -34 12 -10Z"/>
+  </g>
+  <g class="variant">
+    <!-- denser, shorter clump -->
+    <path class="foliage2" fill="#6f9c54" d="M-2 0Q-14 -32 -38 -54Q-20 -38 -10 -20Q-14 -42 -26 -66Q-6 -40 -2 -20Q-4 -44 6 -68Q8 -44 4 -18Q8 -42 24 -64Q10 -38 6 -16Q16 -36 38 -50Q18 -30 10 -8Z"/>
+    <path class="foliage" fill="#55844a" d="M0 0Q-12 -28 -28 -44Q-14 -32 -8 -16Q-12 -38 -20 -62Q-4 -36 -2 -14Q-4 -42 8 -76Q10 -42 4 -12Q8 -40 22 -58Q10 -34 8 -10Q16 -32 32 -46Q16 -28 10 -6Z"/>
+    <path fill="rgba(255,255,255,0.08)" d="M-2 -14Q-12 -38 -20 -62Q-8 -38 -4 -14Z"/>
+    <path fill="rgba(0,0,0,0.14)" d="M8 -10Q16 -32 32 -46Q20 -28 14 -6Z"/>
+    <path fill="rgba(0,0,0,0.14)" d="M4 -12Q8 -40 22 -58Q12 -34 10 -10Z"/>
+  </g>
+  <g class="variant">
+    <!-- wind-leaning clump -->
+    <path class="foliage2" fill="#6f9c54" d="M-2 0Q-12 -34 -28 -56Q-12 -40 -2 -26Q-4 -48 -12 -72Q2 -46 4 -24Q6 -50 18 -84Q14 -50 10 -22Q24 -46 42 -58Q24 -34 14 -12Z"/>
+    <path class="foliage" fill="#55844a" d="M0 0Q-10 -30 -22 -46Q-8 -34 -2 -20Q-4 -44 -8 -66Q4 -42 4 -20Q6 -46 16 -78Q14 -46 10 -18Q22 -40 36 -52Q22 -32 14 -10Z"/>
+    <path fill="rgba(255,255,255,0.08)" d="M4 -20Q-4 -44 -8 -66Q2 -42 6 -20Z"/>
+    <path fill="rgba(0,0,0,0.14)" d="M14 -10Q22 -32 36 -52Q24 -30 18 -8Z"/>
+    <path fill="rgba(0,0,0,0.14)" d="M10 -18Q6 -46 16 -78Q12 -46 12 -16Z"/>
+  </g>
+</svg>

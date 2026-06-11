@@ -5,214 +5,17 @@ window.Scene = (() => {
   const C = U.col;
   const { TAU } = U;
 
-  /* ---------------- biome definitions (colors are full-daylight bases) --- */
-  function tbl(pairs) {
-    let tot = 0; pairs.forEach(p => { tot += p[1]; });
-    let acc = 0;
-    return pairs.map(p => { acc += p[1]; return [p[0], acc / tot]; });
-  }
-  /* ======================= BIOME DEFINITIONS =======================
-     Each biome is ONE self-contained object; mk() fills defaults, so a
-     new biome only states what makes it different. Fields:
-
-     Terrain  far/mid/ground       layer base colors (full daylight)
-              farAmp/midAmp        ridge heights (fraction of viewport h)
-              ridged 0..1          0 = rolling hills, 1 = sharp alpine peaks
-              snowcap 0..1         permanent snow on ridge tops
-              water 0..1           open sea behind the mid layer
-              waterCol             sea color (ice drifts in cold seas)
-     Flora    fol/fol2/trunk       foliage + bark colors
-              density + items      tree-line items (weighted table via tbl)
-              fgDensity + fgItems  foreground-strip items
-              midDensity/midItems  rare structures on the mid ridge
-              avenue               tree used for planted roadside avenues
-     Light    grade {tint,s,lm}    color cast, strength, light multiplier
-              aurora 0..1          northern lights on clear nights
-     Weather  weather              [[type, weight], ...] for auto mode;
-                                   types: clear overcast rain snow fog
-     Extras   landmarks            famous-silhouette pool for this biome
-              occluder 0..1        near hillsides that briefly hide the road
-  ================================================================== */
-  function mk(def) {
-    return Object.assign({
-      far: C('#7d92aa'), mid: C('#8fae70'), ground: C('#79a35d'),
-      fol: C('#55844a'), fol2: C('#6f9c54'), trunk: C('#6b5340'),
-      farAmp: 0.10, midAmp: 0.06, ridged: 0, snowcap: 0,
-      water: 0, waterCol: C('#3c6f95'), aurora: 0, occluder: 0,
-      landmarks: [], grade: { tint: C('#ffffff'), s: 0, lm: 1 },
-      avenue: 'roundTree',
-      density: 3, items: tbl([['roundTree', 1]]),
-      fgDensity: 2, fgItems: tbl([['tuft', 1]]),
-      midDensity: 0, midItems: null,
-      forestDepth: 0, depthItems: tbl([['pine', .6], ['roundTree', .4]]),
-      windfarm: 0, // chance of a wind farm (6-10 turbines at varying depth)
-      weather: [['clear', 5], ['overcast', 2], ['rain', 1.5], ['fog', 0.8]],
-    }, def);
-  }
-
-  const B = {
-    plains: mk({
-      far: C('#7d92aa'), mid: C('#8fae70'), ground: C('#79a35d'),
-      fol: C('#55844a'), fol2: C('#6f9c54'), trunk: C('#6b5340'),
-      farAmp: 0.10, midAmp: 0.055, snowcap: 0, water: 0, waterCol: C('#3c6f95'), aurora: 0,
-      ridged: 0, occluder: 0, landmarks: ['kilimanjaro', 'devilsTower', 'oldFaithful'],
-      grade: { tint: C('#ffe3a8'), s: 0.12, lm: 1.0 }, avenue: 'roundTree',
-      windfarm: 0.55,
-      density: 3.0, items: tbl([['roundTree', .44], ['bush', .20], ['tuft', .15], ['pine', .06], ['barn', .07], ['sign', .05], ['rock', .03]]),
-      fgDensity: 2.2, fgItems: tbl([['tuft', .52], ['bush', .26], ['roundTree', .12], ['rock', .1]]),
-      forestDepth: 0.5,
-      midDensity: 0, midItems: null,
-      weather: [['clear', 5], ['overcast', 2], ['rain', 2], ['fog', 0.5]],
-      variants: [
-        [{ key: 'groves', density: 6.5, forestDepth: 2, items: tbl([['roundTree', .5], ['pine', .2], ['bush', .2], ['tuft', .1]]) }, 2],
-        [{ key: 'farmland', density: 3.5, windfarm: 0.95, items: tbl([['barn', .30], ['roundTree', .28], ['tuft', .26], ['sign', .16]]) }, 2],
-        [{ key: 'lakeside', water: 0.55, waterCol: C('#447a99'), farAmp: 0.07 }, 1.5],
-      ],
-    }),
-    forest: mk({
-      far: C('#5e7b94'), mid: C('#557e62'), ground: C('#47714f'),
-      fol: C('#2f5d3e'), fol2: C('#3d7050'), trunk: C('#4a3a2c'),
-      farAmp: 0.14, midAmp: 0.07, snowcap: 0, water: 0, waterCol: C('#3c6f95'), aurora: 0,
-      ridged: 0.15, occluder: 0.035, landmarks: [],
-      grade: { tint: C('#7fae84'), s: 0.14, lm: 0.94 }, avenue: 'roundTree',
-      density: 10, items: tbl([['pine', .50], ['roundTree', .25], ['birch', .14], ['deadTree', .04], ['bush', .05], ['cabin', .02]]),
-      fgDensity: 2.5, fgItems: tbl([['bush', .42], ['tuft', .28], ['pine', .15], ['rock', .15]]),
-      forestDepth: 5, depthItems: tbl([['pine', .7], ['roundTree', .3]]),
-      midDensity: 0, midItems: null,
-      weather: [['clear', 5], ['overcast', 2], ['rain', 2], ['fog', 1]],
-      variants: [
-        [{ key: 'clearing', density: 2.2, forestDepth: 2, items: tbl([['bush', .35], ['tuft', .25], ['roundTree', .2], ['deadTree', .1], ['rock', .1]]) }, 2],
-        [{ key: 'lakeside', water: 0.6, waterCol: C('#3f7390'), density: 6 }, 1.5],
-      ],
-    }),
-    desert: mk({
-      far: C('#b9805a'), mid: C('#d3a06a'), ground: C('#dcb077'),
-      fol: C('#5e7d4a'), fol2: C('#8a6a4a'), trunk: C('#7a5a3e'),
-      farAmp: 0.06, midAmp: 0.04, snowcap: 0, water: 0, waterCol: C('#3c6f95'), aurora: 0,
-      ridged: 0, occluder: 0, landmarks: ['monumentValley', 'delicateArch', 'uluru', 'namibDune', 'bryceHoodoos'],
-      grade: { tint: C('#ffb24d'), s: 0.22, lm: 1.06 }, avenue: 'palm',
-      density: 1.6, items: tbl([['cactus', .45], ['bush', .20], ['rock', .20], ['tuft', .10], ['sign', .05]]),
-      fgDensity: 1.2, fgItems: tbl([['rock', .45], ['tuft', .28], ['bush', .15], ['cactus', .12]]),
-      midDensity: 0.55, midItems: tbl([['mesa', 1]]),
-      weather: [['clear', 9], ['overcast', 0.6]],
-      baseW: 6, // deserts stay deserts — less internal variety
-      variants: [
-        [{ key: 'mesaField', midDensity: 1.3 }, 2],
-        [{ key: 'dunes', density: 0.7, farAmp: 0.05, items: tbl([['tuft', .4], ['rock', .35], ['bush', .25]]) }, 2],
-      ],
-    }),
-    mountains: mk({
-      far: C('#8c9cb2'), mid: C('#67788a'), ground: C('#5e7a52'),
-      fol: C('#35594a'), fol2: C('#42685a'), trunk: C('#4f4438'),
-      farAmp: 0.30, midAmp: 0.13, snowcap: 1, water: 0, waterCol: C('#3c6f95'), aurora: 0,
-      ridged: 1, occluder: 0.10, landmarks: ['matterhorn', 'everest', 'halfDome', 'glacier'],
-      grade: { tint: C('#b9c8e8'), s: 0.15, lm: 1.0 }, avenue: 'pine',
-      density: 3.2, items: tbl([['pine', .62], ['rock', .26], ['deadTree', .06], ['tuft', .06]]),
-      fgDensity: 1.6, fgItems: tbl([['rock', .52], ['tuft', .36], ['pine', .12]]),
-      forestDepth: 1.5,
-      midDensity: 0, midItems: null,
-      weather: [['clear', 5], ['overcast', 2], ['snow', 2], ['fog', 1]],
-      variants: [
-        [{ key: 'alpineLake', water: 0.5, waterCol: C('#3f7a90') }, 1.5],
-        [{ key: 'forestedValley', farAmp: 0.20, midAmp: 0.09, density: 6, forestDepth: 5, items: tbl([['pine', .8], ['rock', .12], ['tuft', .08]]) }, 2],
-      ],
-    }),
-    coast: mk({
-      far: C('#6f93ae'), mid: C('#cbb98a'), ground: C('#86a868'),
-      fol: C('#4e7d4a'), fol2: C('#6f9c54'), trunk: C('#7a6a4e'),
-      farAmp: 0.02, midAmp: 0.03, snowcap: 0, water: 1, waterCol: C('#3c6f95'), aurora: 0,
-      ridged: 0, occluder: 0, landmarks: ['hawaii', 'etna'],
-      grade: { tint: C('#b8e4de'), s: 0.15, lm: 1.04 }, avenue: 'palm',
-      density: 1.8, items: tbl([['palm', .42], ['bush', .20], ['tuft', .20], ['rock', .12], ['sign', .06]]),
-      fgDensity: 1.6, fgItems: tbl([['tuft', .5], ['rock', .18], ['bush', .17], ['palm', .15]]),
-      midDensity: 0.12, midItems: tbl([['lighthouse', 1]]),
-      weather: [['clear', 5], ['overcast', 2], ['rain', 2], ['fog', 1]],
-      variants: [
-        [{ key: 'headland', water: 0.3, density: 3.2, farAmp: 0.07, midDensity: 0 }, 2],
-        [{ key: 'palmGrove', density: 4, items: tbl([['palm', .7], ['bush', .2], ['tuft', .1]]) }, 1.5],
-      ],
-    }),
-    tundra: mk({
-      far: C('#9fb3c8'), mid: C('#c2cfdc'), ground: C('#dde7f0'),
-      fol: C('#2e4a44'), fol2: C('#43555a'), trunk: C('#5a4a3c'),
-      farAmp: 0.15, midAmp: 0.06, snowcap: 0.9, water: 0.85, waterCol: C('#28465e'), aurora: 1,
-      ridged: 0.45, occluder: 0.03, landmarks: ['denali', 'eyjafjallajokull'],
-      grade: { tint: C('#9fc0e4'), s: 0.22, lm: 0.92 }, avenue: 'pine',
-      density: 1.1, items: tbl([['deadTree', .38], ['pine', .30], ['rock', .22], ['cabin', .10]]),
-      fgDensity: 0.6, fgItems: tbl([['rock', .6], ['tuft', .3], ['deadTree', .1]]),
-      midDensity: 0, midItems: null,
-      weather: [['clear', 5], ['overcast', 2], ['snow', 2], ['fog', 1]],
-      variants: [
-        [{ key: 'inland', water: 0, density: 1.8 }, 2.5],
-        [{ key: 'iceShelf', water: 0.95, density: 0.5 }, 1.5],
-      ],
-    }),
-    redwood: mk({
-      far: C('#5e7e88'), mid: C('#41614f'), ground: C('#3c5a44'),
-      fol: C('#2c5a3c'), fol2: C('#3e7050'), trunk: C('#7a4634'),
-      farAmp: 0.13, midAmp: 0.075, snowcap: 0, water: 0, waterCol: C('#3c6f95'), aurora: 0,
-      ridged: 0.1, occluder: 0.05, landmarks: ['halfDome'],
-      grade: { tint: C('#9bbf9e'), s: 0.18, lm: 0.93 }, avenue: 'pine',
-      density: 5.5, items: tbl([['redwood', .42], ['pine', .18], ['fern', .16], ['roundTree', .10], ['bush', .14]]),
-      fgDensity: 2.4, fgItems: tbl([['fern', .46], ['bush', .28], ['tuft', .18], ['pine', .08]]),
-      forestDepth: 4, depthItems: tbl([['pine', .8], ['roundTree', .2]]),
-      midDensity: 0, midItems: null,
-      weather: [['clear', 4], ['overcast', 2.5], ['rain', 2], ['fog', 2.5]],
-      baseW: 6, // the groves go on and on — low variety, that's the point
-      variants: [
-        [{ key: 'clearing', density: 1.8, items: tbl([['fern', .4], ['bush', .3], ['roundTree', .2], ['rock', .1]]) }, 1.5],
-      ],
-    }),
-    fjord: mk({ // Norway: sheer snowcapped walls dropping into a deep teal sea
-      far: C('#7c93ad'), mid: C('#557a58'), ground: C('#5d8455'),
-      fol: C('#3a6a48'), fol2: C('#4c7f55'), trunk: C('#54483a'),
-      farAmp: 0.34, midAmp: 0.11, snowcap: 0.9, water: 0.9, waterCol: C('#2f5c70'), aurora: 0.8,
-      ridged: 0.8, occluder: 0.07, landmarks: ['glacier'],
-      grade: { tint: C('#a8ccd4'), s: 0.16, lm: 0.97 }, avenue: 'pine',
-      density: 3.2, items: tbl([['pine', .42], ['birch', .22], ['cabin', .10], ['rock', .12], ['bush', .14]]),
-      fgDensity: 1.8, fgItems: tbl([['tuft', .45], ['rock', .27], ['bush', .18], ['pine', .10]]),
-      forestDepth: 2.5,
-      midDensity: 0.08, midItems: tbl([['lighthouse', 1]]),
-      weather: [['clear', 4], ['overcast', 2.5], ['rain', 2], ['snow', 1.5], ['fog', 1.5]],
-      variants: [
-        [{ key: 'innerValley', water: 0, density: 4.5, midAmp: 0.13 }, 2],
-        [{ key: 'fishingVillage', midDensity: 0.3, density: 2.5, items: tbl([['cabin', .4], ['pine', .3], ['rock', .15], ['bush', .15]]) }, 1.5],
-      ],
-    }),
-    tropics: mk({ // Brazil: turquoise bay, bright sand, dense rainforest
-      far: C('#6a9a8c'), mid: C('#e6d3a0'), ground: C('#4d8a52'),
-      fol: C('#1f6b3a'), fol2: C('#2f8a4a'), trunk: C('#6a553e'),
-      farAmp: 0.10, midAmp: 0.04, snowcap: 0, water: 0.9, waterCol: C('#2a9db0'), aurora: 0,
-      ridged: 0.25, occluder: 0.04, landmarks: ['sugarloaf'],
-      grade: { tint: C('#e8f0a8'), s: 0.15, lm: 1.05 }, avenue: 'palm',
-      density: 7, items: tbl([['canopyTree', .35], ['palm', .30], ['fern', .15], ['bush', .12], ['roundTree', .08]]),
-      fgDensity: 2.6, fgItems: tbl([['fern', .34], ['tuft', .26], ['bush', .22], ['palm', .18]]),
-      forestDepth: 2, depthItems: tbl([['canopyTree', .5], ['roundTree', .3], ['palm', .2]]),
-      midDensity: 0, midItems: null,
-      weather: [['clear', 5], ['overcast', 1.5], ['rain', 3]],
-      variants: [
-        [{ key: 'jungle', water: 0, density: 9.5, mid: C('#3f7a52'), midAmp: 0.07, forestDepth: 6 }, 3],
-        [{ key: 'cove', water: 0.95, density: 4, items: tbl([['palm', .6], ['fern', .2], ['bush', .2]]) }, 1.5],
-      ],
-    }),
-    japan: mk({ // Japan: sakura in bloom, temple roofs, dramatic peaks
-      far: C('#8a9bc0'), mid: C('#6f9a78'), ground: C('#7da877'),
-      fol: C('#3a6d4e'), fol2: C('#4d7f5c'), trunk: C('#4a3a32'),
-      farAmp: 0.30, midAmp: 0.10, ridged: 0.85, snowcap: 0.45,
-      occluder: 0.06, landmarks: ['fuji'],
-      grade: { tint: C('#f4cfd8'), s: 0.16, lm: 1.0 }, avenue: 'sakura',
-      density: 6, items: tbl([['sakura', .34], ['pine', .24], ['roundTree', .08], ['teahouse', .08], ['torii', .06], ['bush', .20]]),
-      fgDensity: 2.2, fgItems: tbl([['bush', .36], ['tuft', .34], ['sakura', .15], ['rock', .15]]),
-      midDensity: 0.12, midItems: tbl([['pagoda', 1]]),
-      forestDepth: 4.5, depthItems: tbl([['sakura', .45], ['pine', .55]]),
-      weather: [['clear', 5], ['overcast', 2], ['rain', 2], ['fog', 1.5]],
-      variants: [
-        [{ key: 'sakuraGrove', density: 8.5, forestDepth: 6, items: tbl([['sakura', .68], ['bush', .22], ['teahouse', .10]]) }, 2],
-        [{ key: 'village', density: 4.5, midDensity: 0.3, items: tbl([['teahouse', .34], ['sakura', .26], ['torii', .14], ['pine', .26]]) }, 1.5],
-        [{ key: 'lakeside', water: 0.55, waterCol: C('#4a7d96'), density: 4 }, 1.5],
-      ],
-    }),
+  /* ---------------- biome profiles (compiled from biomes/*.yaml) --------
+     tools/build.js flattens each YAML into engine fields and bakes the
+     weighted item tables into cumulative form: [asset, cum] or, with a
+     depth limit, [asset, cum, z0, z1]. Hex color strings become [r,g,b]
+     here, once at boot. */
+  const hydrate = o => {
+    if (Array.isArray(o)) { o.forEach((e, i) => { o[i] = hydrate(e); }); return o; }
+    if (o && typeof o === 'object') { for (const k in o) o[k] = hydrate(o[k]); return o; }
+    return (typeof o === 'string' && o[0] === '#') ? C(o) : o;
   };
+  const B = hydrate(JSON.parse(JSON.stringify(window.GEN.biomes)));
   const BIOME_NAMES = Object.keys(B);
 
   /* Each biome's `variants` (plus an implicit 'base' weighted baseW, default 4)
@@ -230,19 +33,17 @@ window.Scene = (() => {
     base.profiles.forEach(p => { p.cum /= tot; });
   });
 
-  const TYPES = { // size range as fraction of viewport height
-    pine: { s: [0.09, 0.15] }, roundTree: { s: [0.09, 0.14] },
-    birch: { s: [0.08, 0.12] }, deadTree: { s: [0.06, 0.10] },
-    cactus: { s: [0.05, 0.10] }, palm: { s: [0.10, 0.14] },
-    bush: { s: [0.030, 0.050] }, tuft: { s: [0.020, 0.035] },
-    rock: { s: [0.025, 0.050] }, barn: { s: [0.06, 0.105] },
-    cabin: { s: [0.05, 0.09] }, turbine: { s: [0.20, 0.28] },
-    lighthouse: { s: [0.14, 0.18] }, sign: { s: [0.045, 0.055] },
-    mesa: { s: [0.16, 0.26] },
-    redwood: { s: [0.34, 0.56] }, fern: { s: [0.030, 0.050] },
-    canopyTree: { s: [0.11, 0.17] },
-    sakura: { s: [0.07, 0.12] }, teahouse: { s: [0.065, 0.10] },
-    torii: { s: [0.07, 0.10] }, pagoda: { s: [0.13, 0.18] },
+  /* ---- real-world scale ----
+     Every asset carries its true height range in meters (Assets.sizes,
+     from the SVGs' data-meters / the animated modules). On screen,
+     pixels = meters * METER * h * parallax: parallax is 1/distance in
+     this engine, so size falls off with distance exactly like position
+     does. METER is calibrated against the car (~4.5 m long, ~1.5 m tall)
+     at road parallax 1. Landmarks (LM_CFG) are exempt postcards. */
+  const METER = 0.047;
+  const itemMeters = (type, sf) => {
+    const s = Assets.sizes[type];
+    return s ? U.lerp(s[0], s[1], sf) : 8;
   };
 
   /* landmark display size (fraction of h) and baseline (fraction of h) */
@@ -386,9 +187,16 @@ window.Scene = (() => {
       const table = prof[tableKey];
       if (!table) continue;
       const pickR = r();
-      let type = table[table.length - 1][0];
-      for (const e of table) if (pickR <= e[1]) { type = e[0]; break; }
-      items.push({ x: ci * chunkW + r() * chunkW, sf: r(), v: r(), prof, type });
+      let pick = table[table.length - 1];
+      for (const e of table) if (pickR <= e[1]) { pick = e; break; }
+      // an entry may confine itself to a slice of the band's depth range:
+      // [asset, cum, z0, z1] limits z; plain entries roam the whole band
+      const zr = r();
+      items.push({
+        x: ci * chunkW + r() * chunkW, sf: r(), v: r(),
+        z: pick.length > 2 ? pick[2] + zr * (pick[3] - pick[2]) : zr,
+        prof, type: pick[0],
+      });
     }
     itemCache.set(key, items);
     return items;
@@ -406,10 +214,11 @@ window.Scene = (() => {
     const effD = d => Math.min(0.96, d + fogW * (0.22 + d * 1.3));
     const tint = (base, d, snowMix) => {
       let c = Palette.lit(base, pal, light);
-      // near-camera vibrance: colors stay rich up close and bleed away
-      // with depth (full boost at d=0, gone past the tree line)
-      const near = U.clamp(1 - d / 0.22, 0, 1);
-      if (near > 0) c = U.sat(c, 1 + 0.75 * near * (0.35 + 0.65 * light));
+      // vibrance peaks at the road's depth and falls away both into the
+      // distance (colors bleed into the haze) and toward the extreme
+      // foreground (slightly muted again, like a lens focused on the road)
+      const vib = U.clamp(1 - Math.abs(d - 0.07) / 0.15, 0, 1);
+      if (vib > 0) c = U.sat(c, 1 + 0.75 * vib * (0.35 + 0.65 * light));
       if (snowC > 0 && snowMix) c = U.mix(c, snowLit, snowC * snowMix);
       return U.css(U.mix(c, pal.fog, effD(d)));
     };
@@ -512,8 +321,6 @@ window.Scene = (() => {
         const dir = env.sunX !== undefined ? (env.sunX > w * 0.5 ? 1 : -1)
           : env.moonX !== undefined ? (env.moonX > w * 0.5 ? 1 : -1) : -1;
         const fade = 1 - effD(d) * 0.85; // facets soften into the haze
-        // shade a band hugging the ridge line, not a full-height curtain
-        const fDepth = effN(cwx, ampKey) * h * ampMul * 0.6 + h * 0.02;
         const thr = 0.28 + d * 0.35; // distant layers facet less
         const fv = new Array(pts.length - 1);
         for (let i = 0; i < pts.length - 1; i++) {
@@ -521,7 +328,9 @@ window.Scene = (() => {
           fv[i] = Math.abs(f) < thr ? 0 : Math.round(f * 2) / 2;
         }
         // contiguous equal-toned runs become ONE polygon: translucent quads
-        // sharing edges would double-blend into hairline seams
+        // sharing edges would double-blend into hairline seams. Each run
+        // shades the WHOLE face from crest to base (nearer layers cover the
+        // rest) — a band stopping mid-slope reads as a floating grey patch.
         let i = 0;
         while (i < fv.length) {
           const f = fv[i];
@@ -529,12 +338,13 @@ window.Scene = (() => {
           let j = i;
           while (j + 1 < fv.length && fv[j + 1] === f) j++;
           ctx.fillStyle = f > 0
-            ? `rgba(255,252,244,${(0.14 * f * light * fade).toFixed(3)})`
-            : `rgba(10,14,26,${(-0.22 * f * (0.3 + 0.7 * light) * fade).toFixed(3)})`;
+            ? `rgba(255,252,244,${(0.11 * f * light * fade).toFixed(3)})`
+            : `rgba(10,14,26,${(-0.17 * f * (0.3 + 0.7 * light) * fade).toFixed(3)})`;
           ctx.beginPath();
           ctx.moveTo(i * step, pts[i]);
           for (let q = i + 1; q <= j + 1; q++) ctx.lineTo(q * step, pts[q]);
-          for (let q = j + 1; q >= i; q--) ctx.lineTo(q * step, Math.min(h, pts[q] + fDepth));
+          ctx.lineTo((j + 1) * step, h);
+          ctx.lineTo(i * step, h);
           ctx.closePath();
           ctx.fill();
           i = j + 1;
@@ -557,21 +367,25 @@ window.Scene = (() => {
         pink: tint(C('#f0b6c9'), d, 0.5),
         pink2: tint(C('#e094b2'), d, 0.5),
         fill: tint(U.mix(bb.far, bb.mid, 0.4), d, 0.5),
+        tan: tint(C('#c89e62'), d, 0.35),    // fauna hides
+        brown: tint(C('#7a5a3c'), d, 0),
+        gray: tint(C('#8e8a84'), d, 0.4),
         strata: tint(U.scale(U.mix(bb.far, bb.mid, 0.4), 0.8), d, 0),
         glowA,
       };
     }
 
-    function drawItemSet(p, seed, chunkW, densityKey, tableKey, d, groundY, sizeMul) {
+    function drawItemSet(p, seed, chunkW, densityKey, tableKey, d, groundY, marg) {
       const colorSets = {};
       const lx0 = worldX * p;
-      for (let ci = Math.floor((lx0 - 80) / chunkW); ci <= (lx0 + w + 80) / chunkW; ci++) {
+      const M = h * METER * p; // px per real-world meter on this layer
+      const mg = marg || 90;
+      for (let ci = Math.floor((lx0 - mg) / chunkW); ci <= (lx0 + w + mg) / chunkW; ci++) {
         const items = chunkItems(seed, ci, p, chunkW, densityKey, tableKey);
         for (const it of items) {
           const sx = it.x - lx0;
-          if (sx < -90 || sx > w + 90) continue;
-          const ty = TYPES[it.type];
-          const size = h * U.lerp(ty.s[0], ty.s[1], it.sf) * (sizeMul || 1);
+          if (sx < -mg || sx > w + mg) continue;
+          const size = itemMeters(it.type, it.sf) * M;
           const c = colorSets[it.prof.key] || (colorSets[it.prof.key] = colorsFor(it.prof, d));
           const y = groundY(it.x, sx, it);
           if (it.type === 'mesa') Assets.mesa(ctx, sx, y, size * 2.8, size, c, it.v);
@@ -579,6 +393,42 @@ window.Scene = (() => {
         }
       }
     }
+
+    /* ---- near-field items: a continuous depth band around the road ----
+       Each item lands at its own depth z in [0,1]; parallax, ground y,
+       size and haze all derive from it. The list is painted sorted by
+       ground y, so a nearer item always covers a farther one. Colors are
+       shared across a few quantized depth levels. */
+    function nearFieldItems(seed, chunkW, densityKey, tableKey, p0, p1, d0, d1, groundAt) {
+      const list = [];
+      const colorSets = {};
+      const m = 260; // generous margin: big trees would pop in late otherwise
+      const i0 = Math.floor((worldX - m / p0) / chunkW);
+      const i1 = Math.floor((worldX + (w + m) / p0) / chunkW);
+      for (let ci = i0; ci <= i1; ci++) {
+        const items = chunkItems(seed, ci, 1, chunkW, densityKey, tableKey);
+        for (const it of items) {
+          const z = it.z;
+          const p = U.lerp(p0, p1, z);
+          const sx = (it.x - worldX) * p;
+          if (sx < -m || sx > w + m) continue;
+          const zq = Math.round(z * 4) / 4;
+          const ck = it.prof.key + ':' + zq;
+          const c = colorSets[ck] || (colorSets[ck] = colorsFor(it.prof, U.lerp(d0, d1, zq)));
+          // true size: meters at this item's own depth
+          const size = itemMeters(it.type, it.sf) * h * METER * p;
+          list.push({ y: groundAt(sx, z), sx, size, c, it });
+        }
+      }
+      return list;
+    }
+    const drawNearField = list => {
+      list.sort((a2, b2) => a2.y - b2.y); // lower base = nearer = painted later
+      for (const o of list) {
+        if (o.draw) o.draw();
+        else Assets[o.it.type](ctx, o.sx, o.y, o.size, o.c, o.it.v, time);
+      }
+    };
 
     /* ================= layers, back to front ================= */
 
@@ -650,12 +500,53 @@ window.Scene = (() => {
             if (iprof.water < 0.3) continue;
             if (ix < -120 || ix > w + 120) continue;
             const iy = U.lerp(top + (bot - top) * 0.30, bot - 3, fr);
-            const s = h * (0.020 + 0.058 * fr) * (0.75 + vv * 0.5);
-            if (kind < 0.35) Assets.floe(ctx, ix, iy, s * 2.0, iceC, vv);
-            else Assets.iceberg(ctx, ix, iy, s, iceC, vv);
+            const pIce = U.lerp(0.06, 0.22, fr); // lower in the band = nearer
+            if (kind < 0.35) Assets.floe(ctx, ix, iy, itemMeters('floe', vv) * h * METER * pIce * 2.0, iceC, vv);
+            else Assets.iceberg(ctx, ix, iy, itemMeters('iceberg', vv) * h * METER * pIce, iceC, vv);
           }
         }
         ctx.restore();
+      }
+    }
+
+    // horizon set pieces: true-scale mesas (90-220 m) far out where their
+    // bulk reads as distance, not as a wall
+    drawItemSet(0.03, 999, 1100, 'horizonDensity', 'horizonItems', 0.58,
+      ix => h * 0.652 - h * 0.010 * U.fbm(ix / 240, 99, 2), 900);
+
+    // wind farms: true-scale turbines (110-150 m) far out on the horizon
+    // ridges — or offshore — drifting past slowly in groups of 6-10
+    {
+      const FARM_W = 40000;
+      const i0f = Math.floor((worldX - 400 / 0.028) / FARM_W);
+      const i1f = Math.floor((worldX + (w + 400) / 0.028) / FARM_W);
+      const farm = [];
+      for (let ci = i0f; ci <= i1f; ci++) {
+        const r = U.rng(U.hash2(ci, 3331));
+        const frs = resolve(ci * FARM_W + FARM_W / 2);
+        const fside = r() < frs.t ? frs.b : frs.a;
+        const fprof = r() < fside.vt ? fside.p2 : fside.p1;
+        const gate = r(), centerR = r();
+        if (gate > (fprof.windfarm || 0)) continue;
+        const cx = ci * FARM_W + (0.3 + centerR * 0.4) * FARM_W;
+        const n = 6 + Math.floor(r() * 5);
+        for (let k = 0; k < 10; k++) {
+          const tx0 = r(), pz = r(), jit = r(), szR = r(), vv = r();
+          if (k >= n) continue;
+          const p = 0.028 + pz * 0.032;
+          const sx = (cx + (tx0 - 0.5) * 26000 - worldX) * p;
+          const s = U.lerp(110, 150, szR) * h * METER * p;
+          if (sx < -s || sx > w + s) continue;
+          farm.push({
+            p, sx, s, v: vv, prof: fprof,
+            y: h * (0.698 - (0.060 - p) * 1.3 + (jit - 0.5) * 0.008),
+            d: U.lerp(0.64, 0.48, (p - 0.028) / 0.032),
+          });
+        }
+      }
+      farm.sort((a3, b3) => a3.p - b3.p); // far to near
+      for (const t2 of farm) {
+        Assets.turbine(ctx, t2.sx, t2.y, t2.s, colorsFor(t2.prof, t2.d), t2.v, time);
       }
     }
 
@@ -666,6 +557,8 @@ window.Scene = (() => {
       for (let ci = Math.floor((lx0 - 700) / chunkW); ci <= (lx0 + w + 700) / chunkW; ci++) {
         const r = U.rng(U.hash2(ci, 777));
         if (r() > 0.62) continue;
+        // never two landmarks side by side: twin Kilimanjaros look wrong
+        if (U.rng(U.hash2(ci - 1, 777))() <= 0.62) continue;
         const lwx = (ci * chunkW + chunkW / 2) / p;
         const lbi = biomeAt(lwx);
         const name = r() < lbi.t ? lbi.b : lbi.a;
@@ -697,53 +590,13 @@ window.Scene = (() => {
       return h * 0.725 - amp * U.fbm(ix / 360, 33, 3) + 2;
     });
 
-    // wind farms: turbines come in groups of 6-10, each at its own
-    // distance from the road (own parallax, size and haze)
-    const farmTurbines = [];
-    {
-      const FARM_W = 12000;
-      const i0f = Math.floor((worldX - 4000) / FARM_W);
-      const i1f = Math.floor((worldX + w + 4000) / FARM_W);
-      for (let ci = i0f; ci <= i1f; ci++) {
-        const r = U.rng(U.hash2(ci, 3331));
-        const frs = resolve(ci * FARM_W + FARM_W / 2);
-        const fside = r() < frs.t ? frs.b : frs.a;
-        const fprof = r() < fside.vt ? fside.p2 : fside.p1;
-        const gate = r(), centerR = r();
-        if (gate > (fprof.windfarm || 0)) continue;
-        const cx = ci * FARM_W + (0.25 + centerR * 0.5) * FARM_W;
-        const n = 6 + Math.floor(r() * 5);
-        for (let k = 0; k < 10; k++) {
-          const tx0 = r(), pz = r(), jit = r(), szR = r(), vv = r();
-          if (k >= n) continue;
-          const p = 0.25 + pz * 0.6;
-          const nearX = cx + (tx0 - 0.5) * 2800;
-          const sx = (nearX - worldX) * p;
-          const s = h * (0.20 + szR * 0.08) * (p / 0.5);
-          if (sx < -s || sx > w + s) continue;
-          farmTurbines.push({
-            p, sx, s, v: vv, prof: fprof,
-            y: h * (0.695 + ((p - 0.2) / 0.65) * 0.105 + (jit - 0.5) * 0.012),
-            d: U.lerp(0.36, 0.08, (p - 0.2) / 0.65),
-          });
-        }
-      }
-      farmTurbines.sort((a3, b3) => a3.p - b3.p);
-    }
-    const drawFarm = (pMin, pMax) => {
-      for (const t2 of farmTurbines) {
-        if (t2.p < pMin || t2.p >= pMax) continue;
-        Assets.turbine(ctx, t2.sx, t2.y, t2.s, colorsFor(t2.prof, t2.d), t2.v, time);
-      }
-    };
-
     // distant forest bands: wooded hills stretching far away.
     // Depth of forest (forestDepth) is its own variable biome layer.
-    drawItemSet(0.33, 611, 300, 'forestDepth', 'depthItems', 0.30,
-      ix => h * 0.752 - h * 0.018 * U.fbm(ix / 300, 61, 2), 0.55);
-    drawItemSet(0.41, 622, 300, 'forestDepth', 'depthItems', 0.26,
-      ix => h * 0.774 - h * 0.016 * U.fbm(ix / 280, 62, 2), 0.75);
-    drawFarm(0, 0.45); // distant turbines stand behind the tree line
+    // True-scale trees demand genuinely distant parallax to read as far.
+    drawItemSet(0.14, 611, 300, 'forestDepth', 'depthItems', 0.30,
+      ix => h * 0.752 - h * 0.018 * U.fbm(ix / 300, 61, 2));
+    drawItemSet(0.22, 622, 300, 'forestDepth', 'depthItems', 0.26,
+      ix => h * 0.774 - h * 0.016 * U.fbm(ix / 280, 62, 2));
 
     // tree line ridge (the ground band the road sits in)
     const treeG = (ix) => h * 0.795 - h * 0.022 * U.fbm(ix / 260, 44, 2);
@@ -754,8 +607,6 @@ window.Scene = (() => {
     ctx.lineTo(w + 10, h);
     ctx.closePath();
     ctx.fill();
-    drawItemSet(0.5, 444, 460, 'density', 'items', 0.18, ix => treeG(ix) + 2);
-    drawFarm(0.45, 2); // near turbines rise in front of the tree line
 
     // road elevation profile: mountain roads rise and (mostly) dip
     const hillW = (biC.a === 'mountains' ? 1 - biC.t : 0) + (biC.b === 'mountains' ? biC.t : 0)
@@ -775,7 +626,17 @@ window.Scene = (() => {
     ctx.closePath();
     ctx.fill();
 
-    const nearFurniture = []; // proximal-side items, drawn in front of the car
+    // near field behind the road: items at every depth from the tree line
+    // down to the far shoulder (forest biomes get real staggered depth)
+    {
+      const behind = nearFieldItems(444, 660, 'density', 'items',
+        0.5, 0.95, 0.18, 0.085,
+        (sx, z) => U.lerp(treeG(worldX * 0.5 + sx), rTopAt(sx) + h * 0.004, z));
+      drawNearField(behind);
+    }
+
+    const nearFurniture = []; // {y, draw}: proximal-side items, merged into
+    // the front near field so paint order follows ground position
 
     /* roadside furniture comes in long stretches that simply start and stop:
        power wires, street lamps, an avenue of planted trees, or nothing. */
@@ -783,7 +644,7 @@ window.Scene = (() => {
       const FSEG = 5200;
       const ftype = i => {
         const r = U.hash1(i * 7919 + 37);
-        return r < 0.34 ? 'wires' : r < 0.58 ? 'plain' : r < 0.79 ? 'avenue' : 'lights';
+        return r < 0.30 ? 'wires' : r < 0.74 ? 'plain' : r < 0.92 ? 'avenue' : 'lights';
       };
       const fAt = x => ftype(Math.floor(x / FSEG));
       const d = effD(0.09);
@@ -802,7 +663,7 @@ window.Scene = (() => {
           if (fAt(wx1) !== 'wires') continue;
           const si = Math.floor(wx1 / FSEG);
           const side = U.hash1(si * 511 + 9) < 0.6 ? 0 : 1;
-          const H = h * (0.14 + U.hash1(si * 727 + 3) * 0.055);
+          const H = (9 + U.hash1(si * 727 + 3) * 2) * h * METER; // 9-11 m
           const x1 = wx1 - worldX;
           const baseY = side === 0
             ? rTopAt(x1) + h * 0.004
@@ -844,7 +705,9 @@ window.Scene = (() => {
           }
         };
         drawRun(runs[0]);
-        if (runs[1].length) nearFurniture.push(() => drawRun(runs[1]));
+        if (runs[1].length) {
+          nearFurniture.push({ y: runs[1][0].baseY, draw: () => drawRun(runs[1]) });
+        }
       }
 
       // street lamps: far side, near side, or alternating — per stretch,
@@ -860,21 +723,25 @@ window.Scene = (() => {
           const si = Math.floor(wx1 / FSEG);
           const mode = Math.floor(U.hash1(si * 419 + 11) * 3); // far | near | alternating
           const side = mode === 2 ? (i % 2) : mode;
-          const S = h * (0.115 + U.hash1(si * 941 + 7) * 0.05);
+          const S = (7 + U.hash1(si * 941 + 7) * 2) * h * METER; // 7-9 m
           const x1 = wx1 - worldX;
           if (x1 < -160 || x1 > w + 160) continue;
           if (side === 0) {
             Assets.streetlight(ctx, x1, rTopAt(x1) + h * 0.004, S,
               { dark: polC.dark, glowA: lampGlow, poolDY: rdH * 0.45 }, U.hash1(i));
           } else {
-            nearFurniture.push(((xx, yy, SS, vv) => () => {
-              ctx.save();
-              ctx.translate(xx, 0);
-              ctx.scale(-1, 1); // mirrored: the arm reaches back over the road
-              Assets.streetlight(ctx, 0, yy, SS,
-                { dark: polC.dark, glowA: lampGlow, poolDY: -rdH * 0.5 }, vv);
-              ctx.restore();
-            })(x1, rTopAt(x1) + rdH + h * 0.012, S * 1.08, U.hash1(i)));
+            const yy = rTopAt(x1) + rdH + h * 0.012;
+            nearFurniture.push({
+              y: yy,
+              draw: ((xx, SS, vv) => () => {
+                ctx.save();
+                ctx.translate(xx, 0);
+                ctx.scale(-1, 1); // mirrored: the arm reaches back over the road
+                Assets.streetlight(ctx, 0, yy, SS,
+                  { dark: polC.dark, glowA: lampGlow, poolDY: -rdH * 0.5 }, vv);
+                ctx.restore();
+              })(x1, S * 1.08, U.hash1(i)),
+            });
           }
         }
       }
@@ -895,7 +762,7 @@ window.Scene = (() => {
           if (aprof.key !== avName) { avName = aprof.key; avC = colorsFor(aprof, 0.09); }
           const tfn = Assets[aprof.avenue] || Assets.roundTree;
           tfn(ctx, x1, rTopAt(x1) + h * 0.004,
-            h * (0.10 + U.hash1(i * 31) * 0.025), avC, 0.4 + U.hash1(i * 17) * 0.3, time);
+            (6 + U.hash1(i * 31) * 3) * h * METER, avC, 0.4 + U.hash1(i * 17) * 0.3, time);
         }
       }
     }
@@ -1075,11 +942,16 @@ window.Scene = (() => {
     ctx.lineTo(w + 20, h);
     ctx.closePath();
     ctx.fill();
-    drawItemSet(1.3, 555, 300, 'fgDensity', 'fgItems', 0.03,
-      (ix, sx, it) => rTopAt(sx) + roadH + (h - roadBot) * (0.25 + it.v * 0.5), 1.7);
 
-    // proximal-side furniture stands between the car and the viewer
-    for (const f of nearFurniture) f();
+    // near field in front of the road; proximal-side furniture joins the
+    // same depth ordering so a lamp post never hides behind a nearer bush
+    {
+      const front = nearFieldItems(555, 300, 'fgDensity', 'fgItems',
+        1.1, 1.45, 0.05, 0.008,
+        (sx, z) => rTopAt(sx) + roadH + (h - roadBot) * U.lerp(0.10, 0.85, z));
+      for (const f of nearFurniture) front.push(f);
+      drawNearField(front);
+    }
 
     // colossal redwood trunks sweeping past, floor to ceiling
     {
@@ -1094,7 +966,10 @@ window.Scene = (() => {
         const vv = r();
         if (rprof.bname !== 'redwood') continue;
         if (sx < -200 || sx > w + 200) continue;
-        Assets.redwoodTrunk(ctx, sx, h + 30, h * 1.3, colorsFor(rprof, 0.012), vv);
+        // capped: at full true scale the trunk slab swallows half the frame
+        Assets.redwoodTrunk(ctx, sx, h + 30,
+          Math.min(h * 3, itemMeters('redwoodTrunk', vv) * h * METER * 1.45),
+          colorsFor(rprof, 0.012), vv);
       }
     }
 
@@ -1166,7 +1041,7 @@ window.Scene = (() => {
             type, vv,
             x: sx - rad + tq * 2 * rad,
             y: ty + face * face * (h + 20 - ty) * 0.55 + 4,
-            s: h * (0.24 + ts0 * 0.18),
+            s: Math.min(h * 1.25, itemMeters(type, ts0) * h * METER * 1.55),
           });
         }
         hillTrees.sort((a2, b2) => a2.y - b2.y); // lower on the face = nearer

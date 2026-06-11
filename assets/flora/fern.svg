@@ -1,0 +1,32 @@
+<svg data-meters="0.6 1.2" xmlns="http://www.w3.org/2000/svg" viewBox="-92 -96 184 98">
+  <!-- Bespoke fern, Kenney flat style: layered arching fronds rising from a
+       crown then drooping at the tips; two greens, light upper-left. Each
+       frond is a tapered lobed leaf-blade (suggesting pinnae along the rib). -->
+  <g class="variant">
+    <!-- back fronds, secondary hue -->
+    <path class="foliage2" fill="#6f9c54" d="M0 -2Q-34 -10 -70 -22Q-58 -34 -42 -32Q-58 -44 -62 -64Q-44 -54 -34 -38Q-34 -60 -22 -82Q-18 -58 -16 -40Q-2 -58 8 -78Q4 -54 4 -36Q20 -54 46 -58Q26 -42 14 -28Q40 -34 72 -28Q40 -18 6 -16Z"/>
+    <!-- front fronds, main hue, clearly arching -->
+    <path class="foliage" fill="#55844a" d="M0 0Q-28 -6 -58 -16Q-48 -28 -34 -28Q-48 -40 -50 -58Q-36 -48 -28 -34Q-30 -54 -18 -72Q-14 -52 -14 -36Q-2 -52 6 -68Q4 -48 4 -32Q18 -48 40 -50Q24 -36 14 -24Q36 -28 62 -22Q34 -14 6 -14Z"/>
+    <!-- left frond lit edges -->
+    <path fill="rgba(255,255,255,0.08)" d="M-18 -72Q-30 -54 -28 -34Q-24 -52 -18 -70ZM-34 -28Q-48 -40 -50 -58Q-44 -42 -34 -30Z"/>
+    <!-- right fronds in shade -->
+    <path fill="rgba(0,0,0,0.14)" d="M14 -24Q36 -28 62 -22Q38 -16 16 -16Z"/>
+    <path fill="rgba(0,0,0,0.14)" d="M4 -32Q18 -48 40 -50Q24 -38 12 -26Z"/>
+  </g>
+  <g class="variant">
+    <!-- taller, more upright spray -->
+    <path class="foliage2" fill="#6f9c54" d="M0 -2Q-26 -16 -52 -42Q-40 -48 -28 -44Q-40 -62 -38 -86Q-26 -64 -18 -46Q-16 -68 -4 -90Q0 -64 2 -46Q12 -66 30 -80Q18 -58 10 -42Q28 -52 56 -50Q34 -38 16 -30Z"/>
+    <path class="foliage" fill="#55844a" d="M0 0Q-22 -14 -44 -38Q-32 -42 -22 -38Q-32 -56 -30 -78Q-20 -58 -14 -42Q-12 -62 -2 -82Q2 -60 4 -42Q12 -60 26 -72Q16 -52 10 -38Q26 -46 48 -44Q30 -34 16 -26Z"/>
+    <path fill="rgba(255,255,255,0.08)" d="M-2 -82Q-12 -62 -14 -42Q-8 -62 -4 -82ZM-22 -38Q-32 -56 -30 -78Q-26 -56 -16 -40Z"/>
+    <path fill="rgba(0,0,0,0.14)" d="M10 -38Q26 -46 48 -44Q30 -36 14 -28Z"/>
+    <path fill="rgba(0,0,0,0.14)" d="M4 -42Q12 -60 26 -72Q16 -52 10 -40Z"/>
+  </g>
+  <g class="variant">
+    <!-- broad low fan, fronds drooping outward -->
+    <path class="foliage2" fill="#6f9c54" d="M0 -2Q-38 -6 -78 -8Q-58 -22 -42 -22Q-60 -30 -72 -42Q-50 -34 -34 -24Q-40 -42 -38 -62Q-24 -44 -16 -28Q-8 -46 8 -58Q4 -40 4 -24Q22 -38 50 -40Q30 -28 18 -18Q46 -20 80 -8Q44 -4 6 -14Z"/>
+    <path class="foliage" fill="#55844a" d="M0 0Q-32 -4 -66 -6Q-48 -18 -34 -18Q-50 -26 -60 -36Q-42 -28 -28 -20Q-32 -36 -30 -54Q-18 -38 -12 -24Q-4 -40 8 -50Q4 -34 4 -20Q20 -32 42 -34Q26 -24 14 -16Q40 -16 66 -8Q40 -4 6 -12Z"/>
+    <path fill="rgba(255,255,255,0.08)" d="M-30 -54Q-32 -36 -28 -20Q-26 -38 -24 -52ZM-34 -18Q-50 -26 -60 -36Q-46 -28 -34 -20Z"/>
+    <path fill="rgba(0,0,0,0.14)" d="M14 -16Q40 -16 66 -8Q42 -6 16 -10Z"/>
+    <path fill="rgba(0,0,0,0.14)" d="M4 -20Q20 -32 42 -34Q26 -24 12 -16Z"/>
+  </g>
+</svg>

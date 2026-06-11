@@ -1,0 +1,12 @@
+<svg data-meters="90 220" xmlns="http://www.w3.org/2000/svg" viewBox="-142 -102 284 104">
+  <g class="variant">
+    <path class="fill" fill="#c08a5e" d="M-140 0L-92.96 -78L-75.6 -100L78.4 -100L86.8 -72L140 0Z"/>
+    <path class="strata" fill="#a07048" d="M-86.8 -62L92.4 -62L92.4 -58.5L-86.8 -58.5Z"/>
+    <path class="strata" fill="#a07048" d="M-95.2 -40L100.8 -40L100.8 -37L-95.2 -37Z"/>
+  </g>
+  <g class="variant">
+    <path class="fill" fill="#c08a5e" d="M-140 0L-100.52 -78L-75.6 -100L70 -100L86.8 -72L140 0Z"/>
+    <path class="strata" fill="#a07048" d="M-86.8 -62L92.4 -62L92.4 -58.5L-86.8 -58.5Z"/>
+    <path class="strata" fill="#a07048" d="M-95.2 -40L100.8 -40L100.8 -37L-95.2 -37Z"/>
+  </g>
+</svg>

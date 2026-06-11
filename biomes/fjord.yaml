@@ -1,0 +1,77 @@
+# Roadtrip biome definition. Compiled by `node tools/build.js` into
+# js/gen/data.js — run the build (or its --watch mode) after editing.
+#
+# colors are full-daylight bases; the engine grades them per frame by time
+# of day, depth haze, vibrance and weather. Bands:
+#   near     items between the tree line and the road shoulder (depth-staggered)
+#   front    items in front of the road, nearest the camera
+#   midridge rare structures on the mid ridge (mesas, lighthouses...)
+#   forest   distant wooded bands; depth = how deep the woods reach
+# table entries: { asset, w } plus optional depth: [z0, z1] limiting the item
+# to a slice of the band (0 = far edge, 1 = nearest).
+name: fjord
+order: 7
+terrain:
+  far: '#7c93ad'
+  mid: '#557a58'
+  ground: '#5d8455'
+  farAmp: 0.34
+  midAmp: 0.11
+  ridged: 0.8
+  snowcap: 0.9
+  water: 0.9
+  waterCol: '#2f5c70'
+flora:
+  foliage: '#3a6a48'
+  foliage2: '#4c7f55'
+  trunk: '#54483a'
+  avenue: pine
+light:
+  grade: { tint: '#a8ccd4', strength: 0.16, multiplier: 0.97 }
+  aurora: 0.8
+weather:
+  clear: 4
+  overcast: 2.5
+  rain: 2
+  snow: 1.5
+  fog: 1.5
+near:
+  density: 2.2
+  table:
+    - { asset: pine, w: 0.42 }
+    - { asset: birch, w: 0.22 }
+    - { asset: cabin, w: 0.1 }
+    - { asset: rock, w: 0.12 }
+    - { asset: bush, w: 0.14 }
+front:
+  density: 1.3
+  table:
+    - { asset: tuft, w: 0.45 }
+    - { asset: rock, w: 0.27 }
+    - { asset: bush, w: 0.18 }
+    - { asset: pine, w: 0.05 }
+midridge:
+  density: 0.08
+  table:
+    - { asset: lighthouse, w: 1 }
+forest:
+  depth: 2.5
+extras:
+  landmarks:
+    - glacier
+  occluder: 0.07
+variants:
+  - key: innerValley
+    weight: 2
+    terrain: { midAmp: 0.13, water: 0 }
+    near: { density: 2.6 }
+  - key: fishingVillage
+    weight: 1.5
+    near:
+      density: 1.8
+      table:
+        - { asset: cabin, w: 0.4 }
+        - { asset: pine, w: 0.3 }
+        - { asset: rock, w: 0.15 }
+        - { asset: bush, w: 0.15 }
+    midridge: { density: 0.3 }

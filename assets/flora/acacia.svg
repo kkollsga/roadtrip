@@ -1,0 +1,55 @@
+<svg data-meters="5 12" xmlns="http://www.w3.org/2000/svg" viewBox="-58 -104 116 106">
+  <!-- Savanna acacia (umbrella thorn). Flat, wide canopy on a slender forking
+       trunk whose thin branches splay up into the foliage. Adapted from the two
+       acacia trees in the Kilimanjaro source scene, re-traced flat. Light from
+       upper-left. -->
+
+  <!-- Variant 1: narrower tree (the smaller left acacia from the source) -->
+  <g class="variant">
+    <!-- trunk: single bole splitting low into a forking V -->
+    <path class="trunk" fill="#5a4a3a" d="M-4 0Q-3 -22 -2 -38L-6 -50Q-10 -58 -16 -63L-13 -65Q-7 -60 -2 -52L0 -56L2 -52Q7 -60 13 -65L16 -63Q10 -58 6 -50L2 -38Q3 -22 4 0Z"/>
+    <!-- thin branches reaching up into the canopy -->
+    <path fill="none" stroke="#5a4a3a" stroke-width="1.6" stroke-linecap="round" d="M-2 -52Q-12 -60 -22 -66M0 -56Q-4 -66 -6 -72M0 -56Q4 -66 8 -70M2 -52Q12 -60 22 -64"/>
+    <!-- shaded right side of trunk (baked) -->
+    <path fill="rgba(0,0,0,0.14)" d="M0 -56L2 -52L2 -38Q3 -22 4 0L1 0Q0.5 -24 0 -42Z"/>
+    <!-- flat umbrella canopy, lumpy top edge, near-flat underside -->
+    <path class="foliage" fill="#4d5f38" d="M0 -64
+      Q-22 -66 -36 -70 Q-46 -73 -42 -78 Q-36 -83 -26 -82
+      Q-30 -88 -22 -88 Q-14 -89 -10 -84 Q-6 -90 2 -88 Q8 -91 13 -86
+      Q18 -89 24 -85 Q33 -86 30 -80 Q42 -79 38 -73 Q30 -67 12 -65 Q6 -64 0 -64 Z"/>
+    <!-- sunlit upper-left lobe -->
+    <path class="foliage2" fill="#6b7d44" d="M0 -64Q-22 -66 -36 -70Q-46 -73 -42 -78Q-36 -83 -26 -82Q-30 -88 -22 -88Q-14 -89 -10 -84Q-18 -82 -26 -78Q-34 -74 -36 -70Z"/>
+    <!-- shaded underside / right of canopy -->
+    <path fill="rgba(0,0,0,0.14)" d="M0 -64Q12 -65 30 -67Q42 -71 38 -73Q42 -79 30 -80Q33 -86 24 -85Q18 -89 13 -86Q24 -80 28 -74Q24 -68 0 -64Z"/>
+    <!-- top highlight strip -->
+    <path fill="rgba(255,255,255,0.08)" d="M-26 -82Q-14 -89 2 -88Q18 -89 30 -80Q16 -85 2 -85Q-14 -85 -26 -82Z"/>
+  </g>
+
+  <!-- Variant 2: broad tree (the larger right acacia from the source) -->
+  <g class="variant">
+    <path class="trunk" fill="#5a4a3a" d="M-5 0Q-4 -24 -2.5 -42L-7 -52Q-12 -60 -19 -65L-15 -67Q-8 -61 -2 -54L0 -58L2 -54Q9 -61 16 -67L20 -65Q13 -60 8 -52L2.5 -42Q4 -24 5 0Z"/>
+    <path fill="none" stroke="#5a4a3a" stroke-width="1.8" stroke-linecap="round" d="M-2 -54Q-16 -62 -30 -68M-1 -58Q-6 -68 -9 -75M1 -58Q5 -69 9 -74M2 -54Q16 -62 30 -67"/>
+    <path fill="rgba(0,0,0,0.14)" d="M0 -58L2 -54L2.5 -42Q4 -24 5 0L1.5 0Q1 -26 0 -46Z"/>
+    <path class="foliage" fill="#4d5f38" d="M0 -66
+      Q-28 -68 -46 -73 Q-58 -77 -53 -82 Q-46 -88 -34 -86
+      Q-39 -93 -29 -93 Q-19 -94 -13 -88 Q-7 -94 3 -91 Q11 -95 18 -89
+      Q26 -93 33 -87 Q44 -88 40 -81 Q54 -80 49 -74 Q40 -68 16 -67 Q8 -66 0 -66 Z"/>
+    <path class="foliage2" fill="#6b7d44" d="M0 -66Q-28 -68 -46 -73Q-58 -77 -53 -82Q-46 -88 -34 -86Q-39 -93 -29 -93Q-19 -94 -13 -88Q-24 -86 -36 -81Q-46 -76 -46 -73Z"/>
+    <path fill="rgba(0,0,0,0.14)" d="M0 -66Q16 -67 40 -69Q54 -74 49 -74Q54 -80 40 -81Q44 -88 33 -87Q26 -93 18 -89Q34 -82 39 -75Q34 -69 0 -66Z"/>
+    <path fill="rgba(255,255,255,0.08)" d="M-34 -86Q-19 -94 3 -91Q26 -93 40 -81Q22 -88 3 -88Q-19 -88 -34 -86Z"/>
+  </g>
+
+  <!-- Variant 3: derived — tall slender tree, canopy tilted, asymmetric crown -->
+  <g class="variant">
+    <path class="trunk" fill="#5a4a3a" d="M-3.5 0Q-2.5 -26 -1 -44L-4 -56Q-7 -66 -12 -72L-9 -74Q-3 -68 1 -60L3 -64L5 -59Q11 -67 18 -71L21 -68Q13 -64 8 -56L4 -46Q4.5 -24 4 0Z"/>
+    <path fill="none" stroke="#5a4a3a" stroke-width="1.5" stroke-linecap="round" d="M1 -60Q-8 -68 -16 -74M3 -64Q1 -74 0 -80M3 -64Q8 -73 13 -77M5 -59Q15 -65 25 -68"/>
+    <path fill="rgba(0,0,0,0.14)" d="M3 -64L5 -59L4 -46Q4.5 -24 4 0L1 0Q1 -28 1 -48Z"/>
+    <path class="foliage" fill="#4d5f38" d="M2 -72
+      Q-18 -74 -32 -78 Q-44 -82 -39 -87 Q-32 -92 -22 -90
+      Q-26 -96 -17 -96 Q-9 -97 -5 -92 Q0 -97 8 -95 Q15 -98 21 -93
+      Q30 -94 36 -89 Q47 -89 43 -83 Q52 -82 47 -77 Q38 -73 16 -72 Q9 -72 2 -72 Z"/>
+    <path class="foliage2" fill="#6b7d44" d="M2 -72Q-18 -74 -32 -78Q-44 -82 -39 -87Q-32 -92 -22 -90Q-26 -96 -17 -96Q-9 -97 -5 -92Q-16 -90 -26 -85Q-36 -80 -39 -77Z"/>
+    <path fill="rgba(0,0,0,0.14)" d="M2 -72Q16 -72 38 -74Q52 -78 47 -77Q52 -82 43 -83Q47 -89 36 -89Q30 -94 21 -93Q36 -86 41 -80Q36 -74 2 -72Z"/>
+    <path fill="rgba(255,255,255,0.08)" d="M-22 -90Q-9 -97 8 -95Q30 -94 43 -83Q26 -91 8 -91Q-9 -92 -22 -90Z"/>
+  </g>
+</svg>

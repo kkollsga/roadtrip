@@ -1,0 +1,20 @@
+<svg data-meters="4 6" xmlns="http://www.w3.org/2000/svg" viewBox="-82.6 -85 165.2 87">
+  <g class="variant">
+    <path class="trunk" fill="#6b5340" d="M-65 -50L65 -50L65 0L-65 0Z"/>
+    <path class="dark" fill="#3c3a36" d="M-70 -6L70 -6L70 0L-70 0Z"/>
+    <path class="dark" fill="#3c3a36" d="M-80.6 -50Q-65 -56 -39 -70Q0 -83 39 -70Q65 -56 80.6 -50Z"/>
+    <path class="window" fill="#3c3a36" d="M-46.8 -38L-23.4 -38L-23.4 -12L-46.8 -12Z"/>
+    <path class="window" fill="#3c3a36" d="M-11.7 -38L11.7 -38L11.7 -12L-11.7 -12Z"/>
+    <path class="window" fill="#3c3a36" d="M23.4 -38L46.8 -38L46.8 -12L23.4 -12Z"/>
+    <path class="window" fill="#3c3a36" d="M-55.3 -28C-55.3 -24.58 -57.31 -21.8 -59.8 -21.8C-62.29 -21.8 -64.3 -24.58 -64.3 -28C-64.3 -31.42 -62.29 -34.2 -59.8 -34.2C-57.31 -34.2 -55.3 -31.42 -55.3 -28"/>
+  </g>
+  <g class="variant">
+    <path class="trunk" fill="#6b5340" d="M-65 -50L65 -50L65 0L-65 0Z"/>
+    <path class="dark" fill="#3c3a36" d="M-70 -6L70 -6L70 0L-70 0Z"/>
+    <path class="dark" fill="#3c3a36" d="M-80.6 -50Q-65 -56 -39 -70Q0 -83 39 -70Q65 -56 80.6 -50Z"/>
+    <path class="window" fill="#3c3a36" d="M-46.8 -38L-23.4 -38L-23.4 -12L-46.8 -12Z"/>
+    <path class="window" fill="#3c3a36" d="M-11.7 -38L11.7 -38L11.7 -12L-11.7 -12Z"/>
+    <path class="window" fill="#3c3a36" d="M23.4 -38L46.8 -38L46.8 -12L23.4 -12Z"/>
+    <path class="window" fill="#3c3a36" d="M-55.3 -28C-55.3 -24.58 -57.31 -21.8 -59.8 -21.8C-62.29 -21.8 -64.3 -24.58 -64.3 -28C-64.3 -31.42 -62.29 -34.2 -59.8 -34.2C-57.31 -34.2 -55.3 -31.42 -55.3 -28"/>
+  </g>
+</svg>

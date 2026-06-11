@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-152 -106 304 108">
+  <!-- Denali / Mt McKinley: a colossal, broad, heavily glaciated dome-ridge
+       complex. Almost entirely snow-covered, with exposed dark granite ribs
+       and buttresses showing through the icefields. Long gradual shoulders
+       that taper to the ground (y=0) at both extreme edges. The summit is a
+       rounded high-point on the right of a long crest, not a sharp peak.
+       Light from upper-left: left flanks catch sun, right flanks fall away
+       into shadow. Re-traced in the project's flat layered style. -->
+  <g class="variant">
+    <!-- hazy foothill apron behind the massif, anchored both edges -->
+    <path class="shadow" fill="#7a899c" d="M-150 0
+      Q-122 -10 -98 -22 Q-70 -36 -44 -46 Q-16 -56 12 -56
+      Q44 -56 74 -46 Q104 -36 126 -22 Q142 -12 150 0 Z"/>
+
+    <!-- main massif body: long gradual left shoulder rises to a broad summit
+         dome (right of centre), then a shorter steeper right flank.
+         Lumpy crest reads as the snow-rounded ridgeline. -->
+    <path class="rock" fill="#8c9cb2" d="M-146 0
+      Q-126 -8 -110 -20 Q-94 -32 -80 -42
+      Q-66 -52 -54 -58 L-48 -54 L-43 -60 L-37 -55
+      Q-26 -64 -16 -72 Q-6 -80 4 -84
+      L9 -80 L14 -86 L19 -81
+      Q28 -88 36 -91 Q46 -95 54 -94
+      L58 -90 L62 -95 L67 -89
+      Q74 -86 80 -80 Q92 -68 102 -54
+      Q116 -34 132 -16 Q142 -8 146 0 Z"/>
+
+    <!-- broad snow mantle: the whole upper massif is glaciated; this is the
+         continuous snowfield draping the dome and the high crest, with a
+         scalloped lower edge where it meets the rock skirt -->
+    <path class="snow" fill="#eef3f8" d="M-58 -44
+      Q-46 -54 -36 -55 Q-26 -64 -16 -72 Q-6 -80 4 -84
+      L9 -80 L14 -86 L19 -81
+      Q28 -88 36 -91 Q46 -95 54 -94 L58 -90 L62 -95 L67 -89
+      Q74 -86 80 -80 Q90 -70 98 -58
+      Q92 -57 86 -56 Q80 -59 74 -55 Q68 -52 62 -54
+      Q56 -57 50 -53 Q44 -50 38 -53 Q32 -56 26 -52
+      Q20 -49 14 -52 Q8 -55 2 -51 Q-4 -48 -10 -51
+      Q-16 -54 -22 -50 Q-28 -47 -34 -50 Q-40 -53 -46 -48
+      Q-50 -47 -56 -42 Z"/>
+
+    <!-- exposed dark granite ribs / buttresses showing through the ice -->
+    <!-- central buttress under the summit -->
+    <path class="rock" fill="#6f7e92" d="M22 -66
+      L28 -76 L33 -64 L30 -50 L26 -44 L20 -52 L24 -60 Z"/>
+    <!-- left shoulder rib -->
+    <path class="rock" fill="#6f7e92" d="M-28 -52
+      L-22 -62 L-18 -52 L-20 -42 L-26 -38 L-30 -46 Z"/>
+    <!-- right flank rib below the summit -->
+    <path class="rock" fill="#6f7e92" d="M58 -64
+      L64 -72 L66 -60 L62 -48 L57 -46 L55 -56 Z"/>
+    <!-- low broken rock band on the left foot -->
+    <path class="rock" fill="#6f7e92" d="M-72 -38
+      Q-62 -44 -54 -40 L-50 -32 Q-58 -28 -66 -30 L-72 -34 Z"/>
+
+    <!-- glacier streaks / seracs: brighter snow tongues running down -->
+    <path class="snow" fill="#f4f8fb" d="M6 -82
+      L10 -78 L8 -60 L4 -44 L1 -42 L3 -60 L2 -78 Z"/>
+    <path class="snow" fill="#f4f8fb" d="M-36 -55
+      L-32 -52 L-34 -40 L-38 -38 L-39 -50 Z"/>
+    <path class="snow" fill="#f4f8fb" d="M44 -88
+      L48 -84 L46 -68 L42 -56 L40 -58 L42 -72 Z"/>
+
+    <!-- baked sunlit highlight on the upper-left snow face -->
+    <path fill="rgba(255,255,255,0.12)" d="M-58 -44
+      Q-46 -54 -36 -55 Q-26 -64 -16 -72 Q-6 -80 4 -84 L9 -80
+      Q-4 -76 -16 -66 Q-30 -54 -42 -48 Q-50 -45 -56 -42 Z"/>
+    <path fill="rgba(255,255,255,0.10)" d="M19 -81
+      Q28 -88 36 -91 Q46 -95 54 -94 L58 -90 Q46 -90 36 -86
+      Q28 -83 22 -79 Z"/>
+
+    <!-- baked shadow on the right flank falling away from the light: edge
+         follows the summit-fall line diagonally, no hard vertical seam -->
+    <path fill="rgba(0,0,0,0.14)" d="M62 -95
+      Q74 -86 80 -80 Q92 -68 102 -54 Q116 -34 132 -16 Q142 -8 146 0
+      L78 0 Q66 -28 58 -52 Q54 -72 58 -90 Z"/>
+    <!-- darker shaded right foot -->
+    <path class="shadow" fill="#6f7e92" d="M74 -48
+      Q92 -36 110 -22 Q126 -10 142 0 L70 0 Z"/>
+    <!-- soft shadow tucked under the summit on the right of centre -->
+    <path fill="rgba(0,0,0,0.10)" d="M54 -94
+      L67 -89 L62 -75 L56 -68 L52 -78 Z"/>
+
+    <!-- baked shadow tint along the lower snow scallops on the cooler side -->
+    <path fill="rgba(0,0,0,0.07)" d="M14 -52
+      Q8 -55 2 -51 Q-4 -48 -10 -51 Q-16 -54 -22 -50 Q-28 -47 -34 -50
+      L-30 -44 Q-18 -46 -6 -45 Q4 -44 14 -46 Z"/>
+  </g>
+</svg>

@@ -1,0 +1,23 @@
+<svg data-meters="70 95" xmlns="http://www.w3.org/2000/svg" viewBox="-19.67 -107 39.34 109">
+  <g class="variant">
+    <path class="trunk" fill="#6b5340" d="M-12.25 0Q-7.74 -5 -6.45 -16L-5.03 -105L5.03 -105L6.45 -16Q7.74 -5 12.26 0Z"/>
+    <path class="dark" fill="none" stroke="#3c3a36" stroke-width="1.5" stroke-opacity="0.45" d="M-3.46 -2Q-2.3 -50 -3.84 -103"/>
+    <path class="dark" fill="none" stroke="#3c3a36" stroke-width="1.5" stroke-opacity="0.45" d="M-0.81 -2Q0.35 -50 -1.2 -103"/>
+    <path class="dark" fill="none" stroke="#3c3a36" stroke-width="1.5" stroke-opacity="0.45" d="M1.83 -2Q2.99 -50 1.44 -103"/>
+    <path class="dark" fill="none" stroke="#3c3a36" stroke-width="1.5" stroke-opacity="0.45" d="M4.48 -2Q5.64 -50 4.09 -103"/>
+  </g>
+  <g class="variant">
+    <path class="trunk" fill="#6b5340" d="M-14.96 0Q-9.45 -5 -7.87 -16L-6.14 -105L6.14 -105L7.88 -16Q9.45 -5 14.96 0Z"/>
+    <path class="dark" fill="none" stroke="#3c3a36" stroke-width="1.5" stroke-opacity="0.45" d="M-4.29 -2Q-2.87 -50 -4.76 -103"/>
+    <path class="dark" fill="none" stroke="#3c3a36" stroke-width="1.5" stroke-opacity="0.45" d="M-1.06 -2Q0.35 -50 -1.54 -103"/>
+    <path class="dark" fill="none" stroke="#3c3a36" stroke-width="1.5" stroke-opacity="0.45" d="M2.17 -2Q3.58 -50 1.69 -103"/>
+    <path class="dark" fill="none" stroke="#3c3a36" stroke-width="1.5" stroke-opacity="0.45" d="M5.39 -2Q6.81 -50 4.92 -103"/>
+  </g>
+  <g class="variant">
+    <path class="trunk" fill="#6b5340" d="M-17.67 0Q-11.16 -5 -9.3 -16L-7.25 -105L7.25 -105L9.3 -16Q11.16 -5 17.67 0Z"/>
+    <path class="dark" fill="none" stroke="#3c3a36" stroke-width="1.5" stroke-opacity="0.45" d="M-5.15 -2Q-3.48 -50 -5.71 -103"/>
+    <path class="dark" fill="none" stroke="#3c3a36" stroke-width="1.5" stroke-opacity="0.45" d="M-1.34 -2Q0.33 -50 -1.9 -103"/>
+    <path class="dark" fill="none" stroke="#3c3a36" stroke-width="1.5" stroke-opacity="0.45" d="M2.47 -2Q4.15 -50 1.92 -103"/>
+    <path class="dark" fill="none" stroke="#3c3a36" stroke-width="1.5" stroke-opacity="0.45" d="M6.29 -2Q7.96 -50 5.73 -103"/>
+  </g>
+</svg>

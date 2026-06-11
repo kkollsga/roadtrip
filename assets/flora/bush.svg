@@ -1,0 +1,31 @@
+<svg data-meters="0.8 1.8" xmlns="http://www.w3.org/2000/svg" viewBox="-52 -78 104 80">
+  <!-- Kenney-style lobed shrub canopy; light from upper-left. -->
+  <g class="variant">
+    <!-- secondary hue base mound -->
+    <path class="foliage2" fill="#6f9c54" d="M-48 0Q-50 -22 -34 -30Q-40 -50 -16 -52Q-8 -68 12 -58Q34 -64 40 -42Q52 -34 44 -14Q50 -2 38 0Z"/>
+    <!-- main canopy lobes on top -->
+    <path class="foliage" fill="#55844a" d="M-40 -2Q-46 -20 -30 -28Q-34 -46 -12 -48Q-4 -62 14 -52Q32 -56 36 -38Q47 -30 40 -14Q44 -4 32 -2Q10 4 -16 2Z"/>
+    <!-- upper-left highlight -->
+    <path fill="rgba(255,255,255,0.08)" d="M-12 -48Q-4 -62 14 -52Q4 -50 -2 -40Q-9 -42 -12 -48Z"/>
+    <!-- lower-right shaded side -->
+    <path fill="rgba(0,0,0,0.14)" d="M40 -14Q44 -4 32 -2Q14 2 0 0Q22 0 30 -10Q38 -10 40 -14Z"/>
+    <!-- inner shade pocket -->
+    <path fill="rgba(0,0,0,0.14)" d="M-12 -2Q-6 -14 8 -16Q22 -12 26 -2Q8 2 -12 -2Z"/>
+  </g>
+  <g class="variant">
+    <!-- wider twin-mound bush -->
+    <path class="foliage2" fill="#6f9c54" d="M-50 0Q-52 -18 -38 -26Q-44 -44 -22 -46Q-16 -58 0 -52Q6 -60 20 -54Q42 -50 44 -30Q52 -22 44 -8Q48 -2 38 0Z"/>
+    <path class="foliage" fill="#55844a" d="M-44 -2Q-48 -18 -34 -24Q-38 -40 -18 -42Q-12 -54 2 -48Q6 -54 18 -50Q36 -46 38 -28Q46 -22 38 -10Q40 -4 30 -2Q-8 2 -44 -2Z"/>
+    <path fill="rgba(255,255,255,0.08)" d="M-18 -42Q-12 -54 2 -48Q-8 -46 -12 -38Q-15 -40 -18 -42Z"/>
+    <path fill="rgba(0,0,0,0.14)" d="M38 -28Q46 -22 38 -10Q40 -4 30 -2Q14 0 4 -2Q26 -6 30 -18Q35 -22 38 -28Z"/>
+    <path fill="rgba(0,0,0,0.14)" d="M-32 -2Q-28 -12 -16 -14Q-6 -10 -8 -2Q-22 2 -32 -2Z"/>
+  </g>
+  <g class="variant">
+    <!-- compact rounded bush -->
+    <path class="foliage2" fill="#6f9c54" d="M-36 0Q-44 -16 -32 -26Q-36 -48 -8 -50Q2 -62 18 -52Q40 -52 38 -28Q46 -16 36 -4Q38 0 28 0Z"/>
+    <path class="foliage" fill="#55844a" d="M-30 -2Q-38 -16 -28 -24Q-32 -44 -6 -46Q4 -56 18 -48Q36 -48 34 -26Q40 -16 32 -6Q12 2 -16 0Z"/>
+    <path fill="rgba(255,255,255,0.08)" d="M-6 -46Q4 -56 18 -48Q6 -46 2 -38Q-2 -42 -6 -46Z"/>
+    <path fill="rgba(0,0,0,0.14)" d="M34 -26Q40 -16 32 -6Q20 -1 8 -2Q26 -8 28 -20Q32 -24 34 -26Z"/>
+    <path fill="rgba(0,0,0,0.14)" d="M-18 -2Q-12 -12 0 -12Q10 -10 8 -2Q-6 2 -18 -2Z"/>
+  </g>
+</svg>

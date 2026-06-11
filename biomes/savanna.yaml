@@ -1,0 +1,91 @@
+# Roadtrip biome definition. Compiled by `node tools/build.js` into
+# js/gen/data.js — run the build (or its --watch mode) after editing.
+#
+# colors are full-daylight bases; the engine grades them per frame by time
+# of day, depth haze, vibrance and weather. Bands:
+#   near     items between the tree line and the road shoulder (depth-staggered)
+#   front    items in front of the road, nearest the camera
+#   midridge rare structures on the mid ridge (mesas, lighthouses...)
+#   forest   distant wooded bands; depth = how deep the woods reach
+# table entries: { asset, w } plus optional depth: [z0, z1] limiting the item
+# to a slice of the band (0 = far edge, 1 = nearest).
+name: savanna
+order: 11
+terrain:
+  far: '#9aa3b5'
+  mid: '#c4ad6a'
+  ground: '#c9b066'
+  farAmp: 0.07
+  midAmp: 0.04
+  ridged: 0
+  snowcap: 0
+  water: 0
+flora:
+  foliage: '#5d7c39'
+  foliage2: '#84994a'
+  trunk: '#6b5340'
+  avenue: acacia
+light:
+  grade: { tint: '#ffd98e', strength: 0.18, multiplier: 1.04 }
+  aurora: 0
+weather:
+  clear: 8
+  overcast: 1.5
+  rain: 1
+near:
+  density: 1.6
+  table:
+    - { asset: acacia, w: 0.26 }
+    - { asset: tuft, w: 0.20 }
+    - { asset: bush, w: 0.14 }
+    - { asset: giraffe, w: 0.10 }
+    - { asset: elephant, w: 0.07 }
+    - { asset: lion, w: 0.04, depth: [0.45, 1] }  # small cat stays near
+    - { asset: rock, w: 0.11 }
+    - { asset: deadTree, w: 0.08 }
+front:
+  density: 1.4
+  table:
+    - { asset: tuft, w: 0.62 }
+    - { asset: rock, w: 0.22 }
+    - { asset: bush, w: 0.16 }
+forest:
+  depth: 0.8
+  table:
+    - { asset: acacia, w: 0.7 }
+    - { asset: roundTree, w: 0.3 }
+extras:
+  landmarks: [kilimanjaro]
+  occluder: 0
+  windfarm: 0
+variants:
+  - key: herds
+    weight: 2
+    near:
+      density: 2.0
+      table:
+        - { asset: giraffe, w: 0.22 }
+        - { asset: elephant, w: 0.16 }
+        - { asset: acacia, w: 0.18 }
+        - { asset: tuft, w: 0.24 }
+        - { asset: bush, w: 0.12 }
+        - { asset: lion, w: 0.08, depth: [0.45, 1] }
+  - key: acaciaGrove
+    weight: 1.5
+    near:
+      density: 2.4
+      table:
+        - { asset: acacia, w: 0.55 }
+        - { asset: tuft, w: 0.25 }
+        - { asset: giraffe, w: 0.12 }
+        - { asset: bush, w: 0.08 }
+  - key: dry
+    weight: 1.5
+    terrain: { ground: '#cdb273', mid: '#cdb273' }
+    near:
+      density: 0.9
+      table:
+        - { asset: deadTree, w: 0.3 }
+        - { asset: rock, w: 0.28 }
+        - { asset: tuft, w: 0.28 }
+        - { asset: elephant, w: 0.14 }

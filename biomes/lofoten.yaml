@@ -1,0 +1,92 @@
+# Roadtrip biome definition. Compiled by `node tools/build.js` into
+# js/gen/data.js — run the build (or its --watch mode) after editing.
+#
+# colors are full-daylight bases; the engine grades them per frame by time
+# of day, depth haze, vibrance and weather. Bands:
+#   near     items between the tree line and the road shoulder (depth-staggered)
+#   front    items in front of the road, nearest the camera
+#   midridge rare structures on the mid ridge (mesas, lighthouses...)
+#   forest   distant wooded bands; depth = how deep the woods reach
+# table entries: { asset, w } plus optional depth: [z0, z1] limiting the item
+# to a slice of the band (0 = far edge, 1 = nearest).
+name: lofoten
+order: 8
+terrain:
+  far: '#84a0b6'
+  mid: '#ded6b8'
+  ground: '#74986b'
+  farAmp: 0.33
+  midAmp: 0.035
+  ridged: 0.85
+  snowcap: 0.85
+  water: 0.9
+  waterCol: '#2f96a8'
+flora:
+  foliage: '#3c6b4c'
+  foliage2: '#52805c'
+  trunk: '#6b6052'
+  avenue: birch
+light:
+  grade: { tint: '#bce0da', strength: 0.16, multiplier: 1 }
+  aurora: 0.9
+weather:
+  clear: 4
+  overcast: 2.5
+  rain: 1.5
+  snow: 1
+  fog: 1.5
+near:
+  density: 1.3
+  table:
+    - { asset: tuft, w: 0.32 }
+    - { asset: rock, w: 0.22 }
+    - { asset: cabin, w: 0.16 }
+    - { asset: bush, w: 0.12 }
+    - { asset: birch, w: 0.12 }
+    - { asset: deadTree, w: 0.06 }
+front:
+  density: 1.6
+  table:
+    - { asset: tuft, w: 0.56 }
+    - { asset: rock, w: 0.26 }
+    - { asset: bush, w: 0.18 }
+midridge:
+  density: 0.1
+  table:
+    - { asset: lighthouse, w: 1 }
+extras:
+  landmarks: []
+  occluder: 0.02
+  windfarm: 0.15
+variants:
+  - key: dunes
+    weight: 2
+    near:
+      density: 1.1
+      table:
+        - { asset: tuft, w: 0.5 }
+        - { asset: rock, w: 0.22 }
+        - { asset: bush, w: 0.14 }
+        - { asset: deadTree, w: 0.14 }
+    front: { density: 2.0 }
+  - key: fishingVillage
+    weight: 1.5
+    near:
+      density: 1.8
+      table:
+        - { asset: cabin, w: 0.42 }
+        - { asset: tuft, w: 0.2 }
+        - { asset: rock, w: 0.18 }
+        - { asset: pine, w: 0.1 }
+        - { asset: sign, w: 0.1 }
+    midridge: { density: 0.25 }
+  - key: headland
+    weight: 1.5
+    terrain: { farAmp: 0.37, water: 0.5 }
+    near:
+      density: 1.6
+      table:
+        - { asset: birch, w: 0.3 }
+        - { asset: rock, w: 0.25 }
+        - { asset: tuft, w: 0.25 }
+        - { asset: pine, w: 0.2 }

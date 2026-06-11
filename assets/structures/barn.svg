@@ -1,0 +1,26 @@
+<svg data-meters="6 10" xmlns="http://www.w3.org/2000/svg" viewBox="-79.55 -93 190.2 95">
+  <g class="variant">
+    <path class="accent" fill="#9a4538" d="M-62 -52L62 -52L62 0L-62 0Z"/>
+    <path class="dark" fill="#3c3a36" d="M-74.4 -52L-52.08 -72L-19.84 -85L19.84 -85L52.08 -72L74.4 -52Z"/>
+    <path class="light" fill="#e6e2d4" d="M-62 -52L62 -52L62 -49.8L-62 -49.8Z"/>
+    <path class="dark" fill="#3c3a36" d="M-16.12 -37.44L16.12 -37.44L16.12 0L-16.12 0Z"/>
+    <path class="light" fill="none" stroke="#e6e2d4" stroke-width="1.4" d="M-16.12 -37.44L16.12 -37.44L16.12 0L-16.12 0Z"/>
+    <path class="light" fill="none" stroke="#e6e2d4" stroke-width="1.4" d="M-16.12 -37.44L16.12 0M16.12 -37.44L-16.12 0"/>
+    <path class="dark" fill="#3c3a36" d="M-7 -69L7 -69L7 -56L-7 -56Z"/>
+    <path class="window" fill="#3c3a36" d="M-47.12 -32.24L-37.12 -32.24L-37.12 -22.24L-47.12 -22.24Z"/>
+    <path class="window" fill="#3c3a36" d="M33.48 -32.24L43.48 -32.24L43.48 -22.24L33.48 -22.24Z"/>
+  </g>
+  <g class="variant">
+    <path class="accent" fill="#9a4538" d="M-64.62 -52L64.63 -52L64.63 0L-64.62 0Z"/>
+    <path class="dark" fill="#3c3a36" d="M-77.55 -52L-54.28 -72L-20.68 -85L20.68 -85L54.29 -72L77.55 -52Z"/>
+    <path class="light" fill="#e6e2d4" d="M-64.62 -52L64.63 -52L64.63 -49.8L-64.62 -49.8Z"/>
+    <path class="dark" fill="#3c3a36" d="M-16.8 -37.44L16.8 -37.44L16.8 0L-16.8 0Z"/>
+    <path class="light" fill="none" stroke="#e6e2d4" stroke-width="1.4" d="M-16.8 -37.44L16.8 -37.44L16.8 0L-16.8 0Z"/>
+    <path class="light" fill="none" stroke="#e6e2d4" stroke-width="1.4" d="M-16.8 -37.44L16.8 0M16.8 -37.44L-16.8 0"/>
+    <path class="dark" fill="#3c3a36" d="M-7 -69L7 -69L7 -56L-7 -56Z"/>
+    <path class="window" fill="#3c3a36" d="M-49.11 -32.24L-39.11 -32.24L-39.11 -22.24L-49.11 -22.24Z"/>
+    <path class="window" fill="#3c3a36" d="M34.9 -32.24L44.9 -32.24L44.9 -22.24L34.9 -22.24Z"/>
+    <path class="light" fill="#e6e2d4" d="M82.65 -78L108.65 -78L108.65 0L82.65 0Z"/>
+    <path class="dark" fill="#3c3a36" d="M82.65 -78C82.65 -85.18 88.47 -91 95.65 -91C102.82 -91 108.65 -85.18 108.65 -78"/>
+  </g>
+</svg>

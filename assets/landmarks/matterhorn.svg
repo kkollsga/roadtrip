@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-86 -106 172 108">
+  <!-- The Matterhorn: the iconic asymmetric pyramidal horn with the famous
+       bent / hooked summit tip. A sharp central ridge splits two faces: the
+       sun-catching left (north-west) face and the right (east) face thrown
+       into shadow — the classic dark/light divide, baked here as literal
+       black/white over the rock role. Mostly bare angular rock near the
+       crooked summit; snow clings to the ledges, couloirs and a broad apron
+       skirting the base. Flanks taper to the ground (y=0) at both edges.
+       Light from upper-left. -->
+  <g class="variant">
+    <!-- hazy outlier ridge behind the horn, both edges to ground -->
+    <path class="shadow" fill="#7a899c" d="M-84 0
+      Q-60 -10 -40 -22 Q-22 -32 -6 -36 Q-2 -38 2 -38
+      Q18 -36 36 -26 Q56 -14 84 0 Z"/>
+
+    <!-- main horn body: asymmetric pyramid. The left edge climbs in long
+         broken steps to the summit; the summit tip bends/hooks to the right;
+         the right edge drops in a steeper, more vertical wall. The summit
+         is well left of centre — the true Matterhorn profile. -->
+    <path class="rock" fill="#8c9cb2" d="M-82 0
+      Q-66 -6 -52 -16 L-44 -24 L-38 -22
+      Q-30 -34 -22 -46 L-16 -52 L-12 -50
+      Q-8 -60 -4 -72 L-2 -80 L1 -78
+      Q3 -88 4 -96 L7 -100
+      L11 -97 L9 -90 L13 -92 L11 -84
+      Q14 -78 16 -68 L20 -58 L22 -60
+      Q28 -44 36 -30 L42 -22 L46 -24
+      Q56 -14 68 -6 Q78 -2 84 0 Z"/>
+
+    <!-- baked SHADOW on the entire right (east) face: the dark side of the
+         horn, divided from the lit face by the summit ridge -->
+    <path fill="rgba(0,0,0,0.20)" d="M7 -100
+      L11 -97 L9 -90 L13 -92 L11 -84 Q14 -78 16 -68 L20 -58 L22 -60
+      Q28 -44 36 -30 L42 -22 L46 -24 Q56 -14 68 -6 Q78 -2 84 0
+      L6 0 L5 -94 Z"/>
+    <!-- darker shaded right-foot rock -->
+    <path class="shadow" fill="#6f7e92" d="M40 -26
+      Q54 -16 68 -7 Q78 -3 84 0 L34 0 Z"/>
+
+    <!-- baked HIGHLIGHT on the sun-struck left (north-west) face -->
+    <path fill="rgba(255,255,255,0.10)" d="M7 -100
+      L4 -96 Q3 -88 1 -78 L-2 -80 Q-8 -60 -12 -50 L-16 -52
+      Q-30 -34 -38 -22 L-44 -24 Q-52 -16 -66 -6 Q-74 -2 -82 0
+      L-30 0 L0 -86 Z"/>
+
+    <!-- snow on the summit headwall / hooked tip (bare rock dominates the
+         very top, but ice clings to north-facing ledges just below) -->
+    <path class="snow" fill="#eef3f8" d="M4 -96
+      L7 -100 L9 -94 L6 -86 L1 -78 L-1 -80 L1 -88 Z"/>
+    <!-- snow couloir streaking down the lit left face, hugging the rock -->
+    <path class="snow" fill="#eef3f8" d="M-4 -72
+      L-1 -75 L-5 -64 L-9 -54 L-14 -44 L-18 -40
+      L-15 -48 L-11 -58 L-7 -66 Z"/>
+    <!-- snow ledge clinging mid left face, tapered (not a floating patch) -->
+    <path class="snow" fill="#eef3f8" d="M-20 -48
+      L-15 -52 L-19 -44 L-26 -36 L-32 -30 L-34 -28
+      L-29 -34 L-24 -42 Z"/>
+    <!-- thin snow run on the shaded right shoulder, dim, ledge-hugging -->
+    <path class="snow" fill="#d6dde6" d="M16 -64
+      L20 -58 L17 -50 L13 -42 L11 -44 L13 -52 L14 -58 Z"/>
+    <path class="snow" fill="#d6dde6" d="M30 -38
+      L35 -32 L31 -24 L27 -28 L29 -34 Z"/>
+
+    <!-- broad snow apron skirting the base / lower shoulders: an undulating
+         wind-scoured skirt, thinner in the middle below the ridge -->
+    <path class="snow" fill="#e6ecf3" d="M-64 -7
+      Q-52 -16 -42 -20 Q-34 -23 -28 -20 Q-22 -16 -16 -17
+      Q-8 -18 -2 -15 Q4 -13 10 -16 Q18 -19 26 -19
+      Q36 -20 44 -22 L47 -23 Q56 -15 62 -9
+      L57 -6 Q48 -9 40 -8 Q30 -5 20 -6 Q8 -7 -2 -6
+      Q-14 -6 -26 -8 Q-38 -11 -48 -8 L-58 -5 Z"/>
+    <!-- sunlit highlight on the left of the apron -->
+    <path fill="rgba(255,255,255,0.12)" d="M-64 -7
+      Q-52 -16 -42 -20 Q-34 -23 -28 -20 Q-22 -16 -16 -17 L-16 -12
+      Q-26 -13 -36 -12 Q-48 -11 -58 -7 Z"/>
+    <!-- shadow on the right of the apron, kept soft so no hard block -->
+    <path fill="rgba(0,0,0,0.10)" d="M26 -19
+      Q36 -20 44 -22 L47 -23 Q56 -15 62 -9 L57 -6
+      Q48 -9 40 -8 Q30 -5 22 -6 L24 -12 Z"/>
+
+    <!-- slim dark exposed rock ribs breaking the lit face (vertical, subtle) -->
+    <path fill="rgba(0,0,0,0.10)" d="M-20 -48
+      L-16 -54 L-15 -46 L-18 -38 L-21 -40 Z"/>
+    <path fill="rgba(0,0,0,0.10)" d="M-6 -66
+      L-3 -72 L-2 -62 L-5 -52 L-7 -56 Z"/>
+  </g>
+</svg>

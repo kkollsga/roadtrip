@@ -1,0 +1,30 @@
+<svg data-meters="0.4 1.6" xmlns="http://www.w3.org/2000/svg" viewBox="-50 -64 100 66">
+  <!-- Kenney-style faceted boulder. Body role = dark (engine feeds rocks
+       this); facets are baked translucent paint. Light from upper-left. -->
+  <g class="variant">
+    <!-- angular boulder -->
+    <path class="dark" fill="#3c3a36" d="M-46 0L-40 -30L-18 -50L10 -54L34 -38L44 -14L40 0Z"/>
+    <!-- upper-left lit facet -->
+    <path fill="rgba(255,255,255,0.08)" d="M-40 -30L-18 -50L10 -54L-4 -34L-22 -26Z"/>
+    <!-- crest highlight -->
+    <path fill="rgba(255,255,255,0.08)" d="M-18 -50L10 -54L34 -38L8 -42Z"/>
+    <!-- right shaded facet -->
+    <path fill="rgba(0,0,0,0.14)" d="M34 -38L44 -14L40 0L8 -2L8 -42Z"/>
+    <!-- base shadow band -->
+    <path fill="rgba(0,0,0,0.14)" d="M-46 0L-30 -6L40 0Z"/>
+  </g>
+  <g class="variant">
+    <!-- taller spire rock -->
+    <path class="dark" fill="#3c3a36" d="M-34 0L-30 -28L-10 -62L8 -56L20 -34L36 -16L30 0Z"/>
+    <path fill="rgba(255,255,255,0.08)" d="M-30 -28L-10 -62L8 -56L-2 -40L-16 -22Z"/>
+    <path fill="rgba(0,0,0,0.14)" d="M8 -56L20 -34L36 -16L30 0L0 -2L0 -52Z"/>
+    <path fill="rgba(0,0,0,0.14)" d="M-34 0L-18 -6L30 0Z"/>
+  </g>
+  <g class="variant">
+    <!-- low broad rock with a smaller boulder beside it -->
+    <path class="dark" fill="#3c3a36" d="M-48 0L-42 -22L-20 -36L8 -40L34 -26L46 -6L42 0Z"/>
+    <path fill="rgba(255,255,255,0.08)" d="M-42 -22L-20 -36L8 -40L-6 -24L-26 -16Z"/>
+    <path fill="rgba(0,0,0,0.14)" d="M8 -40L34 -26L46 -6L42 0L10 -2L8 -38Z"/>
+    <path fill="rgba(0,0,0,0.14)" d="M-48 0L-32 -6L42 0Z"/>
+  </g>
+</svg>

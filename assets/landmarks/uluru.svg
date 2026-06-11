@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-127 -99 249 101">
+  <g class="variant">
+    <path class="warm" fill="#b4593a" d="M-125 0Q-105 -74 -60 -84Q0 -97 55 -85Q100 -70 120 0Z"/>
+    <path class="shadow" fill="none" stroke="#5c6a7e" stroke-width="2.2" stroke-opacity="0.45" d="M-55 -72Q-49 -40 -52 -8"/>
+    <path class="shadow" fill="none" stroke="#5c6a7e" stroke-width="2.2" stroke-opacity="0.45" d="M-21 -70Q-15 -40 -18 -8"/>
+    <path class="shadow" fill="none" stroke="#5c6a7e" stroke-width="2.2" stroke-opacity="0.45" d="M13 -68Q19 -40 16 -8"/>
+    <path class="shadow" fill="none" stroke="#5c6a7e" stroke-width="2.2" stroke-opacity="0.45" d="M47 -66Q53 -40 50 -8"/>
+  </g>
+</svg>

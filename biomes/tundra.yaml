@@ -1,0 +1,65 @@
+# Roadtrip biome definition. Compiled by `node tools/build.js` into
+# js/gen/data.js — run the build (or its --watch mode) after editing.
+#
+# colors are full-daylight bases; the engine grades them per frame by time
+# of day, depth haze, vibrance and weather. Bands:
+#   near     items between the tree line and the road shoulder (depth-staggered)
+#   front    items in front of the road, nearest the camera
+#   midridge rare structures on the mid ridge (mesas, lighthouses...)
+#   forest   distant wooded bands; depth = how deep the woods reach
+# table entries: { asset, w } plus optional depth: [z0, z1] limiting the item
+# to a slice of the band (0 = far edge, 1 = nearest).
+name: tundra
+order: 5
+terrain:
+  far: '#9fb3c8'
+  mid: '#c2cfdc'
+  ground: '#dde7f0'
+  farAmp: 0.15
+  midAmp: 0.06
+  ridged: 0.45
+  snowcap: 0.9
+  water: 0.85
+  waterCol: '#28465e'
+flora:
+  foliage: '#2e4a44'
+  foliage2: '#43555a'
+  trunk: '#5a4a3c'
+  avenue: pine
+light:
+  grade: { tint: '#9fc0e4', strength: 0.22, multiplier: 0.92 }
+  aurora: 1
+weather:
+  clear: 5
+  overcast: 2
+  snow: 2
+  fog: 1
+near:
+  density: 0.9
+  table:
+    - { asset: deadTree, w: 0.38 }
+    - { asset: pine, w: 0.3 }
+    - { asset: rock, w: 0.22 }
+    - { asset: cabin, w: 0.1 }
+front:
+  density: 0.5
+  table:
+    - { asset: rock, w: 0.6 }
+    - { asset: tuft, w: 0.3 }
+    - { asset: deadTree, w: 0.1 }
+midridge:
+  density: 0
+extras:
+  landmarks:
+    - denali
+    - eyjafjallajokull
+  occluder: 0.03
+variants:
+  - key: inland
+    weight: 2.5
+    terrain: { water: 0 }
+    near: { density: 1.3 }
+  - key: iceShelf
+    weight: 1.5
+    terrain: { water: 0.95 }
+    near: { density: 0.4 }

@@ -1,0 +1,10 @@
+<svg data-meters="2.2 2.6" xmlns="http://www.w3.org/2000/svg" viewBox="-19 -102 38 104">
+  <g class="variant">
+    <path class="dark" fill="none" stroke="#3c3a36" stroke-width="6" d="M0 0L0 -70"/>
+    <path class="light" fill="#e6e2d4" d="M-13 -100L13 -100L13 -100C11.34 -100 10 -98.66 10 -97C10 -95.34 11.34 -94 13 -94C14.66 -94 16 -95.34 16 -97L16 -77L16 -77C16 -78.66 14.66 -80 13 -80C11.34 -80 10 -78.66 10 -77C10 -75.34 11.34 -74 13 -74L-13 -74L-13 -74C-11.34 -74 -10 -75.34 -10 -77C-10 -78.66 -11.34 -80 -13 -80C-14.66 -80 -16 -78.66 -16 -77L-16 -97L-16 -97C-16 -95.34 -14.66 -94 -13 -94C-11.34 -94 -10 -95.34 -10 -97C-10 -98.66 -11.34 -100 -13 -100Z"/>
+  </g>
+  <g class="variant">
+    <path class="dark" fill="none" stroke="#3c3a36" stroke-width="6" d="M0 0L0 -70"/>
+    <path class="light" fill="#e6e2d4" d="M0 -100L17 -83L0 -66L-17 -83Z"/>
+  </g>
+</svg>

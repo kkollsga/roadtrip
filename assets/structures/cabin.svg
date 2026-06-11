@@ -1,0 +1,21 @@
+<svg data-meters="4 6" xmlns="http://www.w3.org/2000/svg" viewBox="-58.32 -99 116.64 101">
+  <g class="variant">
+    <path class="trunk" fill="#6b5340" d="M-44 -45L44 -45L44 0L-44 0Z"/>
+    <path class="dark" fill="none" stroke="#3c3a36" stroke-width="0.8" stroke-opacity="0.45" d="M-44 -11.25L44 -11.25"/>
+    <path class="dark" fill="none" stroke="#3c3a36" stroke-width="0.8" stroke-opacity="0.45" d="M-44 -22.5L44 -22.5"/>
+    <path class="dark" fill="none" stroke="#3c3a36" stroke-width="0.8" stroke-opacity="0.45" d="M-44 -33.75L44 -33.75"/>
+    <path class="dark" fill="#3c3a36" d="M-56.32 -45L0 -79L56.32 -45Z"/>
+    <path class="dark" fill="#3c3a36" d="M22.88 -97L32.88 -97L32.88 -67L22.88 -67Z"/>
+    <path class="light" fill="#e6e2d4" d="M-29.56 -32L-14.76 -32L-14.76 -17.2L-29.56 -17.2Z"/>
+    <path class="window" fill="#3c3a36" d="M-28.16 -30.6L-16.16 -30.6L-16.16 -18.6L-28.16 -18.6Z"/>
+    <path class="dark" fill="#3c3a36" d="M7.04 -27L20.04 -27L20.04 0L7.04 0Z"/>
+  </g>
+  <g class="variant">
+    <path class="accent" fill="#9a4538" d="M-43 -45L43 -45L43 0L-43 0Z"/>
+    <path class="dark" fill="#3c3a36" d="M-55.04 -45L0 -79L55.04 -45Z"/>
+    <path class="dark" fill="#3c3a36" d="M22.36 -97L32.36 -97L32.36 -67L22.36 -67Z"/>
+    <path class="light" fill="#e6e2d4" d="M-28.92 -32L-14.12 -32L-14.12 -17.2L-28.92 -17.2Z"/>
+    <path class="window" fill="#3c3a36" d="M-27.52 -30.6L-15.52 -30.6L-15.52 -18.6L-27.52 -18.6Z"/>
+    <path class="dark" fill="#3c3a36" d="M6.88 -27L19.88 -27L19.88 0L6.88 0Z"/>
+  </g>
+</svg>

@@ -1,0 +1,93 @@
+<svg data-meters="2.7 4.0" xmlns="http://www.w3.org/2000/svg" viewBox="-55 -102 110 106">
+  <!-- Variant 1: front view, ears spread at head height, trunk hanging straight down -->
+  <g class="variant">
+    <!-- far legs (darker, slightly inset) -->
+    <path class="gray" fill="#8e8a84" d="M-26 -36L-27 0L-15 0L-15 -36Z"/>
+    <path class="gray" fill="#8e8a84" d="M15 -36L15 0L27 0L26 -36Z"/>
+    <path fill="rgba(0,0,0,0.16)" d="M-26 -36L-27 0L-15 0L-15 -36Z"/>
+    <path fill="rgba(0,0,0,0.16)" d="M15 -36L15 0L27 0L26 -36Z"/>
+    <!-- near legs (two wide columns front) -->
+    <path class="gray" fill="#8e8a84" d="M-30 -40L-32 0L-18 0L-18 -40Z"/>
+    <path class="gray" fill="#8e8a84" d="M18 -40L18 0L32 0L30 -40Z"/>
+    <!-- toenail hints on the near legs -->
+    <path fill="rgba(255,255,255,0.16)" d="M-31 -4L-28 -4L-28 0L-31 0Z"/>
+    <path fill="rgba(255,255,255,0.16)" d="M-26 -4L-23 -4L-23 0L-26 0Z"/>
+    <path fill="rgba(255,255,255,0.16)" d="M-21 -4L-18 -4L-18 0L-21 0Z"/>
+    <path fill="rgba(255,255,255,0.16)" d="M19 -4L22 -4L22 0L19 0Z"/>
+    <path fill="rgba(255,255,255,0.16)" d="M24 -4L27 -4L27 0L24 0Z"/>
+    <path fill="rgba(255,255,255,0.16)" d="M29 -4L31 -4L31 0L29 0Z"/>
+    <!-- body / shoulders -->
+    <path class="gray" fill="#8e8a84" d="M-34 -38Q-40 -64 -22 -76Q0 -84 22 -76Q40 -64 34 -38Q24 -28 0 -30Q-24 -28 -34 -38Z"/>
+    <!-- ears: broad flaps attached at head height, drooping outward -->
+    <path class="gray" fill="#8e8a84" d="M-18 -78Q-48 -78 -50 -50Q-50 -34 -34 -36Q-22 -46 -18 -64Q-18 -72 -18 -78Z"/>
+    <path class="gray" fill="#8e8a84" d="M18 -78Q48 -78 50 -50Q50 -34 34 -36Q22 -46 18 -64Q18 -72 18 -78Z"/>
+    <!-- ear inner shading -->
+    <path fill="rgba(0,0,0,0.12)" d="M-20 -74Q-44 -72 -45 -50Q-45 -40 -34 -40Q-24 -50 -20 -66Z"/>
+    <path fill="rgba(0,0,0,0.12)" d="M20 -74Q44 -72 45 -50Q45 -40 34 -40Q24 -50 20 -66Z"/>
+    <!-- head / face dome between the ears -->
+    <path class="gray" fill="#8e8a84" d="M-18 -80Q-20 -92 0 -94Q20 -92 18 -80Q20 -60 12 -50Q0 -46 -12 -50Q-20 -60 -18 -80Z"/>
+    <!-- trunk hanging straight down from the face -->
+    <path class="gray" fill="#8e8a84" d="M-6 -54Q-7 -32 -5 -14Q-3 -5 0 -5Q4 -5 5 -14Q4 -32 6 -54Q0 -57 -6 -54Z"/>
+    <!-- trunk shaded edge -->
+    <path class="brown" fill="#7a5a3c" fill-opacity="0.45" d="M2 -54Q3 -32 4 -15Q3 -6 0 -6Q3 -16 2 -34Q1 -46 0 -54Z"/>
+    <!-- trunk ridges -->
+    <path fill="none" stroke="rgba(0,0,0,0.12)" stroke-width="1" stroke-linecap="round" d="M-4 -22Q0 -20 4 -22"/>
+    <path fill="none" stroke="rgba(0,0,0,0.12)" stroke-width="1" stroke-linecap="round" d="M-4 -30Q0 -28 4 -30"/>
+    <path fill="none" stroke="rgba(0,0,0,0.12)" stroke-width="1" stroke-linecap="round" d="M-4 -38Q0 -36 4 -38"/>
+    <!-- tusks flanking the trunk -->
+    <path class="light" fill="#e8e2d4" d="M-8 -50Q-11 -40 -13 -28Q-12 -24 -10 -26Q-8 -38 -5 -49Z"/>
+    <path class="light" fill="#e8e2d4" d="M8 -50Q11 -40 13 -28Q12 -24 10 -26Q8 -38 5 -49Z"/>
+    <!-- eyes -->
+    <path class="dark" fill="#2e2620" d="M-12 -72Q-9 -73 -9 -70Q-11 -68 -13 -70Z"/>
+    <path class="dark" fill="#2e2620" d="M12 -72Q9 -73 9 -70Q11 -68 13 -70Z"/>
+    <!-- forehead crease -->
+    <path fill="none" stroke="rgba(0,0,0,0.12)" stroke-width="1.2" stroke-linecap="round" d="M0 -88Q-1 -76 -2 -66"/>
+    <path fill="none" stroke="rgba(0,0,0,0.12)" stroke-width="1.2" stroke-linecap="round" d="M0 -88Q1 -76 2 -66"/>
+    <!-- top-left highlight -->
+    <path fill="rgba(255,255,255,0.08)" d="M-18 -78Q-40 -64 -34 -42Q-32 -56 -22 -70Z"/>
+    <path fill="rgba(255,255,255,0.08)" d="M-18 -80Q-20 -92 0 -94Q-10 -90 -15 -80Q-17 -72 -16 -64Z"/>
+  </g>
+  <!-- Variant 2: side view, facing left, trunk raised, four legs -->
+  <g class="variant">
+    <!-- far legs (darker) -->
+    <path class="gray" fill="#8e8a84" d="M-16 -32L-17 0L-7 0L-7 -32Z"/>
+    <path class="gray" fill="#8e8a84" d="M22 -32L22 0L32 0L31 -32Z"/>
+    <path fill="rgba(0,0,0,0.16)" d="M-16 -32L-17 0L-7 0L-7 -32Z"/>
+    <path fill="rgba(0,0,0,0.16)" d="M22 -32L22 0L32 0L31 -32Z"/>
+    <!-- near legs -->
+    <path class="gray" fill="#8e8a84" d="M-10 -34L-11 0L0 0L0 -34Z"/>
+    <path class="gray" fill="#8e8a84" d="M14 -34L14 0L25 0L24 -34Z"/>
+    <!-- toenail hints -->
+    <path fill="rgba(255,255,255,0.16)" d="M-11 -4L-8 -4L-8 0L-11 0Z"/>
+    <path fill="rgba(255,255,255,0.16)" d="M-4 -4L-1 -4L-1 0L-4 0Z"/>
+    <path fill="rgba(255,255,255,0.16)" d="M15 -4L18 -4L18 0L15 0Z"/>
+    <path fill="rgba(255,255,255,0.16)" d="M21 -4L24 -4L24 0L21 0Z"/>
+    <!-- barrel body with a gentle back arch, rump high at right -->
+    <path class="gray" fill="#8e8a84" d="M-14 -38Q-18 -64 6 -72Q30 -78 42 -62Q46 -50 40 -38Q24 -30 0 -32Q-10 -34 -14 -38Z"/>
+    <!-- back-arch highlight -->
+    <path fill="rgba(255,255,255,0.08)" d="M-14 -38Q-18 -64 6 -72Q18 -75 14 -71Q-8 -66 -8 -42Z"/>
+    <!-- head dome, separated from the body by a neck dip -->
+    <path class="gray" fill="#8e8a84" d="M-14 -42Q-30 -46 -32 -64Q-32 -80 -18 -82Q-6 -82 -4 -68Q-2 -54 -8 -44Q-11 -40 -14 -42Z"/>
+    <!-- neck dip shading (between head and shoulder) -->
+    <path fill="rgba(0,0,0,0.10)" d="M-6 -44Q-2 -56 -4 -68Q2 -56 0 -44Q-3 -42 -6 -44Z"/>
+    <!-- ear flap at head height -->
+    <path class="gray" fill="#8e8a84" d="M-8 -70Q4 -74 6 -58Q6 -44 -6 -44Q-10 -56 -8 -70Z"/>
+    <path fill="rgba(0,0,0,0.12)" d="M-6 -68Q3 -71 4 -58Q4 -47 -5 -47Q-8 -58 -6 -68Z"/>
+    <!-- trunk flowing continuously out of the face in one curve, raised and curling -->
+    <path class="gray" fill="#8e8a84" d="M-26 -54Q-40 -54 -46 -66Q-50 -80 -44 -88Q-38 -94 -34 -88Q-38 -82 -35 -74Q-31 -64 -24 -60Q-20 -57 -26 -54Z"/>
+    <!-- trunk shaded underside -->
+    <path class="brown" fill="#7a5a3c" fill-opacity="0.4" d="M-26 -54Q-38 -54 -44 -65Q-48 -78 -43 -86Q-42 -78 -37 -72Q-31 -62 -24 -58Q-21 -57 -26 -54Z"/>
+    <!-- trunk ridges -->
+    <path fill="none" stroke="rgba(0,0,0,0.12)" stroke-width="1" stroke-linecap="round" d="M-30 -56Q-37 -57 -41 -64"/>
+    <path fill="none" stroke="rgba(0,0,0,0.12)" stroke-width="1" stroke-linecap="round" d="M-41 -76Q-44 -82 -41 -88"/>
+    <!-- tusk curving down from the mouth -->
+    <path class="light" fill="#e8e2d4" d="M-26 -48Q-32 -42 -34 -32Q-33 -28 -31 -30Q-29 -40 -24 -47Z"/>
+    <!-- eye -->
+    <path class="dark" fill="#2e2620" d="M-18 -64Q-15 -65 -15 -62Q-17 -61 -19 -63Z"/>
+    <!-- tail -->
+    <path class="gray" fill="#8e8a84" d="M42 -48Q48 -44 47 -28L44 -28Q45 -42 40 -46Z"/>
+    <path class="dark" fill="#2e2620" d="M44 -30Q48 -26 45 -22Q43 -27 44 -30Z"/>
+    <!-- belly / underside shadow -->
+    <path fill="rgba(0,0,0,0.10)" d="M-8 -34Q14 -28 36 -34Q14 -26 -8 -30Z"/>
+  </g>
+</svg>
