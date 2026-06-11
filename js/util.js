@@ -50,9 +50,18 @@ window.U = (() => {
     lerp(c1[0], c2[0], t), lerp(c1[1], c2[1], t), lerp(c1[2], c2[2], t)
   ];
   const scale = (c, k) => [c[0] * k, c[1] * k, c[2] * k];
+  /* saturate (k>1) / desaturate (k<1) around the color's own luma */
+  const sat = (c, k) => {
+    const l = 0.299 * c[0] + 0.587 * c[1] + 0.114 * c[2];
+    return [
+      clamp(l + (c[0] - l) * k, 0, 255),
+      clamp(l + (c[1] - l) * k, 0, 255),
+      clamp(l + (c[2] - l) * k, 0, 255),
+    ];
+  };
   const css = (c, a) => a === undefined
     ? `rgb(${c[0] | 0},${c[1] | 0},${c[2] | 0})`
     : `rgba(${c[0] | 0},${c[1] | 0},${c[2] | 0},${a})`;
 
-  return { TAU, clamp, lerp, smooth, hash1, hash2, noise1, fbm, rng, col, mix, scale, css };
+  return { TAU, clamp, lerp, smooth, hash1, hash2, noise1, fbm, rng, col, mix, scale, sat, css };
 })();

@@ -406,6 +406,10 @@ window.Scene = (() => {
     const effD = d => Math.min(0.96, d + fogW * (0.22 + d * 1.3));
     const tint = (base, d, snowMix) => {
       let c = Palette.lit(base, pal, light);
+      // near-camera vibrance: colors stay rich up close and bleed away
+      // with depth (full boost at d=0, gone past the tree line)
+      const near = U.clamp(1 - d / 0.22, 0, 1);
+      if (near > 0) c = U.sat(c, 1 + 0.75 * near * (0.35 + 0.65 * light));
       if (snowC > 0 && snowMix) c = U.mix(c, snowLit, snowC * snowMix);
       return U.css(U.mix(c, pal.fog, effD(d)));
     };
