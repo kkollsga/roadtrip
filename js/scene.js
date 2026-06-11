@@ -46,6 +46,22 @@ window.Scene = (() => {
     return s ? U.lerp(s[0], s[1], sf) : 8;
   };
 
+  /* ---- the multiplane camera ----
+     One projection drives EVERYTHING about depth. The eye sits CAM_H
+     meters above the ground plane with the horizon at HORIZON·h; for an
+     object at distance D meters:
+       ground line  y(D) = HORIZON·h + FOCAL·CAM_H·h / D
+       size         s(D) = meters · FOCAL·h / D
+       parallax     p(D) = DREF / D            (the road plane drifts at 1)
+       atmosphere   haze(D) grows with ln(D)   (colors wash into the fog)
+     Vertical position, size, drift speed and washout always agree. */
+  const HORIZON = 0.56;
+  const CAM_H = 6.1;
+  const DREF = 15;
+  const FOCAL = METER * DREF; // 0.705 h-units of px per meter at 1 m
+  const groundYf = D => (HORIZON + FOCAL * CAM_H / D); // fraction of h
+  const hazeAt = D => U.clamp(0.05 + 0.19 * Math.log(D / DREF), 0.008, 0.96);
+
   /* landmark display size (fraction of h) and baseline (fraction of h) */
   const LM_CFG = {
     kilimanjaro: { s: 0.30, y: 0.64 }, fuji: { s: 0.28, y: 0.64 },
@@ -223,9 +239,12 @@ window.Scene = (() => {
       return U.css(U.mix(c, pal.fog, effD(d)));
     };
 
-    /* ---- ridge painter; returns nothing, draws fill + optional snowcaps */
-    function ridge(p, seed, freq, baseFrac, ampKey, ampMul, colKey, d, capMul, fringeMul, foamW) {
-      const baseY = h * baseFrac;
+    /* ---- ridge painter: a deep-rooted pane at distance D meters. Its
+       baseline, drift speed and atmospheric washout all derive from D. */
+    function ridge(D, seed, freq, ampKey, ampMul, colKey, capMul, fringeMul, foamW) {
+      const p = DREF / D;
+      const d = hazeAt(D);
+      const baseY = h * groundYf(D);
       const color = tint(effC(cwx, colKey), d, 0.55);
       /* The crest is sampled on a WORLD-aligned grid (layer space), not on
          screen columns: between fixed world samples the slope never
@@ -465,15 +484,15 @@ window.Scene = (() => {
 
     // far ridges (where there is open sea, they read as headlands in it)
     const waterWpre = effN(cwx, 'water');
-    q(270, () => ridge(0.055, 11, 1 / 620, 0.615, 'farAmp', 1.0, 'far', 0.68, 1.0, 0, 0));
-    q(130, () => ridge(0.115, 22, 1 / 480, 0.660, 'farAmp', 0.65, 'far', 0.52, 0.8, 0.35, 0));
+    q(280, () => ridge(280, 11, 1 / 620, 'farAmp', 1.0, 'far', 1.0, 0, 0));
+    q(140, () => ridge(140, 22, 1 / 480, 'farAmp', 0.65, 'far', 0.8, 0.35, 0));
     // nearest far ridge ducks low where open water takes over
-    q(91, () => ridge(0.165, 44, 1 / 520, 0.697, 'farAmp', 0.32 * (1 - waterWpre * 0.85), 'far', 0.38, 0.7, 0.7, 0));
+    q(90, () => ridge(90, 44, 1 / 520, 'farAmp', 0.32 * (1 - waterWpre * 0.85), 'far', 0.7, 0.7, 0));
 
     // open water (warm seas, cold fjords, passing lakes)
     const waterW = effN(cwx, 'water');
     if (waterW > 0.02) {
-      const top = env.horizonY, bot = h * 0.705;
+      const top = env.horizonY, bot = h * groundYf(30); // the shore at 30 m
       const water = Palette.lit(effC(cwx, 'waterCol'), pal, light);
       q(90, () => {
       const g = ctx.createLinearGradient(0, top, 0, bot);
@@ -530,12 +549,13 @@ window.Scene = (() => {
             if (iprof.bname !== 'tundra' && iprof.bname !== 'fjord') continue; // warm seas stay clear
             if (iprof.water < 0.3) continue;
             if (ix < -120 || ix > w + 120) continue;
-            const iy = U.lerp(top + (bot - top) * 0.30, bot - 3, fr);
-            const pIce = U.lerp(0.06, 0.22, fr); // lower in the band = nearer
+            const Di = U.lerp(220, 31, fr); // meters out in the bay
+            const iy = h * groundYf(Di) + 1;
+            const pIce = DREF / Di;
             const fn = kind < 0.35 ? Assets.floe : Assets.iceberg;
             const sIce = itemMeters(kind < 0.35 ? 'floe' : 'iceberg', vv)
               * h * METER * pIce * (kind < 0.35 ? 2.0 : 1);
-            q(D0 / pIce, () => {
+            q(Di, () => {
               const a0 = ctx.globalAlpha;
               ctx.globalAlpha = a0 * waterW;
               fn(ctx, ix, iy, sIce, iceC, vv);
@@ -548,8 +568,8 @@ window.Scene = (() => {
 
     // horizon set pieces: true-scale mesas (90-220 m) far out where their
     // bulk reads as distance, not as a wall
-    drawItemSet(0.03, 999, 1100, 'horizonDensity', 'horizonItems', 0.58,
-      ix => h * 0.652 - h * 0.010 * U.fbm(ix / 240, 99, 2), 900, true);
+    drawItemSet(DREF / 500, 999, 1100, 'horizonDensity', 'horizonItems', hazeAt(500),
+      ix => h * (groundYf(500) - 0.006 * U.fbm(ix / 240, 99, 2)), 900, true);
 
     // wind farms: true-scale turbines (110-150 m) far out on the horizon
     // ridges — or offshore — drifting past slowly in groups of 6-10
@@ -576,8 +596,8 @@ window.Scene = (() => {
           if (sx < -s || sx > w + s) continue;
           farm.push({
             p, sx, s, v: vv, prof: fprof,
-            y: h * (0.698 - (0.060 - p) * 1.3 + (jit - 0.5) * 0.008),
-            d: U.lerp(0.64, 0.48, (p - 0.028) / 0.032),
+            y: h * (groundYf(DREF / p) + (jit - 0.5) * 0.004),
+            d: hazeAt(DREF / p),
           });
         }
       }
@@ -607,44 +627,45 @@ window.Scene = (() => {
         const s = h * cfg.s * (0.88 + r() * 0.28);
         const vv = r();
         if (sx < -s * 3 || sx > w + s * 3) continue;
+        const dL = hazeAt(190);
         const c = {
-          rock: tint(U.scale(effC(lwx, 'far'), 0.92), 0.52, 0.3),
-          snow: U.css(U.mix(snowLit, pal.fog, effD(0.52))),
-          shadow: tint(U.scale(effC(lwx, 'far'), 0.70), 0.52, 0),
-          warm: tint(C('#b4593a'), 0.50, 0.2),
-          green: tint(C('#2f6b46'), 0.50, 0),
+          rock: tint(U.scale(effC(lwx, 'far'), 0.92), dL, 0.3),
+          snow: U.css(U.mix(snowLit, pal.fog, effD(dL))),
+          shadow: tint(U.scale(effC(lwx, 'far'), 0.70), dL, 0),
+          warm: tint(C('#b4593a'), dL, 0.2),
+          green: tint(C('#2f6b46'), dL, 0),
           light,
         };
-        const ly = h * cfg.y;
-        q(D0 / 0.08, () => Assets[kind](ctx, sx, ly, s, c, vv, time), ly);
+        const ly = h * (groundYf(190) + (cfg.y - 0.645) * 0.35);
+        q(190, () => Assets[kind](ctx, sx, ly, s, c, vv, time), ly);
       }
     }
 
-    // mid ridge + its landmarks (mesas, lighthouse)
-    q(62, () => {
-      ridge(0.24, 33, 1 / 360, 0.725, 'midAmp', 1.0, 'mid', 0.26, 0.6, 1.0, waterWpre);
-      drawItemSet(0.24, 333, 700, 'midDensity', 'midItems', 0.34, (ix) => {
-        const nearwx = ix / 0.24;
+    // mid ridge + its landmarks (lighthouses, pagodas)
+    q(55, () => {
+      const pM = DREF / 55;
+      ridge(55, 33, 1 / 360, 'midAmp', 1.0, 'mid', 0.6, 1.0, waterWpre);
+      drawItemSet(pM, 333, 700, 'midDensity', 'midItems', hazeAt(55), (ix) => {
+        const nearwx = ix / pM;
         const amp = effN(nearwx, 'midAmp') * h * ampEnv(nearwx, 33);
-        return h * 0.725 - amp * U.fbm(ix / 360, 33, 3) + 2;
+        return h * groundYf(55) - amp * U.fbm(ix / 360, 33, 3) + 2;
       });
     });
 
-    // distant forest bands: wooded slopes behind the mid ridge. Ground
-    // lines sit where their distance says they should (between the third
-    // far ridge and the mid ridge), so later fills can never swallow them.
-    q(79, () => drawItemSet(0.19, 611, 300, 'forestDepth', 'depthItems', 0.30,
-      ix => h * 0.706 - h * 0.014 * U.fbm(ix / 300, 61, 2)));
-    q(70, () => drawItemSet(0.215, 622, 300, 'forestDepth', 'depthItems', 0.26,
-      ix => h * 0.717 - h * 0.012 * U.fbm(ix / 280, 62, 2)));
+    // distant forest bands: wooded slopes between the panes (75 m sits
+    // behind the mid hills, 45 m on their near flank)
+    q(75, () => drawItemSet(DREF / 75, 611, 300, 'forestDepth', 'depthItems', hazeAt(75),
+      ix => h * (groundYf(75) - 0.010 * U.fbm(ix / 300, 61, 2))));
+    q(45, () => drawItemSet(DREF / 45, 622, 300, 'forestDepth', 'depthItems', hazeAt(45),
+      ix => h * (groundYf(45) - 0.009 * U.fbm(ix / 280, 62, 2))));
 
-    // tree line ridge (the ground band the road sits in)
-    const treeG = (ix) => h * 0.795 - h * 0.022 * U.fbm(ix / 260, 44, 2);
-    q(30, () => {
+    // tree line ridge (the ground band the road sits in), 28 m out
+    const treeG = (ix) => h * (groundYf(28) + 0.004 - 0.020 * U.fbm(ix / 260, 44, 2));
+    q(28, () => {
       ctx.fillStyle = tint(effC(cwx, 'ground'), 0.18, 0.65);
       ctx.beginPath();
       ctx.moveTo(0, h);
-      for (let sx = 0; sx <= w + 10; sx += 10) ctx.lineTo(sx, treeG(worldX * 0.5 + sx));
+      for (let sx = 0; sx <= w + 10; sx += 10) ctx.lineTo(sx, treeG(worldX * (DREF / 28) + sx));
       ctx.lineTo(w + 10, h);
       ctx.closePath();
       ctx.fill();
@@ -660,11 +681,11 @@ window.Scene = (() => {
     };
 
     // roadside strip between tree line and road
-    q(15.8, () => {
-      ctx.fillStyle = tint(U.scale(effC(cwx, 'ground'), 0.82), 0.10, 0.7);
+    q(17.7, () => {
+      ctx.fillStyle = tint(U.scale(effC(cwx, 'ground'), 0.82), hazeAt(19), 0.7);
       ctx.beginPath();
-      ctx.moveTo(0, h * 0.787);
-      ctx.lineTo(w, h * 0.787);
+      ctx.moveTo(0, h * groundYf(19));
+      ctx.lineTo(w, h * groundYf(19));
       for (let sx = w; sx >= 0; sx -= 20) ctx.lineTo(sx, rTopAt(sx) + 2);
       ctx.closePath();
       ctx.fill();
@@ -673,8 +694,8 @@ window.Scene = (() => {
     // near field behind the road: items at every depth from the tree line
     // down to the far shoulder (forest biomes get real staggered depth)
     for (const o of nearFieldItems(444, 660, 'density', 'items',
-      0.5, 0.92, 0.18, 0.09,
-      (sx, z) => U.lerp(treeG(worldX * 0.5 + sx), rTopAt(sx) - h * 0.012, z))) {
+      DREF / 28, DREF / 18.2, hazeAt(28), hazeAt(18.2),
+      (sx, z) => U.lerp(treeG(worldX * (DREF / 28) + sx), rTopAt(sx) - h * 0.010, z))) {
       q(o.dist, () => paintItem(o), o.y);
     }
 
@@ -698,7 +719,7 @@ window.Scene = (() => {
         // ~45 m between poles; each shoulder lives at its own parallax, so
         // the near row is bigger AND spreads wider on screen than the far
         const sp = 1500;
-        const PSH = [0.96, 1.12]; // far shoulder, near shoulder
+        const PSH = [DREF / 17.6, DREF / 12.2]; // far, near shoulder
         const rdH = env.roadBot - env.roadTop;
         const i0 = Math.floor((worldX - 2 * sp) / sp), i1 = Math.floor((worldX + w + 2 * sp) / sp);
         const runs = [[], []]; // far shoulder, near shoulder
@@ -754,8 +775,8 @@ window.Scene = (() => {
             Assets.pole(ctx, p1.x1, p1.baseY, p1.H, polC);
           }
         };
-        if (runs[0].length) q(15.6, () => drawRun(runs[0]), runs[0][0].baseY);
-        if (runs[1].length) q(13.39, () => drawRun(runs[1]), runs[1][0].baseY);
+        if (runs[0].length) q(17.65, () => drawRun(runs[0]), runs[0][0].baseY);
+        if (runs[1].length) q(12.2, () => drawRun(runs[1]), runs[1][0].baseY);
       }
 
       // street lamps: far side, near side, or alternating — per stretch,
@@ -773,17 +794,17 @@ window.Scene = (() => {
           const si = Math.floor(wx1 / FSEG);
           const mode = Math.floor(U.hash1(si * 419 + 11) * 3); // far | near | alternating
           const side = mode === 2 ? (i % 2) : mode;
-          const pS = side === 0 ? 0.96 : 1.12;
+          const pS = side === 0 ? DREF / 17.6 : DREF / 12.2;
           const S = (7 + U.hash1(si * 941 + 7) * 2) * h * METER * pS; // 7-9 m
           const x1 = (wx1 - worldX) * pS;
           if (x1 < -160 || x1 > w + 160) continue;
           if (side === 0) {
             const yy = rTopAt(x1) + h * 0.004;
-            q(15.6, () => Assets.streetlight(ctx, x1, yy, S,
+            q(17.65, () => Assets.streetlight(ctx, x1, yy, S,
               { dark: polC.dark, glowA: lampGlow, poolDY: rdH * 0.45 }, U.hash1(i)), yy);
           } else {
             const yy = rTopAt(x1) + rdH + h * 0.012;
-            q(13.39, ((xx, SS, vv) => () => {
+            q(12.2, ((xx, SS, vv) => () => {
               ctx.save();
               ctx.translate(xx, 0);
               ctx.scale(-1, 1); // mirrored: the arm reaches back over the road
@@ -803,7 +824,7 @@ window.Scene = (() => {
         for (let i = i0; i <= i1; i++) {
           const wx1 = i * sp + 150;
           if (fAt(wx1) !== 'avenue') continue;
-          const x1 = (wx1 - worldX) * 0.96; // far shoulder parallax
+          const x1 = (wx1 - worldX) * (DREF / 17.6); // far shoulder parallax
           if (x1 < -200 || x1 > w + 200) continue;
           const ars = resolve(wx1);
           const aside = ars.t < 0.5 ? ars.a : ars.b;
@@ -811,8 +832,8 @@ window.Scene = (() => {
           if (aprof.key !== avName) { avName = aprof.key; avC = colorsFor(aprof, 0.09); }
           const tfn = Assets[aprof.avenue] || Assets.roundTree;
           const c2 = avC, ty = rTopAt(x1) + h * 0.004;
-          const ts = (6 + U.hash1(i * 31) * 3) * h * METER * 0.96;
-          q(15.6, () => {
+          const ts = (6 + U.hash1(i * 31) * 3) * h * METER * (DREF / 17.6);
+          q(17.65, () => {
             itemShadow(x1, ty, ts);
             tfn(ctx, x1, ty, ts, c2, 0.4 + U.hash1(i * 17) * 0.3, time);
           }, ty);
@@ -991,8 +1012,8 @@ window.Scene = (() => {
     ctx.restore();
     });
 
-    /* ---------------- foreground strip ---------------- */
-    q(13.45, () => {
+    /* ---------------- foreground bank ---------------- */
+    q(12.05, () => {
       ctx.fillStyle = tint(U.scale(effC(cwx, 'ground'), 0.52), 0.03, 0.7);
       ctx.beginPath();
       ctx.moveTo(0, h);
@@ -1002,10 +1023,11 @@ window.Scene = (() => {
       ctx.fill();
     });
 
-    // near field in front of the road — same ladder, same rule
+    // near field in front of the road — the bank runs from the road lip
+    // (12 m) to the bottom of the frame (9.5 m); same ladder, same rule
     for (const o of nearFieldItems(555, 300, 'fgDensity', 'fgItems',
-      1.12, 1.45, 0.05, 0.008,
-      (sx, z) => rTopAt(sx) + roadH + (h - roadBot) * U.lerp(0.22, 0.88, z))) {
+      DREF / 12, DREF / 9.5, hazeAt(12), hazeAt(9.5),
+      (sx, z) => rTopAt(sx) + roadH + (h - roadBot) * U.lerp(0.15, 1.0, z))) {
       q(o.dist, () => paintItem(o), o.y);
     }
 
