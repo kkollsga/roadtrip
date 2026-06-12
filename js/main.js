@@ -227,7 +227,9 @@
       cloudCover: Weather.cloudCover,
       fog: Weather.fog,
       wetness: Weather.wetness,
-      snowCover: Weather.snowCover || 0,
+      // the season lays its own snow under whatever the weather brings
+      snowCover: Math.max(Weather.snowCover || 0,
+        Scene.snowBaseAt(state.worldX + W * 0.5, doy)),
       precip: Weather.precip,
     };
 

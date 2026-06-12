@@ -280,6 +280,24 @@ window.Scene = (() => {
     const biC = biomeAt(cwx);
     const snowLit = Palette.lit(C('#e9eef6'), pal, light);
     const effD = d => Math.min(0.96, d + fogW * (0.22 + d * 1.3));
+    /* the seasons repaint the living colors: autumn ambers, spring
+       freshness, winter bareness (and the savanna's golden dry season),
+       each biome following by its own 'seasonal' strength */
+    const doySea = env.doy || 166;
+    const bell = (c2, w2) => {
+      let d2 = Math.abs(doySea - c2);
+      d2 = Math.min(d2, 365 - d2);
+      return Math.exp(-(d2 / w2) * (d2 / w2));
+    };
+    const SEA_A = bell(285, 40), SEA_S = bell(125, 35), SEA_W = bell(8, 50);
+    const seasonC = (col, k2) => {
+      let c2 = col;
+      if (SEA_A > 0.02) c2 = U.mix(c2, C('#b07a3a'), SEA_A * 0.55 * k2);
+      if (SEA_S > 0.02) c2 = U.mix(c2, C('#8aa84e'), SEA_S * 0.30 * k2);
+      if (SEA_W > 0.02) c2 = U.mix(c2, C('#7a6f5a'), SEA_W * 0.45 * k2);
+      return c2;
+    };
+
     const tint = (base, d, snowMix) => {
       let c = Palette.lit(base, pal, light);
       // vibrance peaks at the road's depth and falls away both into the
@@ -297,7 +315,9 @@ window.Scene = (() => {
       const p = DREF / D;
       const d = hazeAt(D);
       const baseY = h * groundYf(D);
-      const color = tint(effC(cwx, colKey), d, 0.55);
+      const cRaw = effC(cwx, colKey);
+      const color = tint(colKey === 'far' ? cRaw
+        : seasonC(cRaw, effN(cwx, 'seasonal')), d, 0.55);
       /* The crest is sampled on a WORLD-aligned grid (layer space), not on
          screen columns: between fixed world samples the slope never
          re-quantizes as the terrain scrolls, so the facet light/shadow is
@@ -448,9 +468,10 @@ window.Scene = (() => {
     function colorsFor(prof, d) {
       const bb = prof;
       const glowA = U.clamp((0.4 - light) / 0.35, 0, 1) * 0.85;
+      const sk = bb.seasonal || 0;
       return {
-        foliage: tint(bb.fol, d, 0.45),
-        foliage2: tint(bb.fol2, d, 0.45),
+        foliage: tint(seasonC(bb.fol, sk), d, 0.45),
+        foliage2: tint(seasonC(bb.fol2, sk), d, 0.45),
         trunk: tint(bb.trunk, d, 0),
         dark: tint(U.scale(bb.trunk, 0.55), d, 0),
         light: tint(C('#e8e0c4'), d, 0),
@@ -753,7 +774,7 @@ window.Scene = (() => {
     // tree line ridge (the ground band the road sits in), 28 m out
     const treeG = (ix) => h * (groundYf(28) + 0.004 - 0.020 * U.fbm(ix / 260, 44, 2));
     q(28, () => {
-      ctx.fillStyle = tint(effC(cwx, 'ground'), 0.18, 0.65);
+      ctx.fillStyle = tint(seasonC(effC(cwx, 'ground'), effN(cwx, 'seasonal')), 0.18, 0.65);
       ctx.beginPath();
       ctx.moveTo(0, h);
       for (let sx = 0; sx <= w + 10; sx += 10) ctx.lineTo(sx, treeG(worldX * (DREF / 28) + sx));
@@ -773,7 +794,7 @@ window.Scene = (() => {
 
     // roadside strip between tree line and road
     q(17.7, () => {
-      ctx.fillStyle = tint(U.scale(effC(cwx, 'ground'), 0.82), hazeAt(19), 0.7);
+      ctx.fillStyle = tint(U.scale(seasonC(effC(cwx, 'ground'), effN(cwx, 'seasonal')), 0.82), hazeAt(19), 0.7);
       ctx.beginPath();
       ctx.moveTo(0, h * groundYf(19));
       ctx.lineTo(w, h * groundYf(19));
@@ -1137,7 +1158,7 @@ window.Scene = (() => {
 
     /* ---------------- foreground bank ---------------- */
     q(12.05, () => {
-      ctx.fillStyle = tint(U.scale(effC(cwx, 'ground'), 0.52), 0.03, 0.7);
+      ctx.fillStyle = tint(U.scale(seasonC(effC(cwx, 'ground'), effN(cwx, 'seasonal')), 0.52), 0.03, 0.7);
       ctx.beginPath();
       ctx.moveTo(0, h);
       for (let sx = 0; sx <= w + 20; sx += 20) ctx.lineTo(sx, rTopAt(sx) + roadH);
@@ -1270,6 +1291,18 @@ window.Scene = (() => {
     return U.lerp(B[bi.a].homeLat, B[bi.b].homeLat, bi.t);
   }
 
+  /* climatological snow: where the seasonal temperature sits below
+     freezing the ground is ALREADY white when you arrive — blended
+     across biome borders like everything else. Weather adds on top. */
+  function snowBaseAt(wx, doy) {
+    const bi = biomeAt(wx);
+    const warm = 0.5 + 0.5 * Math.cos(2 * Math.PI * ((doy || 166) - 201) / 365);
+    const t = U.lerp(
+      U.lerp(B[bi.a].tempLo, B[bi.a].tempHi, warm),
+      U.lerp(B[bi.b].tempLo, B[bi.b].tempHi, warm), bi.t);
+    return U.clamp((2 - t) / 6, 0, 0.95); // white below -4 C, bare above 2
+  }
+
   function gradeAt(wx) {
     const bi = biomeAt(wx);
     const a = B[bi.a].grade, b = B[bi.b].grade;
@@ -1291,7 +1324,7 @@ window.Scene = (() => {
   });
 
   return {
-    render, biomeAt, weightOf, setFixedBiome, gradeAt, latAt, BIOME_NAMES, WEATHER_TABLES, CLIMATES,
+    render, biomeAt, weightOf, setFixedBiome, gradeAt, latAt, snowBaseAt, BIOME_NAMES, WEATHER_TABLES, CLIMATES,
     auroraAt: wx => effN(wx, 'aurora'),
   };
 })();

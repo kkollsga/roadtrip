@@ -25,6 +25,7 @@ flora:
   foliage: '#2a403c'
   foliage2: '#3c4c50'
   trunk: '#473b30'
+  seasonal: 0.55
   avenue: pine
 light:
   grade: { tint: '#9fc0e4', strength: 0.22, multiplier: 0.92 }

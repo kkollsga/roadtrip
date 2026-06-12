@@ -23,6 +23,7 @@ flora:
   foliage: '#33543f'
   foliage2: '#44664c'
   trunk: '#382c26'
+  seasonal: 0.85
   avenue: sakura
 light:
   grade: { tint: '#f4cfd8', strength: 0.16, multiplier: 1 }

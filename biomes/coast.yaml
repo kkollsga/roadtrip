@@ -25,6 +25,7 @@ flora:
   foliage: '#476b40'
   foliage2: '#6d8447'
   trunk: '#62553e'
+  seasonal: 0.5
   avenue: palm
 light:
   grade: { tint: '#b8e4de', strength: 0.15, multiplier: 1.04 }

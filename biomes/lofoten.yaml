@@ -25,6 +25,7 @@ flora:
   foliage: '#35563e'
   foliage2: '#48664a'
   trunk: '#544b3e'
+  seasonal: 0.65
   avenue: birch
 light:
   grade: { tint: '#bce0da', strength: 0.16, multiplier: 1 }

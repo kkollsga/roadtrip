@@ -24,6 +24,7 @@ flora:
   foliage: '#566b36'
   foliage2: '#788442'
   trunk: '#4a3a2c'
+  seasonal: 0.7
   avenue: acacia
 light:
   grade: { tint: '#ffd98e', strength: 0.18, multiplier: 1.04 }

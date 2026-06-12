@@ -25,6 +25,7 @@ flora:
   foliage: '#2a4632'
   foliage2: '#3d5a40'
   trunk: '#2e2218'
+  seasonal: 0.65
   avenue: roundTree
 light:
   grade: { tint: '#7fae84', strength: 0.14, multiplier: 0.94 }

@@ -27,6 +27,7 @@ const DEFAULTS = {
   water: 0, lake: 0, waterCol: '#3c6f95', aurora: 0, occluder: 0,
   landmarks: [], grade: { tint: '#ffffff', s: 0, lm: 1 },
   avenue: 'roundTree',
+  seasonal: 0.5, // how strongly the flora follows the seasons
   density: 3, items: [['roundTree', 1]],
   fgDensity: 2, fgItems: [['tuft', 1]],
   midDensity: 0, midItems: null,
@@ -61,6 +62,7 @@ function flatten(doc) {
   }
   const f = doc.flora || {};
   if ('foliage' in f) out.fol = f.foliage;
+  if ('seasonal' in f) out.seasonal = f.seasonal;
   if ('foliage2' in f) out.fol2 = f.foliage2;
   if ('trunk' in f) out.trunk = f.trunk;
   if ('avenue' in f) out.avenue = f.avenue;
