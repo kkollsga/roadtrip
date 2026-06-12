@@ -187,6 +187,50 @@ window.Scene = (() => {
   /* ---------------- chunked item placement (cached, deterministic) ------ */
   const itemCache = new Map();
   const susp = { y: 0, vy: 0, p: 0, vp: 0 }; // body spring state (suspension)
+  /* ---- set pieces: composed arrangements that recur rarely, giving the
+     road memorable places instead of uniform scatter. Offsets in meters
+     from the piece's center; s picks within the species' size range. */
+  const grove6 = type => [-16, -9, -3, 4, 11, 18].map((dx, i) =>
+    ({ type, dx, s: 0.35 + (i * 2.7 % 1) * 0.55, v: i * 0.37 % 1 }));
+  const POIS = {
+    plains: [
+      [{ type: 'barn', dx: 0, s: 0.7, v: 0.6 }, { type: 'cabin', dx: 15, s: 0.4, v: 0.3 },
+       { type: 'roundTree', dx: -13, s: 0.85, v: 0.2 }, { type: 'roundTree', dx: 24, s: 0.5, v: 0.7 },
+       { type: 'rock', dx: 7, s: 0.5, v: 0.5 }],
+      grove6('roundTree'),
+    ],
+    forest: [
+      [{ type: 'cabin', dx: 0, s: 0.6, v: 0.55 }, { type: 'pine', dx: -11, s: 0.8, v: 0.3 },
+       { type: 'pine', dx: 12, s: 0.55, v: 0.8 }, { type: 'rock', dx: 6, s: 0.4, v: 0.2 }],
+      grove6('pine'),
+    ],
+    desert: [
+      [{ type: 'rock', dx: -7, s: 0.9, v: 0.2 }, { type: 'rock', dx: 0, s: 0.6, v: 0.6 },
+       { type: 'rock', dx: 6, s: 0.4, v: 0.9 }, { type: 'cactus', dx: -14, s: 0.8, v: 0.4 },
+       { type: 'cactus', dx: 13, s: 0.5, v: 0.75 }],
+    ],
+    savanna: [
+      [{ type: 'acacia', dx: 0, s: 0.9, v: 0.4 }, { type: 'elephant', dx: -12, s: 0.7, v: 0.3 },
+       { type: 'giraffe', dx: 11, s: 0.8, v: 0.2 }, { type: 'giraffe', dx: 17, s: 0.55, v: 0.7 },
+       { type: 'lion', dx: -5, s: 0.6, v: 0.5 }],
+      grove6('acacia').slice(1, 5),
+    ],
+    japan: [
+      [{ type: 'torii', dx: 0, s: 0.8, v: 0.3 }, { type: 'sakura', dx: -12, s: 0.85, v: 0.2 },
+       { type: 'sakura', dx: 12, s: 0.7, v: 0.6 }, { type: 'rock', dx: -5, s: 0.45, v: 0.8 }],
+      grove6('sakura'),
+    ],
+    lofoten: [
+      [{ type: 'cabin', dx: -8, s: 0.7, v: 0.6 }, { type: 'cabin', dx: 8, s: 0.55, v: 0.2 },
+       { type: 'birch', dx: -18, s: 0.7, v: 0.4 }, { type: 'rock', dx: 16, s: 0.6, v: 0.7 }],
+    ],
+    fjord: [
+      [{ type: 'cabin', dx: -8, s: 0.7, v: 0.6 }, { type: 'cabin', dx: 8, s: 0.55, v: 0.2 },
+       { type: 'pine', dx: -18, s: 0.8, v: 0.4 }, { type: 'rock', dx: 16, s: 0.6, v: 0.7 }],
+    ],
+    generic: [grove6('roundTree')],
+  };
+
   const OCC_TREES = { // types allowed on near hillsides (trees only)
     pine: 1, roundTree: 1, birch: 1, deadTree: 1, cactus: 1,
     palm: 1, sakura: 1, redwood: 1, canopyTree: 1, fern: 1,
@@ -200,7 +244,10 @@ window.Scene = (() => {
     items = [];
     const nearWX = (ci * chunkW + chunkW / 2) / p;
     const rs = resolve(nearWX);
-    const density = effN(nearWX, densityKey);
+    // placement breathes: low-frequency grove noise clusters items into
+    // copses and stands with open ground between, instead of white noise
+    const grove = U.noise1(nearWX / 2600, layerSeed + 55);
+    const density = effN(nearWX, densityKey) * (0.35 + 1.7 * grove * grove);
     const count = Math.floor(density) + (r() < density % 1 ? 1 : 0);
     for (let k = 0; k < count; k++) {
       const side = r() < rs.t ? rs.b : rs.a;
@@ -410,7 +457,7 @@ window.Scene = (() => {
       };
     }
 
-    function drawItemSet(p, seed, chunkW, densityKey, tableKey, d, groundY, marg, sink) {
+    function drawItemSet(p, seed, chunkW, densityKey, tableKey, d, groundY, marg, sink, landOnly) {
       const colorSets = {};
       const lx0 = worldX * p;
       const M = h * METER * p; // px per real-world meter on this layer
@@ -420,6 +467,7 @@ window.Scene = (() => {
         for (const it of items) {
           const sx = it.x - lx0;
           if (sx < -mg || sx > w + mg) continue;
+          if (landOnly && effN(it.x / p, 'water') > 0.35) continue; // no woods at sea
           const size = itemMeters(it.type, it.sf) * M;
           const c = colorSets[it.prof.key] || (colorSets[it.prof.key] = colorsFor(it.prof, d));
           const y = groundY(it.x, sx, it);
@@ -657,12 +705,13 @@ window.Scene = (() => {
       });
     });
 
-    // distant forest bands: wooded slopes between the panes (75 m sits
-    // behind the mid hills, 45 m on their near flank)
-    q(75, () => drawItemSet(DREF / 75, 611, 300, 'forestDepth', 'depthItems', hazeAt(75),
-      ix => h * (groundYf(75) - 0.010 * U.fbm(ix / 300, 61, 2))));
-    q(45, () => drawItemSet(DREF / 45, 622, 300, 'forestDepth', 'depthItems', hazeAt(45),
-      ix => h * (groundYf(45) - 0.009 * U.fbm(ix / 280, 62, 2))));
+    // distant forest bands: woods on the SLOPES of the ridge panes (their
+    // ground lines sit just below the 140 m and 90 m pane baselines, so
+    // the trees stand on terrain, never on haze) — and never at sea
+    q(120, () => drawItemSet(DREF / 120, 611, 300, 'forestDepth', 'depthItems', hazeAt(120),
+      ix => h * (groundYf(120) + 0.004 - 0.007 * U.fbm(ix / 300, 61, 2)), 200, null, true));
+    q(70, () => drawItemSet(DREF / 70, 622, 300, 'forestDepth', 'depthItems', hazeAt(70),
+      ix => h * (groundYf(70) + 0.004 - 0.008 * U.fbm(ix / 280, 62, 2)), 200, null, true));
 
     // tree line ridge (the ground band the road sits in), 28 m out
     const treeG = (ix) => h * (groundYf(28) + 0.004 - 0.020 * U.fbm(ix / 260, 44, 2));
@@ -695,6 +744,38 @@ window.Scene = (() => {
       ctx.closePath();
       ctx.fill();
     });
+
+    // set pieces: a farmstead, a shrine, a watering hole — composed,
+    // recurring-but-rare places the road remembers
+    {
+      const POI_W = 26000;
+      const p0 = DREF / 28, p1 = DREF / 18.2;
+      for (let ci = Math.floor((worldX - 900) / POI_W); ci <= (worldX + w + 900) / POI_W; ci++) {
+        const r = U.rng(U.hash2(ci, 5151));
+        if (r() > 0.55) continue;
+        const wx0 = ci * POI_W + (0.2 + r() * 0.6) * POI_W;
+        if (effN(wx0, 'water') > 0.35) continue;
+        const rs = resolve(wx0);
+        const side = r() < rs.t ? rs.b : rs.a;
+        const prof = r() < side.vt ? side.p2 : side.p1;
+        const pool = POIS[prof.bname] || POIS.generic;
+        const poi = pool[Math.floor(r() * pool.length) % pool.length];
+        const z = 0.45 + r() * 0.35;
+        const p = U.lerp(p0, p1, z);
+        const c = colorsFor(prof, hazeAt(DREF / p));
+        for (const m2 of poi) {
+          const sx = (wx0 + m2.dx * h * METER - worldX) * p;
+          if (sx < -300 || sx > w + 300) continue;
+          const y = U.lerp(treeG(worldX * (DREF / 28) + sx), rTopAt(sx) - h * 0.010, z);
+          const size = softScale(itemMeters(m2.type, m2.s) * h * METER * p, h * 1.3);
+          const vv = (m2.v + ci * 0.137) % 1;
+          q(DREF / p, () => {
+            itemShadow(sx, y, size);
+            Assets[m2.type](ctx, sx, y, size, c, vv, time);
+          }, y);
+        }
+      }
+    }
 
     // near field behind the road: items at every depth from the tree line
     // down to the far shoulder (forest biomes get real staggered depth)
