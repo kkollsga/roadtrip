@@ -163,21 +163,29 @@ window.Scene = (() => {
     }
     return { t: 0, a, b: a };
   }
-  /* blended numeric / color parameter at a world position */
-  function effN(wx, key) {
-    const r = resolve(wx);
-    const ea = r.a.vt ? U.lerp(r.a.p1[key], r.a.p2[key], r.a.vt) : r.a.p1[key];
-    if (!r.t) return ea;
-    const eb = r.b.vt ? U.lerp(r.b.p1[key], r.b.p2[key], r.b.vt) : r.b.p1[key];
-    return U.lerp(ea, eb, r.t);
+  /* blended numeric / color parameter at a world position.
+     The renderer asks thousands of times per frame at positions a few
+     px apart, while the parameters only vary over thousands of px - so
+     lookups are memoized per frame in 64 px buckets. */
+  const effMemo = new Map();
+  function clearEffMemo() { effMemo.clear(); }
+  function effLookup(wx, key, mixFn) {
+    let m = effMemo.get(key);
+    if (!m) { m = new Map(); effMemo.set(key, m); }
+    const bucket = (wx / 64) | 0;
+    let v = m.get(bucket);
+    if (v === undefined) {
+      const bwx = bucket * 64 + 32;
+      const r = resolve(bwx);
+      const ea = r.a.vt ? mixFn(r.a.p1[key], r.a.p2[key], r.a.vt) : r.a.p1[key];
+      v = r.t ? mixFn(ea,
+        r.b.vt ? mixFn(r.b.p1[key], r.b.p2[key], r.b.vt) : r.b.p1[key], r.t) : ea;
+      m.set(bucket, v);
+    }
+    return v;
   }
-  function effC(wx, key) {
-    const r = resolve(wx);
-    const ea = r.a.vt ? U.mix(r.a.p1[key], r.a.p2[key], r.a.vt) : r.a.p1[key];
-    if (!r.t) return ea;
-    const eb = r.b.vt ? U.mix(r.b.p1[key], r.b.p2[key], r.b.vt) : r.b.p1[key];
-    return U.mix(ea, eb, r.t);
-  }
+  function effN(wx, key) { return effLookup(wx, key, U.lerp); }
+  function effC(wx, key) { return effLookup(wx, key, U.mix); }
 
   /* Long-wavelength height envelope, phased differently per ridge layer, so
      spurs swell in different places and interlock — valleys open between
@@ -278,6 +286,7 @@ window.Scene = (() => {
 
   /* ======================== render ======================== */
   function render(ctx, env, pal) {
+    clearEffMemo();
     const { w, h, worldX, light, time } = env;
     const fogW = env.weather.fog;
     const wet = env.weather.wetness || 0;
@@ -317,7 +326,7 @@ window.Scene = (() => {
 
     /* ---- ridge painter: a deep-rooted pane at distance D meters. Its
        baseline, drift speed and atmospheric washout all derive from D. */
-    function ridge(D, seed, freq, ampKey, ampMul, colKey, capMul, fringeMul, foamW) {
+    function ridge(D, seed, freq, ampKey, ampMul, colKey, capMul, foamW) {
       const p = DREF / D;
       const d = hazeAt(D);
       const baseY = h * groundYf(D);
@@ -378,25 +387,6 @@ window.Scene = (() => {
         ctx.closePath();
         ctx.fill();
         ctx.restore();
-      }
-      // tiny tree fringe along the crest — forested ridges receding
-      const fringe = effN(cwx, 'forestDepth') * (fringeMul || 0);
-      if (fringe > 0.3) {
-        ctx.fillStyle = tint(U.scale(effC(cwx, colKey), 0.80), d, 0.5);
-        ctx.beginPath();
-        const lx0 = worldX * p;
-        for (let k = Math.floor(lx0 / 16); k <= (lx0 + w) / 16; k++) {
-          const hsh = U.hash2(k, seed + 77);
-          if (hsh > Math.min(0.9, fringe * 0.16)) continue;
-          const fx = k * 16 - lx0;
-          const idx = Math.max(0, Math.min(pts.length - 1, Math.round((fx - xs[0]) / step)));
-          const fy = pts[idx];
-          const fh = h * (0.012 + (hsh * 7 % 1) * 0.016) * (0.7 + (fringeMul || 0) * 0.9);
-          ctx.moveTo(fx - 3.2, fy + 1);
-          ctx.lineTo(fx, fy - fh);
-          ctx.lineTo(fx + 3.2, fy + 1);
-        }
-        ctx.fill();
       }
       // foam + wet edge where this ridge dips to meet open water
       if (foamW > 0.25) {
@@ -574,9 +564,9 @@ window.Scene = (() => {
 
     // far ridges (where there is open sea, they read as headlands in it)
     const waterWpre = effN(cwx, 'water');
-    q(280, () => ridge(280, 11, 1 / 620, 'farAmp', 1.0, 'far', 1.0, 0, 0));
-    q(140, () => ridge(140, 22, 1 / 480, 'farAmp', 0.65, 'far', 0.8, 0.35, 0));
-    q(90, () => ridge(90, 44, 1 / 520, 'farAmp', 0.32, 'far', 0.7, 0.7, waterWpre));
+    q(280, () => ridge(280, 11, 1 / 620, 'farAmp', 1.0, 'far', 1.0, 0));
+    q(140, () => ridge(140, 22, 1 / 480, 'farAmp', 0.65, 'far', 0.8, 0));
+    q(90, () => ridge(90, 44, 1 / 520, 'farAmp', 0.32, 'far', 0.7, waterWpre));
 
     // the open sea: a PERMANENT plane just in front of the sky — land
     // panes rise above it or sink beneath it, so coverage emerges from
@@ -761,7 +751,7 @@ window.Scene = (() => {
     // mid ridge + its landmarks (lighthouses, pagodas)
     q(55, () => {
       const pM = DREF / 55;
-      ridge(55, 33, 1 / 360, 'midAmp', 1.0, 'mid', 0.6, 1.0, waterWpre);
+      ridge(55, 33, 1 / 360, 'midAmp', 1.0, 'mid', 0.6, waterWpre);
       drawItemSet(pM, 333, 700, 'midDensity', 'midItems', hazeAt(55), (ix) => {
         const nearwx = ix / pM;
         const amp = effN(nearwx, 'midAmp') * h * ampEnv(nearwx, 33);
