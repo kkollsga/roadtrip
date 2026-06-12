@@ -28,6 +28,7 @@ const DEFAULTS = {
   landmarks: [], grade: { tint: '#ffffff', s: 0, lm: 1 },
   avenue: 'roundTree',
   seasonal: 0.5, // how strongly the flora follows the seasons
+  clustering: 0.8, // 1 = tight copses with open gaps, 0 = continuous cover
   density: 3, items: [['roundTree', 1]],
   fgDensity: 2, fgItems: [['tuft', 1]],
   midDensity: 0, midItems: null,
@@ -63,6 +64,7 @@ function flatten(doc) {
   const f = doc.flora || {};
   if ('foliage' in f) out.fol = f.foliage;
   if ('seasonal' in f) out.seasonal = f.seasonal;
+  if ('clustering' in f) out.clustering = f.clustering;
   if ('foliage2' in f) out.fol2 = f.foliage2;
   if ('trunk' in f) out.trunk = f.trunk;
   if ('avenue' in f) out.avenue = f.avenue;

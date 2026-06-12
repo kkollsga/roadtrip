@@ -277,9 +277,11 @@ window.Scene = (() => {
     // open (45% of the road), above it copses thicken quickly — long
     // empty stretches between tight stands, and far fewer trees overall
     const grove = U.noise1(nearWX / 2600, layerSeed + 55);
-    const gmul = grove < 0.45 ? 0.08
+    const clustered = grove < 0.45 ? 0.08
       : Math.pow((grove - 0.45) / 0.55, 1.4) * 2.4;
-    const density = effN(nearWX, densityKey) * gmul;
+    // rainforest keeps continuous canopy; open country keeps its copses
+    const density = effN(nearWX, densityKey)
+      * U.lerp(1, clustered, effN(nearWX, 'clustering'));
     const count = Math.floor(density) + (r() < density % 1 ? 1 : 0);
     for (let k = 0; k < count; k++) {
       const side = r() < rs.t ? rs.b : rs.a;
