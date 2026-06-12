@@ -187,6 +187,21 @@ window.Scene = (() => {
   function effN(wx, key) { return effLookup(wx, key, U.lerp); }
   function effC(wx, key) { return effLookup(wx, key, U.mix); }
 
+  /* ridge crest noise is fixed per world grid point: cache it so panes
+     stop re-evaluating thousands of fbm octaves every frame */
+  const crestCache = new Map();
+  function crestN(k, freq, seed) {
+    let m = crestCache.get(seed);
+    if (!m) { m = new Map(); crestCache.set(seed, m); }
+    let v = m.get(k);
+    if (v === undefined) {
+      if (m.size > 4000) m.clear();
+      v = U.fbm(k * 10 * freq, seed, 3);
+      m.set(k, v);
+    }
+    return v;
+  }
+
   /* Long-wavelength height envelope, phased differently per ridge layer, so
      spurs swell in different places and interlock — valleys open between
      them and the eye reads depth between the layers. */
@@ -258,10 +273,13 @@ window.Scene = (() => {
     items = [];
     const nearWX = (ci * chunkW + chunkW / 2) / p;
     const rs = resolve(nearWX);
-    // placement breathes: low-frequency grove noise clusters items into
-    // copses and stands with open ground between, instead of white noise
+    // placement comes in CLUSTERS: below the grove threshold the land is
+    // open (45% of the road), above it copses thicken quickly — long
+    // empty stretches between tight stands, and far fewer trees overall
     const grove = U.noise1(nearWX / 2600, layerSeed + 55);
-    const density = effN(nearWX, densityKey) * (0.35 + 1.7 * grove * grove);
+    const gmul = grove < 0.45 ? 0.08
+      : Math.pow((grove - 0.45) / 0.55, 1.4) * 2.4;
+    const density = effN(nearWX, densityKey) * gmul;
     const count = Math.floor(density) + (r() < density % 1 ? 1 : 0);
     for (let k = 0; k < count; k++) {
       const side = r() < rs.t ? rs.b : rs.a;
@@ -348,7 +366,7 @@ window.Scene = (() => {
         const sxp = k * step - lx; // screen x of this world sample
         const wxs = worldX + sxp;  // world position for biome parameters
         const amp = effN(wxs, ampKey) * h * ampMul * ampEnv(wxs, seed);
-        const n = U.fbm(k * step * freq, seed, 3);
+        const n = crestN(k, freq, seed);
         const rw = effN(wxs, 'ridged');
         const shaped = rw > 0
           ? U.lerp(n, Math.pow(1 - Math.abs(2 * n - 1), 1.35), rw)
@@ -374,19 +392,24 @@ window.Scene = (() => {
       ctx.fill();
       const cap = effN(cwx, 'snowcap') * capMul;
       if (cap > 0.03) {
-        const amp = effN(cwx, ampKey) * h * ampMul;
-        ctx.save();
-        ctx.beginPath();
-        ctx.rect(0, 0, w, baseY - amp * 0.72);
-        ctx.clip();
+        // snow clings above a snowline that FOLLOWS the terrain (with a
+        // gentle wobble), instead of being cut by a horizontal razor
+        const ampRef = effN(cwx, ampKey) * h * ampMul;
+        const lineAt = i3 => baseY - ampRef * (0.45 + 0.25 * U.noise1((k0 + i3) * 0.22, seed + 31));
         ctx.fillStyle = U.css(U.mix(snowLit, pal.fog, effD(d)), Math.min(1, cap));
         ctx.beginPath();
-        ctx.moveTo(xs[0], h);
-        for (let i = 0; i < pts.length; i++) ctx.lineTo(xs[i], pts[i]);
-        ctx.lineTo(xLast, h);
-        ctx.closePath();
+        let i2 = 0;
+        while (i2 < pts.length) {
+          if (pts[i2] >= lineAt(i2)) { i2++; continue; }
+          let j3 = i2;
+          while (j3 + 1 < pts.length && pts[j3 + 1] < lineAt(j3 + 1)) j3++;
+          ctx.moveTo(xs[i2], pts[i2]);
+          for (let q2 = i2 + 1; q2 <= j3; q2++) ctx.lineTo(xs[q2], pts[q2]);
+          for (let q2 = j3; q2 >= i2; q2--) ctx.lineTo(xs[q2], lineAt(q2));
+          ctx.closePath();
+          i2 = j3 + 1;
+        }
         ctx.fill();
-        ctx.restore();
       }
       // foam + wet edge where this ridge dips to meet open water
       if (foamW > 0.25) {
@@ -428,7 +451,7 @@ window.Scene = (() => {
         const dir = env.sunX !== undefined ? (env.sunX > w * 0.5 ? 1 : -1)
           : env.moonX !== undefined ? (env.moonX > w * 0.5 ? 1 : -1) : -1;
         const fade = 1 - effD(d) * 0.85; // facets soften into the haze
-        const thr = 0.28 + d * 0.35; // distant layers facet less
+        const thr = 0.34 + d * 0.35; // distant layers facet less
         const fv = new Array(pts.length - 1);
         for (let i = 0; i < pts.length - 1; i++) {
           const f = U.clamp((pts[i + 1] - pts[i]) / step * dir * 1.5, -0.66, 0.66);
@@ -445,8 +468,8 @@ window.Scene = (() => {
           let j = i;
           while (j + 1 < fv.length && fv[j + 1] === f) j++;
           ctx.fillStyle = f > 0
-            ? `rgba(255,252,244,${(0.11 * f * light * fade).toFixed(3)})`
-            : `rgba(10,14,26,${(-0.17 * f * (0.3 + 0.7 * light) * fade).toFixed(3)})`;
+            ? `rgba(255,252,244,${(0.085 * f * light * fade).toFixed(3)})`
+            : `rgba(10,14,26,${(-0.13 * f * (0.3 + 0.7 * light) * fade).toFixed(3)})`;
           ctx.beginPath();
           ctx.moveTo(xs[i], pts[i]);
           for (let q = i + 1; q <= j + 1; q++) ctx.lineTo(xs[q], pts[q]);
@@ -534,7 +557,7 @@ window.Scene = (() => {
           const ck = it.prof.key + ':' + zq;
           const c = colorSets[ck] || (colorSets[ck] = colorsFor(it.prof, U.lerp(d0, d1, zq)));
           // true size at this depth, rolled off so near giants stay framed
-          const size = softScale(itemMeters(it.type, it.sf) * h * METER * p, h * 1.3);
+          const size = softScale(itemMeters(it.type, it.sf) * h * METER * p, h * 1.05);
           list.push({ y: groundAt(sx, z), sx, size, c, it, dist: D0 / p });
         }
       }
@@ -552,6 +575,7 @@ window.Scene = (() => {
 
     // small grounding shadow so items read anchored even on pale terrain
     const itemShadow = (sx, y, size) => {
+      if (size < 14) return; // invisible at that scale, not free to draw
       ctx.fillStyle = `rgba(8,12,20,${(0.06 + 0.10 * light).toFixed(3)})`;
       ctx.beginPath();
       ctx.ellipse(sx, y + 1, size * 0.16, Math.max(1.5, size * 0.028), 0, 0, TAU);
@@ -581,6 +605,12 @@ window.Scene = (() => {
       g.addColorStop(1, U.css(U.mix(water, pal.fog, effD(0.3))));
       ctx.fillStyle = g;
       ctx.fillRect(0, top, w, bot - top);
+      // the horizon meets softly instead of banding in pale light
+      const hg = ctx.createLinearGradient(0, top - 1, 0, top + 7);
+      hg.addColorStop(0, U.css(pal.bot));
+      hg.addColorStop(1, U.css(pal.bot, 0));
+      ctx.fillStyle = hg;
+      ctx.fillRect(0, top - 1, w, 8);
       // glitter path under sun or moon
       const gx = env.sunX !== undefined ? env.sunX : env.moonX;
       if (gx !== undefined) {
@@ -824,7 +854,7 @@ window.Scene = (() => {
           const sx = (wx0 + m2.dx * h * METER - worldX) * p;
           if (sx < -300 || sx > w + 300) continue;
           const y = U.lerp(treeG(worldX * (DREF / 28) + sx), rTopAt(sx) - h * 0.010, z);
-          const size = softScale(itemMeters(m2.type, m2.s) * h * METER * p, h * 1.3);
+          const size = softScale(itemMeters(m2.type, m2.s) * h * METER * p, h * 1.05);
           const vv = (m2.v + ci * 0.137) % 1;
           q(DREF / p, () => {
             itemShadow(sx, y, size);
@@ -1253,7 +1283,7 @@ window.Scene = (() => {
             type, vv,
             x: sx - rad + tq * 2 * rad,
             y: ty + face * face * (h + 20 - ty) * 0.55 + 4,
-            s: softScale(itemMeters(type, ts0) * h * METER * 1.55, h * 1.2),
+            s: softScale(itemMeters(type, ts0) * h * METER * 1.55, h * 1.0),
           });
         }
         hillTrees.sort((a2, b2) => a2.y - b2.y); // lower on the face = nearer
