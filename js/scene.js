@@ -308,6 +308,7 @@ window.Scene = (() => {
       const k0 = Math.floor(lx / step) - 1;
       const k1 = Math.ceil((lx + w) / step) + 1;
       const pts = [], xs = [];
+      const farPane = D >= 90; // the panes the open sea can swallow
       for (let k = k0; k <= k1; k++) {
         const sxp = k * step - lx; // screen x of this world sample
         const wxs = worldX + sxp;  // world position for biome parameters
@@ -318,7 +319,13 @@ window.Scene = (() => {
           ? U.lerp(n, Math.pow(1 - Math.abs(2 * n - 1), 1.35), rw)
           : n;
         xs.push(sxp);
-        pts.push(baseY - amp * shaped);
+        // signed elevation: where the region sits low (water high) crests
+        // sink beneath the sea plane behind them — headlands, islands,
+        // open water all emerge; where it sits high, far panes lift to
+        // the horizon and the ocean hides behind the land
+        const wAt = farPane ? effN(wxs, 'water') : 0;
+        const lift = farPane ? (1 - wAt) * h * 0.018 : 0;
+        pts.push(baseY - lift - amp * (shaped - wAt * 0.85));
       }
       const xLast = xs[xs.length - 1];
       ctx.fillStyle = color;
@@ -365,7 +372,7 @@ window.Scene = (() => {
       }
       // foam + wet edge where this ridge dips to meet open water
       if (foamW > 0.25) {
-        const wl = h * 0.655; // only near/below the waterline
+        const wl = h * (groundYf(60)); // only near/below the sea surface
         ctx.fillStyle = `rgba(34,52,72,${(0.20 * foamW).toFixed(3)})`;
         ctx.beginPath();
         let wi = 0; // contiguous shoreline runs as single bands (no seams)
@@ -539,18 +546,19 @@ window.Scene = (() => {
     const waterWpre = effN(cwx, 'water');
     q(280, () => ridge(280, 11, 1 / 620, 'farAmp', 1.0, 'far', 1.0, 0, 0));
     q(140, () => ridge(140, 22, 1 / 480, 'farAmp', 0.65, 'far', 0.8, 0.35, 0));
-    // nearest far ridge ducks low where open water takes over
-    q(90, () => ridge(90, 44, 1 / 520, 'farAmp', 0.32 * (1 - waterWpre * 0.85), 'far', 0.7, 0.7, 0));
+    q(90, () => ridge(90, 44, 1 / 520, 'farAmp', 0.32, 'far', 0.7, 0.7, waterWpre));
 
-    // open water (warm seas, cold fjords, passing lakes)
+    // the open sea: a PERMANENT plane just in front of the sky — land
+    // panes rise above it or sink beneath it, so coverage emerges from
+    // elevation instead of fading in and out
     const waterW = effN(cwx, 'water');
-    if (waterW > 0.02) {
+    {
       const top = env.horizonY, bot = h * groundYf(30); // the shore at 30 m
       const water = Palette.lit(effC(cwx, 'waterCol'), pal, light);
-      q(90, () => {
+      q(420, () => {
       const g = ctx.createLinearGradient(0, top, 0, bot);
-      g.addColorStop(0, U.css(U.mix(U.mix(water, pal.bot, 0.45), pal.fog, effD(0.5)), waterW));
-      g.addColorStop(1, U.css(U.mix(water, pal.fog, effD(0.3)), waterW));
+      g.addColorStop(0, U.css(U.mix(U.mix(water, pal.bot, 0.45), pal.fog, effD(0.5))));
+      g.addColorStop(1, U.css(U.mix(water, pal.fog, effD(0.3))));
       ctx.fillStyle = g;
       ctx.fillRect(0, top, w, bot - top);
       // glitter path under sun or moon
@@ -583,7 +591,7 @@ window.Scene = (() => {
       }
       });
       // drifting ice in polar waters (bigger and lower = nearer)
-      {
+      if (waterW > 0.02) {
         const p = 0.16, chunkW = 520, lx0 = worldX * p;
         const iceC = {
           ice: U.css(U.mix(U.mix(snowLit, pal.bot, 0.12), pal.fog, effD(0.38))),
