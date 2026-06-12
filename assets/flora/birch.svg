@@ -2,6 +2,7 @@
   <!-- Variant 1: slender upright birch, airy oval crown -->
   <g class="variant">
     <path class="light" fill="#e6e2d4" d="M-2.4 0Q-2 -30 -1.6 -58L1.2 -58Q1.8 -30 2.4 0Z"/>
+    <path class="light" fill="#e6e2d4" d="M-1.7 -54.0Q-1.7 -69.5 -0.6 -85.0L0.6 -85.0Q1.7 -69.5 1.7 -54.0Z"/>
     <path fill="rgba(0,0,0,0.16)" d="M0 -58L1.2 -58Q1.8 -30 2.4 0L0.6 0Z"/>
     <!-- dark bark flecks -->
     <path fill="rgba(0,0,0,0.30)" d="M-1.4 -20L0.6 -20L0.4 -17L-1.6 -17ZM-0.8 -36L1.2 -35L1 -32L-1 -33ZM-1.6 -48L0.4 -48L0.2 -46L-1.8 -46Z"/>
@@ -13,6 +14,7 @@
   <!-- Variant 2: leaning birch with a smaller, higher crown -->
   <g class="variant">
     <path class="light" fill="#e6e2d4" d="M-2.2 0Q-1 -28 1.6 -56L4.4 -55.5Q2 -28 2.2 0Z"/>
+    <path class="light" fill="#e6e2d4" d="M-1.6 -52.0Q-1.6 -66.8 -0.6 -81.6L0.6 -81.6Q1.6 -66.8 1.6 -52.0Z"/>
     <path fill="rgba(0,0,0,0.16)" d="M0.4 -56L4.4 -55.5Q2 -28 2.2 0L0.2 0Z"/>
     <path fill="rgba(0,0,0,0.30)" d="M-1 -18L1 -18L0.9 -15L-1.1 -15ZM0.3 -34L2.3 -33.6L2.1 -31L0.1 -31.4ZM1.4 -47L3.4 -46.6L3.2 -44L1.2 -44.4Z"/>
     <path class="foliage2" fill="#6f9c54" d="M3 -50Q-9 -52 -13 -64Q-16 -78 -8 -88Q-1 -96 4 -93Q10 -96 16 -88Q23 -78 19 -65Q15 -53 3 -50Z"/>
@@ -23,6 +25,7 @@
   <!-- Variant 3: full mature birch, broad twin-lobed crown -->
   <g class="variant">
     <path class="light" fill="#e6e2d4" d="M-2.6 0Q-2.2 -30 -2 -54L1.6 -54Q2 -30 2.6 0Z"/>
+    <path class="light" fill="#e6e2d4" d="M-1.9 -50.0Q-1.9 -67.5 -0.7 -85.0L0.7 -85.0Q1.9 -67.5 1.9 -50.0Z"/>
     <path fill="rgba(0,0,0,0.16)" d="M-0.2 -54L1.6 -54Q2 -30 2.6 0L0.8 0Z"/>
     <path fill="rgba(0,0,0,0.30)" d="M-1.6 -22L0.4 -22L0.3 -19L-1.7 -19ZM-1 -38L1 -37.6L0.8 -35L-1.2 -35.4ZM-1.8 -50L0.2 -50L0.1 -48L-1.9 -48Z"/>
     <path class="foliage2" fill="#6f9c54" d="M0 -50Q-18 -52 -24 -66Q-28 -80 -18 -90Q-9 -98 0 -94Q9 -98 18 -90Q28 -80 24 -66Q18 -52 0 -50Z"/>

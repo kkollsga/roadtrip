@@ -2,6 +2,7 @@
   <!-- Variant 1: broad lumpy broadleaf, short trunk (Kenney foliagePack_010) -->
   <g class="variant">
     <path class="trunk" fill="#6b5340" d="M-3.6 -40Q-4.4 -20 -4 0L4 0Q4.4 -20 3.6 -40Z"/>
+    <path class="trunk" fill="#6b5340" d="M-2.9 -36.0Q-2.9 -59.6 -1.0 -83.3L1.0 -83.3Q2.9 -59.6 2.9 -36.0Z"/>
     <path fill="rgba(0,0,0,0.18)" d="M0 -40L3.6 -40Q4.4 -20 4 0L0 0Z"/>
     <path class="foliage" fill="#55844a" d="M0 -34Q-22 -36 -33 -50Q-40 -64 -32 -76Q-24 -88 -10 -90Q0 -98 12 -91Q28 -90 35 -74Q40 -60 31 -49Q22 -37 0 -34Z"/>
     <!-- scalloped lumps along the top edge for a leafy outline -->
@@ -16,6 +17,7 @@
   <!-- Variant 2: taller egg-shaped crown, slimmer (Kenney foliagePack_020/006) -->
   <g class="variant">
     <path class="trunk" fill="#6b5340" d="M-3 -36Q-3.6 -18 -3.2 0L3.2 0Q3.6 -18 3 -36Z"/>
+    <path class="trunk" fill="#6b5340" d="M-2.3 -32.0Q-2.3 -58.5 -0.8 -85.0L0.8 -85.0Q2.3 -58.5 2.3 -32.0Z"/>
     <path fill="rgba(0,0,0,0.18)" d="M0 -36L3 -36Q3.6 -18 3.2 0L0 0Z"/>
     <path class="foliage2" fill="#6f9c54" d="M0 -32Q-18 -34 -26 -50Q-31 -68 -24 -84Q-15 -98 0 -98Q15 -98 24 -84Q31 -68 26 -50Q18 -34 0 -32Z"/>
     <path class="foliage2" fill="#6f9c54" d="M-22 -76Q-18 -86 -10 -88Q-14 -78 -22 -76ZM-4 -94Q2 -100 8 -94Q2 -90 -4 -94ZM12 -90Q20 -88 22 -78Q15 -82 12 -90Z"/>
@@ -26,6 +28,7 @@
   <!-- Variant 3: low wide bush-tree, asymmetric mounds (Kenney foliagePack_007) -->
   <g class="variant">
     <path class="trunk" fill="#6b5340" d="M-3.2 -30Q-4 -15 -3.6 0L3.6 0Q4 -15 3.2 -30Z"/>
+    <path class="trunk" fill="#6b5340" d="M-2.6 -26.0Q-2.6 -50.4 -0.9 -74.8L0.9 -74.8Q2.6 -50.4 2.6 -26.0Z"/>
     <path fill="rgba(0,0,0,0.18)" d="M0 -30L3.2 -30Q4 -15 3.6 0L0 0Z"/>
     <path class="foliage" fill="#55844a" d="M0 -28Q-26 -30 -36 -46Q-42 -60 -33 -70Q-26 -78 -16 -76Q-10 -86 2 -82Q16 -88 28 -78Q40 -70 36 -56Q34 -42 22 -34Q12 -28 0 -28Z"/>
     <path class="foliage" fill="#55844a" d="M-30 -64Q-26 -72 -18 -72Q-22 -64 -30 -64ZM-8 -80Q-2 -86 4 -80Q-2 -76 -8 -80ZM16 -82Q24 -82 26 -72Q19 -76 16 -82Z"/>

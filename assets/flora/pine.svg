@@ -2,6 +2,7 @@
   <!-- Variant 1: classic symmetric layered conifer (Kenney foliagePack_004/005) -->
   <g class="variant">
     <path class="trunk" fill="#6b5340" d="M-3 -16Q-3.4 -8 -3 0L3 0Q3.4 -8 3 -16Z"/>
+    <path class="trunk" fill="#6b5340" d="M-2.2 -12.0Q-2.2 -47.2 -0.8 -82.5L0.8 -82.5Q2.2 -47.2 2.2 -12.0Z"/>
     <path fill="rgba(0,0,0,0.16)" d="M0 -16L3 -16Q3.4 -8 3 0L0 0Z"/>
     <path class="foliage" fill="#55844a" d="M0 -18Q-21 -16 -24 -22Q-12 -26 0 -28Q12 -26 24 -22Q21 -16 0 -18Z"/>
     <path class="foliage" fill="#55844a" d="M0 -32Q-17 -30 -20 -36Q-10 -41 0 -43Q10 -41 20 -36Q17 -30 0 -32Z"/>
@@ -21,6 +22,7 @@
   <!-- Variant 2: taller, narrower spruce with more tiers -->
   <g class="variant">
     <path class="trunk" fill="#6b5340" d="M-2.6 -14Q-3 -7 -2.6 0L2.6 0Q3 -7 2.6 -14Z"/>
+    <path class="trunk" fill="#6b5340" d="M-1.9 -10.0Q-1.9 -47.1 -0.7 -84.1L0.7 -84.1Q1.9 -47.1 1.9 -10.0Z"/>
     <path fill="rgba(0,0,0,0.16)" d="M0 -14L2.6 -14Q3 -7 2.6 0L0 0Z"/>
     <path class="foliage2" fill="#6f9c54" d="M0 -16Q-17 -14 -19 -19Q-9.5 -23 0 -24Q9.5 -23 19 -19Q17 -14 0 -16Z"/>
     <path class="foliage2" fill="#6f9c54" d="M0 -28Q-14 -26 -16 -31Q-8 -36 0 -38Q8 -36 16 -31Q14 -26 0 -28Z"/>
@@ -39,6 +41,7 @@
   <!-- Variant 3: stout windswept pine, fewer broad tiers, slight lean -->
   <g class="variant">
     <path class="trunk" fill="#6b5340" d="M-3.2 -15Q-3 -7 -3.4 0L2.6 0Q3 -7 2.8 -15Z"/>
+    <path class="trunk" fill="#6b5340" d="M-2.6 -11.0Q-2.6 -47.1 -1.2 -83.3L0.4 -83.3Q1.8 -47.1 1.8 -11.0Z"/>
     <path fill="rgba(0,0,0,0.16)" d="M-0.2 -15L2.8 -15Q3 -7 2.6 0L-0.4 0Z"/>
     <path class="foliage" fill="#55844a" d="M-1 -17Q-24 -15 -27 -22Q-13 -27 -1 -29Q13 -27 25 -22Q22 -15 -1 -17Z"/>
     <path class="foliage" fill="#55844a" d="M-0.5 -34Q-16 -32 -19 -39Q-9 -45 -0.5 -48Q9 -45 18 -39Q15 -32 -0.5 -34Z"/>

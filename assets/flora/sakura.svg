@@ -1,6 +1,7 @@
 <svg data-meters="5 10" xmlns="http://www.w3.org/2000/svg" viewBox="-44 -86 88 90">
   <g class="variant">
     <path class="trunk" fill="#5a4636" d="M-3.4 0Q-4.4 -22 -11.6 -44L-8.4 -44Q-1.6 -22 3.4 0Z"/>
+    <path class="trunk" fill="#5a4636" d="M-2.4 -40.0Q-2.4 -53.6 -0.8 -67.1L0.8 -67.1Q2.4 -53.6 2.4 -40.0Z"/>
     <path class="trunk" fill="none" stroke="#5a4636" stroke-width="2.6" stroke-linecap="round" d="M-3 -26Q-15.5 -36 -22 -46"/>
     <path class="trunk" fill="none" stroke="#5a4636" stroke-width="2.4" stroke-linecap="round" d="M-7 -36Q3.5 -44 10 -52"/>
     <path fill="rgba(0,0,0,0.16)" d="M-3 -2L-10.3 -44L-8.4 -44Q-1.6 -22 3.4 0L0.7 0Z"/>
@@ -31,6 +32,7 @@
   </g>
   <g class="variant">
     <path class="trunk" fill="#5a4636" d="M-3.4 0Q-0.8 -24 0.4 -48L3.6 -48Q2 -24 3.4 0Z"/>
+    <path class="trunk" fill="#5a4636" d="M-2.4 -44.0Q-2.4 -57.5 -0.8 -71.0L0.8 -71.0Q2.4 -57.5 2.4 -44.0Z"/>
     <path class="trunk" fill="none" stroke="#5a4636" stroke-width="2.6" stroke-linecap="round" d="M-1 -30Q-12.5 -40 -18 -50"/>
     <path class="trunk" fill="none" stroke="#5a4636" stroke-width="2.6" stroke-linecap="round" d="M1 -30Q13.5 -40 20 -50"/>
     <path fill="rgba(0,0,0,0.16)" d="M0.6 -2L1.7 -48L3.6 -48Q2 -24 3.4 0L0.7 0Z"/>
@@ -61,6 +63,7 @@
   </g>
   <g class="variant">
     <path class="trunk" fill="#5a4636" d="M-3.4 0Q1.3 -21 7.4 -42L10.6 -42Q4.1 -21 3.4 0Z"/>
+    <path class="trunk" fill="#5a4636" d="M-2.4 -38.0Q-2.4 -51.7 -0.8 -65.5L0.8 -65.5Q2.4 -51.7 2.4 -38.0Z"/>
     <path class="trunk" fill="none" stroke="#5a4636" stroke-width="2.6" stroke-linecap="round" d="M3 -24Q15.5 -34 22 -44"/>
     <path class="trunk" fill="none" stroke="#5a4636" stroke-width="2.4" stroke-linecap="round" d="M6 -34Q-4 -42 -10 -50"/>
     <path fill="rgba(0,0,0,0.16)" d="M2.7 -2L8.7 -42L10.6 -42Q4.1 -21 3.4 0L0.7 0Z"/>
