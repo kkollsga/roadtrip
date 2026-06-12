@@ -45,8 +45,7 @@ near:
     - { asset: palm, w: 0.42 }
     - { asset: bush, w: 0.2 }
     - { asset: tuft, w: 0.2 }
-    - { asset: rock, w: 0.12 }
-    - { asset: sign, w: 0.06 }
+    - { asset: rock, w: 0.18 }
 front:
   density: 1.2
   table:

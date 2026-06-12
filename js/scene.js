@@ -192,43 +192,49 @@ window.Scene = (() => {
      from the piece's center; s picks within the species' size range. */
   const grove6 = type => [-16, -9, -3, 4, 11, 18].map((dx, i) =>
     ({ type, dx, s: 0.35 + (i * 2.7 % 1) * 0.55, v: i * 0.37 % 1 }));
+  /* human clusters are RARE — small hamlets far between, the only place
+     buildings appear; nature pieces keep the usual cadence */
   const POIS = {
-    plains: [
-      [{ type: 'barn', dx: 0, s: 0.7, v: 0.6 }, { type: 'cabin', dx: 15, s: 0.4, v: 0.3 },
-       { type: 'roundTree', dx: -13, s: 0.85, v: 0.2 }, { type: 'roundTree', dx: 24, s: 0.5, v: 0.7 },
-       { type: 'rock', dx: 7, s: 0.5, v: 0.5 }],
-      grove6('roundTree'),
-    ],
-    forest: [
-      [{ type: 'cabin', dx: 0, s: 0.6, v: 0.55 }, { type: 'pine', dx: -11, s: 0.8, v: 0.3 },
-       { type: 'pine', dx: 12, s: 0.55, v: 0.8 }, { type: 'rock', dx: 6, s: 0.4, v: 0.2 }],
-      grove6('pine'),
-    ],
-    desert: [
-      [{ type: 'rock', dx: -7, s: 0.9, v: 0.2 }, { type: 'rock', dx: 0, s: 0.6, v: 0.6 },
-       { type: 'rock', dx: 6, s: 0.4, v: 0.9 }, { type: 'cactus', dx: -14, s: 0.8, v: 0.4 },
-       { type: 'cactus', dx: 13, s: 0.5, v: 0.75 }],
-    ],
-    savanna: [
-      [{ type: 'acacia', dx: 0, s: 0.9, v: 0.4 }, { type: 'elephant', dx: -12, s: 0.7, v: 0.3 },
-       { type: 'giraffe', dx: 11, s: 0.8, v: 0.2 }, { type: 'giraffe', dx: 17, s: 0.55, v: 0.7 },
-       { type: 'lion', dx: -5, s: 0.6, v: 0.5 }],
-      grove6('acacia').slice(1, 5),
-    ],
-    japan: [
-      [{ type: 'torii', dx: 0, s: 0.8, v: 0.3 }, { type: 'sakura', dx: -12, s: 0.85, v: 0.2 },
-       { type: 'sakura', dx: 12, s: 0.7, v: 0.6 }, { type: 'rock', dx: -5, s: 0.45, v: 0.8 }],
-      grove6('sakura'),
-    ],
-    lofoten: [
-      [{ type: 'cabin', dx: -8, s: 0.7, v: 0.6 }, { type: 'cabin', dx: 8, s: 0.55, v: 0.2 },
-       { type: 'birch', dx: -18, s: 0.7, v: 0.4 }, { type: 'rock', dx: 16, s: 0.6, v: 0.7 }],
-    ],
-    fjord: [
-      [{ type: 'cabin', dx: -8, s: 0.7, v: 0.6 }, { type: 'cabin', dx: 8, s: 0.55, v: 0.2 },
-       { type: 'pine', dx: -18, s: 0.8, v: 0.4 }, { type: 'rock', dx: 16, s: 0.6, v: 0.7 }],
-    ],
-    generic: [grove6('roundTree')],
+    plains: {
+      human: [[{ type: 'barn', dx: 0, s: 0.7, v: 0.6 }, { type: 'cabin', dx: 15, s: 0.4, v: 0.3 },
+        { type: 'roundTree', dx: -13, s: 0.85, v: 0.2 }, { type: 'roundTree', dx: 24, s: 0.5, v: 0.7 },
+        { type: 'rock', dx: 7, s: 0.5, v: 0.5 }]],
+      nature: [grove6('roundTree')],
+    },
+    forest: {
+      human: [[{ type: 'cabin', dx: 0, s: 0.6, v: 0.55 }, { type: 'pine', dx: -11, s: 0.8, v: 0.3 },
+        { type: 'pine', dx: 12, s: 0.55, v: 0.8 }, { type: 'rock', dx: 6, s: 0.4, v: 0.2 }]],
+      nature: [grove6('pine')],
+    },
+    desert: {
+      nature: [[{ type: 'rock', dx: -7, s: 0.9, v: 0.2 }, { type: 'rock', dx: 0, s: 0.6, v: 0.6 },
+        { type: 'rock', dx: 6, s: 0.4, v: 0.9 }, { type: 'cactus', dx: -14, s: 0.8, v: 0.4 },
+        { type: 'cactus', dx: 13, s: 0.5, v: 0.75 }]],
+    },
+    savanna: {
+      nature: [
+        [{ type: 'acacia', dx: 0, s: 0.9, v: 0.4 }, { type: 'elephant', dx: -12, s: 0.7, v: 0.3 },
+         { type: 'giraffe', dx: 11, s: 0.8, v: 0.2 }, { type: 'giraffe', dx: 17, s: 0.55, v: 0.7 },
+         { type: 'lion', dx: -5, s: 0.6, v: 0.5 }],
+        grove6('acacia').slice(1, 5),
+      ],
+    },
+    japan: {
+      human: [[{ type: 'torii', dx: 0, s: 0.8, v: 0.3 }, { type: 'sakura', dx: -12, s: 0.85, v: 0.2 },
+        { type: 'sakura', dx: 12, s: 0.7, v: 0.6 }, { type: 'rock', dx: -5, s: 0.45, v: 0.8 }]],
+      nature: [grove6('sakura')],
+    },
+    lofoten: {
+      human: [[{ type: 'cabin', dx: -8, s: 0.7, v: 0.6 }, { type: 'cabin', dx: 8, s: 0.55, v: 0.2 },
+        { type: 'birch', dx: -18, s: 0.7, v: 0.4 }, { type: 'rock', dx: 16, s: 0.6, v: 0.7 }]],
+      nature: [grove6('birch')],
+    },
+    fjord: {
+      human: [[{ type: 'cabin', dx: -8, s: 0.7, v: 0.6 }, { type: 'cabin', dx: 8, s: 0.55, v: 0.2 },
+        { type: 'pine', dx: -18, s: 0.8, v: 0.4 }, { type: 'rock', dx: 16, s: 0.6, v: 0.7 }]],
+      nature: [grove6('pine')],
+    },
+    generic: { nature: [grove6('roundTree')] },
   };
 
   const OCC_TREES = { // types allowed on near hillsides (trees only)
@@ -817,7 +823,10 @@ window.Scene = (() => {
         const side = r() < rs.t ? rs.b : rs.a;
         const prof = r() < side.vt ? side.p2 : side.p1;
         const pool = POIS[prof.bname] || POIS.generic;
-        const poi = pool[Math.floor(r() * pool.length) % pool.length];
+        // a hamlet only once in a long while; otherwise pure nature
+        const wantHuman = r() < 0.28 && pool.human && pool.human.length;
+        const list2 = wantHuman ? pool.human : (pool.nature || pool.human);
+        const poi = list2[Math.floor(r() * list2.length) % list2.length];
         const z = 0.45 + r() * 0.35;
         const p = U.lerp(p0, p1, z);
         const c = colorsFor(prof, hazeAt(DREF / p));

@@ -41,10 +41,8 @@ near:
   table:
     - { asset: sakura, w: 0.34 }
     - { asset: pine, w: 0.24 }
-    - { asset: roundTree, w: 0.08 }
-    - { asset: teahouse, w: 0.08 }
-    - { asset: torii, w: 0.06 }
-    - { asset: bush, w: 0.2 }
+    - { asset: roundTree, w: 0.14 }
+    - { asset: bush, w: 0.28 }
 front:
   density: 1.6
   table:
@@ -80,9 +78,9 @@ variants:
     near:
       density: 2.5
       table:
-        - { asset: teahouse, w: 0.34 }
+        - { asset: teahouse, w: 0.15 }
         - { asset: sakura, w: 0.26 }
-        - { asset: torii, w: 0.14 }
+        - { asset: torii, w: 0.08 }
         - { asset: pine, w: 0.26 }
     midridge: { density: 0.3 }
   - key: lakeside

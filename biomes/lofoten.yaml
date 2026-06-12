@@ -45,8 +45,8 @@ near:
   table:
     - { asset: tuft, w: 0.32 }
     - { asset: rock, w: 0.22 }
-    - { asset: cabin, w: 0.16 }
-    - { asset: bush, w: 0.12 }
+    - { asset: bush, w: 0.20 }
+    - { asset: deadTree, w: 0.02 }
     - { asset: birch, w: 0.12 }
     - { asset: deadTree, w: 0.06 }
 front:
@@ -79,7 +79,7 @@ variants:
     near:
       density: 1.8
       table:
-        - { asset: cabin, w: 0.42 }
+        - { asset: cabin, w: 0.16 }
         - { asset: tuft, w: 0.2 }
         - { asset: rock, w: 0.18 }
         - { asset: pine, w: 0.1 }

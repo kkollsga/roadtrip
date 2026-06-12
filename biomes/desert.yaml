@@ -43,8 +43,7 @@ near:
     - { asset: cactus, w: 0.45 }
     - { asset: bush, w: 0.2 }
     - { asset: rock, w: 0.2 }
-    - { asset: tuft, w: 0.1 }
-    - { asset: sign, w: 0.05 }
+    - { asset: tuft, w: 0.15 }
 front:
   density: 1.0
   table:

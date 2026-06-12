@@ -46,8 +46,7 @@ near:
     - { asset: roundTree, w: 0.25 }
     - { asset: birch, w: 0.14 }
     - { asset: deadTree, w: 0.04 }
-    - { asset: bush, w: 0.05 }
-    - { asset: cabin, w: 0.02 }
+    - { asset: bush, w: 0.07 }
 front:
   density: 1.8
   table:

@@ -42,13 +42,11 @@ weather:
 near:
   density: 2
   table:
-    - { asset: roundTree, w: 0.44 }
-    - { asset: bush, w: 0.2 }
-    - { asset: tuft, w: 0.15 }
-    - { asset: pine, w: 0.06 }
-    - { asset: barn, w: 0.07 }
-    - { asset: sign, w: 0.05 }
-    - { asset: rock, w: 0.03 }
+    - { asset: roundTree, w: 0.48 }
+    - { asset: bush, w: 0.22 }
+    - { asset: tuft, w: 0.17 }
+    - { asset: pine, w: 0.07 }
+    - { asset: rock, w: 0.06 }
 front:
   density: 1.8
   table:
@@ -82,10 +80,11 @@ variants:
     near:
       density: 2.2
       table:
-        - { asset: barn, w: 0.3 }
-        - { asset: roundTree, w: 0.28 }
-        - { asset: tuft, w: 0.26 }
-        - { asset: sign, w: 0.16 }
+        - { asset: barn, w: 0.10 }
+        - { asset: roundTree, w: 0.38 }
+        - { asset: tuft, w: 0.36 }
+        - { asset: sign, w: 0.08 }
+        - { asset: rock, w: 0.08 }
     extras: { windfarm: 0.95 }
   - key: lakeside
     weight: 1.5

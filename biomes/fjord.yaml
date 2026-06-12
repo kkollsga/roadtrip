@@ -44,8 +44,8 @@ near:
   density: 2.2
   table:
     - { asset: pine, w: 0.42 }
-    - { asset: birch, w: 0.22 }
-    - { asset: cabin, w: 0.1 }
+    - { asset: birch, w: 0.27 }
+    - { asset: rock, w: 0.05 }
     - { asset: rock, w: 0.12 }
     - { asset: bush, w: 0.14 }
 front:
@@ -75,7 +75,7 @@ variants:
     near:
       density: 1.8
       table:
-        - { asset: cabin, w: 0.4 }
+        - { asset: cabin, w: 0.15 }
         - { asset: pine, w: 0.3 }
         - { asset: rock, w: 0.15 }
         - { asset: bush, w: 0.15 }
