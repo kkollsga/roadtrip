@@ -13,22 +13,22 @@ window.Sky = (() => {
     return 0.35 + 0.65 * (0.5 + 0.5 * Math.sin(time * (0.4 + tw * 1.2) + tw * 40));
   }
 
-  /* the moon with its true phase: lit limb + elliptical terminator */
-  function drawMoonPhase(ctx, x, y, r, ph, litCol, darkCol) {
+  /* the moon with its true phase: lit limb + elliptical terminator.
+     The lit half always FACES THE SUN (tilt), so the crescent lies on
+     its back near the equator and stands upright in the far north —
+     orientation follows latitude, season and hour for free. */
+  function drawMoonPhase(ctx, x, y, r, ph, litCol, darkCol, tilt) {
     ctx.save();
     ctx.translate(x, y);
+    ctx.rotate(tilt || 0);
     ctx.fillStyle = darkCol; // earthshine disc
     ctx.beginPath(); ctx.arc(0, 0, r, 0, TAU); ctx.fill();
-    const waxing = ph < 0.5;
     const c = Math.cos(TAU * ph); // 1 = new, 0 = quarter, -1 = full
     ctx.fillStyle = litCol;
     ctx.beginPath();
-    if (waxing) ctx.arc(0, 0, r, -Math.PI / 2, Math.PI / 2, false);
-    else ctx.arc(0, 0, r, Math.PI / 2, Math.PI * 1.5, false);
+    ctx.arc(0, 0, r, -Math.PI / 2, Math.PI / 2, false); // lit half toward +x
     ctx.ellipse(0, 0, Math.max(0.001, Math.abs(c)) * r, r, 0,
-      waxing ? Math.PI / 2 : Math.PI * 1.5,
-      waxing ? -Math.PI / 2 : Math.PI / 2,
-      c > 0);
+      Math.PI / 2, -Math.PI / 2, c > 0);
     ctx.fill();
     ctx.restore();
   }
@@ -235,7 +235,13 @@ window.Sky = (() => {
         1 - 0.55 * dayness);
       const dark = U.css(U.mix(pal.top, U.col('#8a8a74'), 0.22),
         0.9 * (1 - dayness));
-      drawMoonPhase(ctx, mx, my, r, mph, lit, dark);
+      // the lit limb points at the sun, wherever it is (even below
+      // the horizon): real phase geometry at every latitude
+      const sArc = Palette.sunPos(env.t, env.latDeg, env.doy);
+      const sx2 = w * (0.14 + 0.72 * sArc.p);
+      const sy2 = horizonY - sArc.elev * (horizonY - h * 0.12);
+      drawMoonPhase(ctx, mx, my, r, mph, lit, dark,
+        Math.atan2(sy2 - my, sx2 - mx));
       ctx.restore();
       if (moonArc.elev > 0.02 && illum > 0.25) { env.moonX = mx; env.moonY = my; }
     }
