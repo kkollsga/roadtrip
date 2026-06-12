@@ -18,6 +18,20 @@
     t: 0.07, // just before sunrise
     mode: 'loop',
     loopMinutes: 15,
+
+    /* ---- calendar: seasons advance as day cycles complete ----
+       month 0 = January. daysPerMonth sets how many in-game days make a
+       month, i.e. how fast the seasons travel. dayCount accumulates
+       completed cycles; the moon phase rides it at 29.53 days/cycle. */
+    dayCount: 0,
+    month: 5,
+    daysPerMonth: 7,
+    setMonth: function (m) { this.month = ((Math.round(m) % 12) + 12) % 12; this.dayCount = 0; },
+    setDaysPerMonth: function (n) { this.daysPerMonth = Math.max(1, Math.round(n) || 7); },
+    dayOfYear: function () {
+      var months = this.month + (this.dayCount % (this.daysPerMonth * 12)) / this.daysPerMonth;
+      return ((months % 12) * 30.42 + 15) % 365;
+    },
     sessionRemaining: null,
     sessionTotal: null,
     onSessionEnd: null,
@@ -73,8 +87,10 @@
       if (this.mode === 'loop') {
         var seconds = this.loopMinutes * 60;
         if (seconds > 0) {
+          var prev = this.t;
           this.t = (this.t + dt / seconds) % 1;
           if (this.t < 0) this.t += 1;
+          if (this.t < prev) this.dayCount++; // a midnight passed
         }
         return;
       }

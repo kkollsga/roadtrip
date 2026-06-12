@@ -33,6 +33,7 @@ const DEFAULTS = {
   horizonDensity: 0, horizonItems: null,
   forestDepth: 0, depthItems: [['pine', 0.6], ['roundTree', 0.4]],
   windfarm: 0,
+  tempHi: 18, tempLo: -2, // warmest / coldest mean daytime C
   weather: [['clear', 5], ['overcast', 2], ['rain', 1.5], ['fog', 0.8]],
 };
 
@@ -66,6 +67,7 @@ function flatten(doc) {
   if (l.grade) out.grade = { tint: l.grade.tint, s: l.grade.strength, lm: l.grade.multiplier };
   if ('aurora' in l) out.aurora = l.aurora;
   if (doc.weather) out.weather = Object.entries(doc.weather);
+  if (doc.climate) { out.tempHi = doc.climate.summer; out.tempLo = doc.climate.winter; }
   const band = (g, dKey, tKey, dName) => {
     if (!g) return;
     if ((dName || 'density') in g) out[dKey] = g[dName || 'density'];

@@ -64,7 +64,9 @@ Click it to open a compact settings panel; click outside, press `Esc`, or click
 | ----------------- | ------------------------------------------------ |
 | Open settings     | Move the mouse, click `☰` top-right               |
 | Change car        | `‹ ›` arrows in the panel, or press `c`           |
-| Winter latitude   | Slider: drive further north — at the far end the sun never rises and midday is blue hour |
+| Latitude          | Slider (8–78°N): sun and moon ride real orbits — far north gives polar night in winter and the midnight sun in June |
+| Month             | Slider: season of the year (daylight hours, sun height, forecast) |
+| Days per month    | How many in-game days one month lasts — the pace of the seasons |
 | Day length        | "Day" number field (minutes per full cycle)       |
 | Pause / play      | `⏸` / `▶` button, or `Space`                       |
 | Fullscreen        | `⛶` button, or `f`                                 |

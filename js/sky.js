@@ -48,7 +48,7 @@ window.Sky = (() => {
     // whole sky burns brighter
     const mph = env.moonPhase !== undefined ? env.moonPhase : 0.5;
     const illum = (1 - Math.cos(TAU * mph)) / 2;
-    const moonArc = Palette.moonPos(env.t);
+    const moonArc = Palette.moonPos(env.t, env.latDeg, env.doy, mph);
     const moonLight = illum * (moonArc.up ? U.clamp(moonArc.elev * 3, 0, 1) : 0);
     const starBoost = 1 + 0.55 * (1 - moonLight);
 
@@ -175,10 +175,8 @@ window.Sky = (() => {
       ctx.restore();
     }
 
-    // -- sun --
-    const sun = Palette.sunPos(env.t);
-    // far north in winter the sun barely grazes (or never clears) the horizon
-    if (env.polar) sun.elev = sun.elev * (1 - 0.96 * env.polar) - 0.05 * env.polar;
+    // -- sun: a real orbit for this latitude and day of year --
+    const sun = Palette.sunPos(env.t, env.latDeg, env.doy);
     if (sun.up) {
       // dawn builds from deep below the horizon: the glow fades in slowly
       // as the sun climbs, rather than snapping on

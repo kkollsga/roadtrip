@@ -17,17 +17,14 @@
 
   const BASE_SPEED = 205; // px/s scenery scroll at speedMult 1
 
-  /* high-latitude winter light: midday sinks toward blue hour */
-  const POLAR = {
-    top: U.col('#14223e'), bot: U.col('#4a6da0'), glow: U.col('#7d96c0'),
-    fog: U.col('#2a3c5c'), amb: U.col('#2a3a58'),
-  };
-
   const App = {
     carIndex: 0,
     speedMult: 0.9,
-    latitude: 0,
+    latitude: 0.55, // slider 0..1 -> 8..78 deg north
     setLatitude(v) { this.latitude = U.clamp(+v || 0, 0, 1); },
+    latDeg() { return U.lerp(8, 78, this.latitude); },
+    setMonth(m) { DayCycle.setMonth(m); },
+    setDaysPerMonth(n) { DayCycle.setDaysPerMonth(n); },
     weatherMode: 'auto',
     biomeMode: 'auto',
     paused: false,
@@ -59,6 +56,8 @@
     if (q.has('car')) App.setCar(parseInt(q.get('car'), 10) || 0);
     if (q.has('speed')) App.setSpeed(parseFloat(q.get('speed')));
     if (q.has('lat')) App.setLatitude(parseFloat(q.get('lat')));
+    if (q.has('month')) App.setMonth(parseInt(q.get('month'), 10) || 0);
+    if (q.has('dpm')) App.setDaysPerMonth(parseInt(q.get('dpm'), 10) || 7);
     if (q.get('ui') === '0') document.body.classList.add('no-ui');
     if (q.has('warp')) {
       const wm = q.get('weather');
@@ -123,7 +122,11 @@
     state.worldX += speed * runDt;
     state.wheelRot += (speed * runDt) / Cars.WHEEL_R;
 
-    let pal = Palette.get(DayCycle.t);
+    // latitude + season reshape daylight: the palette follows the sun
+    const latDeg = App.latDeg();
+    const doy = DayCycle.dayOfYear();
+    const moonPhase = ((MOON_PHASE + DayCycle.dayCount / 29.530588) % 1 + 1) % 1;
+    let pal = Palette.get(Palette.solarWarp(DayCycle.t, latDeg, doy));
     // per-biome lighting character (desert heat, cold tundra, marine coast...)
     const grade = Scene.gradeAt(state.worldX + W * 0.5);
     pal = {
@@ -135,22 +138,26 @@
       light: U.clamp(pal.light * grade.lm, 0, 1),
       stars: pal.stars,
     };
-    // far-north winter: the brighter the hour, the harder it is pulled
-    // down toward blue-hour light; nights are already night
-    if (App.latitude > 0.01) {
-      const dayness = U.smooth(U.clamp((pal.light - 0.18) / 0.55, 0, 1));
-      const f = App.latitude * dayness;
-      if (f > 0.001) {
+    // the palette can only be as bright as the sun is high: polar-winter
+    // noon holds at blue hour, and under the midnight sun night never
+    // truly falls — both fall out of the real solar altitude
+    {
+      const sunNow = Palette.sunPos(DayCycle.t, latDeg, doy);
+      const sunDay = U.smooth(U.clamp((sunNow.elev + 0.07) / 0.38, 0, 1));
+      const hiBound = U.lerp(0.20, 1.0, sunDay);
+      const loBound = U.lerp(0.12, 0.78, sunDay);
+      const toward = (key, f) => {
+        const k = Palette.get(key);
         pal = {
-          top: U.mix(pal.top, POLAR.top, f),
-          bot: U.mix(pal.bot, POLAR.bot, f),
-          glow: U.mix(pal.glow, POLAR.glow, f),
-          fog: U.mix(pal.fog, POLAR.fog, f),
-          amb: U.mix(pal.amb, POLAR.amb, f),
-          light: U.lerp(pal.light, 0.34, f),
-          stars: Math.max(pal.stars, 0.30 * f),
+          top: U.mix(pal.top, k.top, f), bot: U.mix(pal.bot, k.bot, f),
+          glow: U.mix(pal.glow, k.glow, f), fog: U.mix(pal.fog, k.fog, f),
+          amb: U.mix(pal.amb, k.amb, f),
+          light: U.lerp(pal.light, k.light, f),
+          stars: U.lerp(pal.stars, k.stars, f),
         };
-      }
+      };
+      if (pal.light > hiBound) toward(0.815, U.clamp(1 - hiBound / pal.light, 0, 1));
+      else if (pal.light < loBound) toward(0.67, U.clamp(1 - pal.light / loBound, 0, 1));
     }
     const biome = (() => {
       const bi = Scene.biomeAt(state.worldX + W * 0.5);
@@ -167,16 +174,45 @@
       carX: W * 0.42, carY: H * 0.872,
       carIndex: App.carIndex,
       wheelRot: state.wheelRot,
-      moonPhase: MOON_PHASE,
-      polar: App.latitude,
+      moonPhase,
+      latDeg, doy,
       biome,
       weather: null,
       aurora: Scene.auroraAt(state.worldX + W * 0.5),
     };
 
+    // pseudo forecast for the day: temperature from the biome's seasonal
+    // climate, precipitation odds from its weather table, type from temp
+    {
+      const day = DayCycle.dayCount;
+      if (App._fcDay !== day || App._fcBiome !== biome) {
+        App._fcDay = day; App._fcBiome = biome;
+        const cl = Scene.CLIMATES[biome] || { hi: 18, lo: -2 };
+        const warm = 0.5 + 0.5 * Math.cos(2 * Math.PI * (doy - 201) / 365);
+        const temp = Math.round(U.lerp(cl.lo, cl.hi, warm) + (U.hash1(day * 131 + 7) * 6 - 3));
+        const tbl = Scene.WEATHER_TABLES[biome] || [];
+        let tot = 0, wet = 0;
+        for (const [k2, w2] of tbl) {
+          tot += w2;
+          if (k2 === 'rain' || k2 === 'snow') wet += w2;
+          if (k2 === 'fog') wet += w2 * 0.4;
+        }
+        const seasonWet = 1 + 0.35 * Math.cos(2 * Math.PI * (doy - 280) / 365);
+        const chance = U.clamp((tot ? wet / tot : 0.2) * seasonWet * 1.25
+          + (U.hash1(day * 977 + 3) * 0.2 - 0.1), 0.05, 0.9);
+        App.forecast = {
+          tempC: temp,
+          chance: Math.round(chance * 20) * 5 / 100,
+          type: temp < 1 ? 'snow' : 'rain',
+        };
+        Weather.forecast = App.forecast;
+      }
+    }
+
     env.light = pal.light;
     Weather.update(runDt, env);
     env.light = U.clamp(pal.light * (1 - Weather.dim), 0.05, 1);
+    App.lightNow = env.light;
     env.weather = {
       cloudCover: Weather.cloudCover,
       fog: Weather.fog,

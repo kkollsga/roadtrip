@@ -67,6 +67,8 @@
       var data = {
         carIndex: app.carIndex,
         latitude: app.latitude,
+        month: dom.month ? Number(dom.month.value) : 5,
+        daysPerMonth: dom.dpm ? Number(dom.dpm.value) : 7,
         loopMinutes: dom.dayLen ? Number(dom.dayLen.value) : (DC() ? DC().loopMinutes : 15),
         sessionMinutes: dom.sessionInput ? Number(dom.sessionInput.value) : 50
       };
@@ -84,6 +86,8 @@
       if (typeof s.carIndex === 'number' && typeof app.setCar === 'function') app.setCar(s.carIndex);
       if (typeof s.latitude === 'number' && typeof app.setLatitude === 'function') app.setLatitude(s.latitude);
       if (typeof s.loopMinutes === 'number' && typeof app.setDayLoopMinutes === 'function') app.setDayLoopMinutes(s.loopMinutes);
+      if (typeof s.month === 'number' && typeof app.setMonth === 'function') app.setMonth(s.month);
+      if (typeof s.daysPerMonth === 'number' && typeof app.setDaysPerMonth === 'function') app.setDaysPerMonth(s.daysPerMonth);
     } catch (e) { /* ignore */ }
   }
 
@@ -166,22 +170,63 @@
     // Weather and speed are deliberately NOT configurable: both wander
     // on their own, like a real road trip.
 
-    // 2. Latitude: how far north the winter drive is. At the far end the
-    // sun never clears the horizon and midday is blue hour.
+    // 2. Latitude: drives real solar/lunar orbits — far north means
+    // polar night in winter and the midnight sun in summer.
     var lat = el('input', 'du-range');
     lat.type = 'range';
     lat.min = '0';
     lat.max = '1';
     lat.step = '0.05';
-    lat.value = '0';
-    lat.title = 'How far north (winter daylight)';
+    lat.value = '0.55';
+    lat.title = 'Latitude (8\u201378\u00b0N): daylight follows the real sun';
     dom.lat = lat;
     lat.addEventListener('input', function () {
       var app = App();
       if (app && typeof app.setLatitude === 'function') app.setLatitude(Number(lat.value));
       saveState();
     });
-    panel.appendChild(field('Winter latitude', lat));
+    panel.appendChild(field('Latitude', lat));
+
+    // 3. Season: month slider + how many in-game days one month lasts
+    var MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    var month = el('input', 'du-range');
+    month.type = 'range';
+    month.min = '0';
+    month.max = '11';
+    month.step = '1';
+    month.value = '5';
+    dom.month = month;
+    var monthField = field('Month: Jun', month);
+    dom.monthLabel = monthField.firstChild;
+    month.addEventListener('input', function () {
+      var app = App();
+      var m = Number(month.value);
+      dom.monthLabel.textContent = 'Month: ' + MONTHS[m];
+      if (app && typeof app.setMonth === 'function') app.setMonth(m);
+      saveState();
+    });
+    panel.appendChild(monthField);
+
+    var dpm = el('select', 'du-num');
+    [1, 3, 7, 15, 30].forEach(function (n) {
+      var o = el('option', null, String(n));
+      o.value = String(n);
+      if (n === 7) o.selected = true;
+      dpm.appendChild(o);
+    });
+    dom.dpm = dpm;
+    dpm.addEventListener('change', function () {
+      var app = App();
+      if (app && typeof app.setDaysPerMonth === 'function') app.setDaysPerMonth(Number(dpm.value));
+      saveState();
+    });
+    panel.appendChild(field('Days per month', dpm));
+
+    // 4. Today's pseudo forecast (temperature + precipitation odds)
+    var forecast = el('div', 'du-forecast', '\u2026');
+    dom.forecast = forecast;
+    panel.appendChild(field('Forecast', forecast));
 
     // 5. Day length (hidden during session)
     var dayLen = el('input', 'du-num');
@@ -358,9 +403,32 @@
     var dc = DC();
     if (dom.dayLen && dc) dom.dayLen.value = dc.loopMinutes;
     if (dom.lat && typeof app.latitude === 'number') dom.lat.value = app.latitude;
+    if (dom.month && dc) {
+      dom.month.value = dc.month;
+      var M = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      if (dom.monthLabel) dom.monthLabel.textContent = 'Month: ' + M[dc.month];
+    }
+    if (dom.dpm && dc) dom.dpm.value = String(dc.daysPerMonth);
     refreshCarName();
     refreshPauseIcon();
   }
+
+  /* slow ambient tick: today's forecast + the burger glyph flips white
+     after dark, black in daylight (it sits bare on the sky now) */
+  setInterval(function () {
+    var app = App();
+    if (!app) return;
+    if (dom.burger) {
+      var light = typeof app.lightNow === 'number' ? app.lightNow : 1;
+      dom.burger.classList.toggle('du-night', light < 0.45);
+    }
+    if (dom.forecast && app.forecast) {
+      var f = app.forecast;
+      dom.forecast.textContent = f.tempC + '\u00b0C \u00b7 '
+        + Math.round(f.chance * 100) + '% ' + f.type;
+    }
+  }, 1000);
 
   function sessionActive() {
     var dc = DC();

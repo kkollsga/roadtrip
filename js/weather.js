@@ -144,6 +144,17 @@
 
   function nextAuto(biome) {
     var list = allowedFor(biome);
+    // today's forecast steers the odds: precipitation arrives with the
+    // forecast chance and in the forecast's form (snow below freezing)
+    var f = W.forecast;
+    if (f) {
+      if (Math.random() < f.chance) return f.type;
+      var calm = [];
+      for (var i = 0; i < list.length; i++) {
+        if (list[i][0] !== 'rain' && list[i][0] !== 'snow') calm.push(list[i]);
+      }
+      if (calm.length) return pickWeighted(calm, W._to);
+    }
     return pickWeighted(list, W._to);
   }
 

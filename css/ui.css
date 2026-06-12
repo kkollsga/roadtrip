@@ -25,23 +25,21 @@ body.no-ui #drive-ui { display: none !important; }
   justify-content: center;
 
   font-family: inherit;
-  font-size: 16px;
+  font-size: 20px;
   line-height: 1;
-  color: rgba(255, 255, 255, 0.8);
+  /* a bare glyph: dark over daylight, white after dark (du-night) */
+  color: rgba(20, 22, 24, 0.85);
 
-  background: rgba(10, 14, 24, 0.55);
-  -webkit-backdrop-filter: blur(14px);
-  backdrop-filter: blur(14px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 50%;
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3);
+  background: none;
+  border: none;
   cursor: pointer;
 
   opacity: 1;
-  transition: opacity 0.6s ease, background 0.2s ease;
+  transition: opacity 0.6s ease, color 0.4s ease;
 }
-.du-burger:hover { background: rgba(20, 26, 40, 0.7); color: #fff; }
-.du-burger.du-active { background: rgba(20, 26, 40, 0.72); color: #fff; }
+.du-burger.du-night { color: rgba(255, 255, 255, 0.92); }
+.du-burger:hover { opacity: 0.7; }
+.du-burger.du-active { opacity: 0.7; }
 
 .du-burger.du-hidden {
   opacity: 0;
@@ -273,3 +271,10 @@ body.no-ui #drive-ui { display: none !important; }
   transition: opacity 2s ease;
 }
 .du-toast.show { opacity: 1; }
+
+/* calendar + forecast */
+.du-forecast {
+  font-size: 12px;
+  opacity: 0.85;
+  padding: 2px 0 4px;
+}

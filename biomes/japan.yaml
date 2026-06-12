@@ -26,6 +26,7 @@ flora:
   avenue: sakura
 light:
   grade: { tint: '#f4cfd8', strength: 0.16, multiplier: 1 }
+climate: { summer: 27, winter: -2 }
 weather:
   clear: 5
   overcast: 2

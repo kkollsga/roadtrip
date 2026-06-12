@@ -29,6 +29,7 @@ flora:
 light:
   grade: { tint: '#ffb24d', strength: 0.22, multiplier: 1.06 }
   aurora: 0
+climate: { summer: 38, winter: 8 }
 weather:
   clear: 9
   overcast: 0.6

@@ -36,24 +36,67 @@ window.Palette = (() => {
     };
   }
 
-  /* Sun travels t 0.06 → 0.79; elevation is a sine arc. p = horizontal
-     progress. The arc extends a little past the horizon (negative
-     elevation) so the disc rises and sets behind the scenery instead of
-     popping in and out of existence. */
-  function sunPos(t) {
-    t = ((t % 1) + 1) % 1;
-    const p = (t - 0.06) / 0.73;
-    if (p < -0.22 || p > 1.22) return { up: false, p: 0, elev: 0 };
-    return { up: true, p, elev: Math.sin(Math.PI * p) };
+  /* ---- celestial mechanics ----
+     The sun and moon ride real circles: solar declination follows the
+     day of year, altitude follows latitude and hour angle. Bodies are
+     always somewhere on their orbit — they rise and set THROUGH the
+     horizon instead of popping in and out. t: 0 = midnight; solar noon
+     sits at NOON_T so the palette anchors keep their meaning. */
+  const TAU = Math.PI * 2;
+  const NOON_T = 0.425;
+  const TILT = 0.409; // axial tilt, radians
+  const sunLon = doy => TAU * ((doy || 81) - 81) / 365;
+
+  function orbit(t, latDeg, decl, hourShift) {
+    const lat = (latDeg === undefined ? 45 : latDeg) * Math.PI / 180;
+    let H = TAU * (((t % 1) + 1) % 1 - NOON_T) - (hourShift || 0);
+    H = ((H % TAU) + TAU + Math.PI) % TAU - Math.PI; // wrap to [-PI, PI)
+    const sinAlt = Math.sin(lat) * Math.sin(decl)
+      + Math.cos(lat) * Math.cos(decl) * Math.cos(H);
+    // half-angle of the above-horizon sweep -> horizontal progress 0..1
+    const cosH0 = U.clamp(-Math.tan(lat) * Math.tan(decl), -1, 1);
+    const H0 = U.clamp(Math.acos(cosH0), 0.16, Math.PI - 0.05);
+    return { up: sinAlt > -0.22, p: (H + H0) / (2 * H0), elev: sinAlt };
   }
 
-  /* Moon travels t 0.83 → 1.07 (wrapping past midnight). */
-  function moonPos(t) {
-    t = ((t % 1) + 1) % 1;
-    const m = t < 0.5 ? t + 1 : t;
-    const p = (m - 0.83) / 0.24;
-    if (p < -0.22 || p > 1.22) return { up: false, p: 0, elev: 0 };
-    return { up: true, p, elev: Math.sin(Math.PI * p) };
+  function sunPos(t, latDeg, doy) {
+    return orbit(t, latDeg, TILT * Math.sin(sunLon(doy)));
+  }
+
+  /* the moon trails the sun by its phase: a full moon (0.5) rises at
+     sunset; its declination follows its own ecliptic longitude, so a
+     winter full moon rides high just like the real one */
+  function moonPos(t, latDeg, doy, phase) {
+    const ph = phase === undefined ? 0.5 : phase;
+    const decl = TILT * Math.sin(sunLon(doy) + TAU * ph);
+    return orbit(t, latDeg, decl, TAU * ph);
+  }
+
+  /* warp wall-clock t into the palette's canonical day, so latitude and
+     season reshape the light: keyframes live at sunrise .09, noon .42,
+     sunset .75 and deep night .92 — the warp pins them to the REAL
+     sunrise/noon/sunset of this latitude and day of year. Polar winter
+     never leaves the night keys (a brief noon glow); the midnight sun
+     never reaches them. */
+  function solarWarp(t, latDeg, doy) {
+    const lat = (latDeg === undefined ? 45 : latDeg) * Math.PI / 180;
+    const decl = TILT * Math.sin(sunLon(doy));
+    const cosH0 = U.clamp(-Math.tan(lat) * Math.tan(decl), -1, 1);
+    const half = U.clamp(Math.acos(cosH0), 0.10, Math.PI - 0.10) / TAU;
+    const P = [
+      [NOON_T - half, 0.09], [NOON_T, 0.42],
+      [NOON_T + half, 0.75], [0.925, 0.92],
+    ];
+    let tt = ((t % 1) + 1) % 1;
+    if (tt < P[0][0]) tt += 1;
+    for (let i = 0; i < 4; i++) {
+      const a = P[i], b = i < 3 ? P[i + 1] : [P[0][0] + 1, P[0][1] + 1];
+      if (tt <= b[0] || i === 3) {
+        const f = (tt - a[0]) / Math.max(1e-6, b[0] - a[0]);
+        return ((a[1] + (b[1] - a[1]) * U.clamp(f, 0, 1)) % 1 + 1) % 1;
+      }
+    }
+    return t;
   }
 
   /* "lit": apply daylight + ambient bounce to a base (daylight) color.
@@ -62,5 +105,5 @@ window.Palette = (() => {
     return U.mix(U.scale(base, 0.22 + 0.78 * light), pal.amb, (1 - light) * 0.45);
   }
 
-  return { get, sunPos, moonPos, lit };
+  return { get, sunPos, moonPos, solarWarp, lit };
 })();

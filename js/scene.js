@@ -1156,12 +1156,17 @@ window.Scene = (() => {
     };
   }
 
-  /* per-biome weather weights, consumed by the weather module */
+  /* per-biome weather weights + seasonal climate, consumed by weather
+     and the daily forecast */
   const WEATHER_TABLES = {};
-  BIOME_NAMES.forEach(n => { WEATHER_TABLES[n] = B[n].weather; });
+  const CLIMATES = {};
+  BIOME_NAMES.forEach(n => {
+    WEATHER_TABLES[n] = B[n].weather;
+    CLIMATES[n] = { hi: B[n].tempHi, lo: B[n].tempLo };
+  });
 
   return {
-    render, biomeAt, weightOf, setFixedBiome, gradeAt, BIOME_NAMES, WEATHER_TABLES,
+    render, biomeAt, weightOf, setFixedBiome, gradeAt, BIOME_NAMES, WEATHER_TABLES, CLIMATES,
     auroraAt: wx => effN(wx, 'aurora'),
   };
 })();
