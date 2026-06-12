@@ -12,8 +12,8 @@
 name: savanna
 order: 11
 terrain:
-  far: '#8a92a2'
-  mid: '#b5a065'
+  far: '#a89a84'
+  mid: '#b8a268'
   ground: '#b9a25e'
   farAmp: 0.07
   midAmp: 0.04
@@ -27,7 +27,7 @@ flora:
   seasonal: 0.7
   avenue: acacia
 light:
-  grade: { tint: '#ffd98e', strength: 0.18, multiplier: 1.04 }
+  grade: { tint: '#ffd98e', strength: 0.26, multiplier: 1.05 }
   aurora: 0
 latitude: 4            # the region's home latitude (deg N)
 climate: { summer: 33, winter: 18 }
