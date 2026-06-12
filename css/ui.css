@@ -278,3 +278,7 @@ body.no-ui #drive-ui { display: none !important; }
   opacity: 0.85;
   padding: 2px 0 4px;
 }
+
+.du-lat-row { display: flex; align-items: center; gap: 8px; }
+.du-lat-row .du-range { flex: 1; }
+.du-auto { display: flex; align-items: center; gap: 3px; font-size: 11px; opacity: 0.8; }

@@ -1145,6 +1145,13 @@ window.Scene = (() => {
     itemCache.clear();
   }
 
+  /* the road's latitude drifts with the biomes: tundra is arctic,
+     the savanna equatorial — blended through the same crossfade */
+  function latAt(wx) {
+    const bi = biomeAt(wx);
+    return U.lerp(B[bi.a].homeLat, B[bi.b].homeLat, bi.t);
+  }
+
   function gradeAt(wx) {
     const bi = biomeAt(wx);
     const a = B[bi.a].grade, b = B[bi.b].grade;
@@ -1166,7 +1173,7 @@ window.Scene = (() => {
   });
 
   return {
-    render, biomeAt, weightOf, setFixedBiome, gradeAt, BIOME_NAMES, WEATHER_TABLES, CLIMATES,
+    render, biomeAt, weightOf, setFixedBiome, gradeAt, latAt, BIOME_NAMES, WEATHER_TABLES, CLIMATES,
     auroraAt: wx => effN(wx, 'aurora'),
   };
 })();

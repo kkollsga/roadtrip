@@ -67,6 +67,7 @@
       var data = {
         carIndex: app.carIndex,
         latitude: app.latitude,
+        latMode: app.latMode,
         month: dom.month ? Number(dom.month.value) : 5,
         daysPerMonth: dom.dpm ? Number(dom.dpm.value) : 7,
         loopMinutes: dom.dayLen ? Number(dom.dayLen.value) : (DC() ? DC().loopMinutes : 15),
@@ -85,6 +86,10 @@
     try {
       if (typeof s.carIndex === 'number' && typeof app.setCar === 'function') app.setCar(s.carIndex);
       if (typeof s.latitude === 'number' && typeof app.setLatitude === 'function') app.setLatitude(s.latitude);
+      if (s.latMode !== 'manual' && typeof app.setLatAuto === 'function') {
+        app.setLatAuto();
+        if (dom.latAuto) dom.latAuto.checked = true;
+      } else if (dom.latAuto) dom.latAuto.checked = false;
       if (typeof s.loopMinutes === 'number' && typeof app.setDayLoopMinutes === 'function') app.setDayLoopMinutes(s.loopMinutes);
       if (typeof s.month === 'number' && typeof app.setMonth === 'function') app.setMonth(s.month);
       if (typeof s.daysPerMonth === 'number' && typeof app.setDaysPerMonth === 'function') app.setDaysPerMonth(s.daysPerMonth);
@@ -182,10 +187,32 @@
     dom.lat = lat;
     lat.addEventListener('input', function () {
       var app = App();
+      // touching the slider takes manual control of the latitude
       if (app && typeof app.setLatitude === 'function') app.setLatitude(Number(lat.value));
+      if (dom.latAuto) dom.latAuto.checked = false;
       saveState();
     });
-    panel.appendChild(field('Latitude', lat));
+    var latRow = el('div', 'du-lat-row');
+    latRow.appendChild(lat);
+    var latAuto = el('label', 'du-auto');
+    var latAutoBox = el('input');
+    latAutoBox.type = 'checkbox';
+    latAutoBox.checked = true;
+    latAutoBox.title = 'Follow the road: tundra is arctic, the savanna equatorial';
+    dom.latAuto = latAutoBox;
+    latAuto.appendChild(latAutoBox);
+    latAuto.appendChild(document.createTextNode('auto'));
+    latRow.appendChild(latAuto);
+    latAutoBox.addEventListener('change', function () {
+      var app = App();
+      if (!app) return;
+      if (latAutoBox.checked && typeof app.setLatAuto === 'function') app.setLatAuto();
+      else if (typeof app.setLatitude === 'function') app.setLatitude(Number(lat.value));
+      saveState();
+    });
+    var latField = field('Latitude', latRow);
+    dom.latLabel = latField.firstChild;
+    panel.appendChild(latField);
 
     // 3. Season: month slider + how many in-game days one month lasts
     var MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
@@ -427,6 +454,13 @@
       var f = app.forecast;
       dom.forecast.textContent = f.tempC + '\u00b0C \u00b7 '
         + Math.round(f.chance * 100) + '% ' + f.type;
+    }
+    if (dom.lat && app.latMode === 'auto' && typeof app._autoLat === 'number') {
+      dom.lat.value = String((app._autoLat - 8) / 70);
+    }
+    if (dom.latLabel && typeof app.latDeg === 'function') {
+      dom.latLabel.textContent = 'Latitude: ' + Math.round(app.latDeg()) + '\u00b0N'
+        + (app.latMode === 'auto' ? '' : ' (manual)');
     }
   }, 1000);
 

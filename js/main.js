@@ -20,9 +20,15 @@
   const App = {
     carIndex: 0,
     speedMult: 0.9,
-    latitude: 0.55, // slider 0..1 -> 8..78 deg north
-    setLatitude(v) { this.latitude = U.clamp(+v || 0, 0, 1); },
-    latDeg() { return U.lerp(8, 78, this.latitude); },
+    latitude: 0.55,    // slider 0..1 -> 8..78 deg north (manual mode)
+    latMode: 'auto',   // 'auto': follow the road's biome; 'manual': slider
+    setLatitude(v) { this.latitude = U.clamp(+v || 0, 0, 1); this.latMode = 'manual'; },
+    setLatAuto() { this.latMode = 'auto'; },
+    latDeg() {
+      return this.latMode === 'auto'
+        ? this._autoLat || 45
+        : U.lerp(8, 78, this.latitude);
+    },
     setMonth(m) { DayCycle.setMonth(m); },
     setDaysPerMonth(n) { DayCycle.setDaysPerMonth(n); },
     weatherMode: 'auto',
@@ -122,7 +128,10 @@
     state.worldX += speed * runDt;
     state.wheelRot += (speed * runDt) / Cars.WHEEL_R;
 
-    // latitude + season reshape daylight: the palette follows the sun
+    // latitude + season reshape daylight: the palette follows the sun.
+    // In auto mode the latitude rides the biomes (arctic tundra,
+    // equatorial savanna), crossfading with them.
+    App._autoLat = Scene.latAt(state.worldX + W * 0.5);
     const latDeg = App.latDeg();
     const doy = DayCycle.dayOfYear();
     const moonPhase = ((MOON_PHASE + DayCycle.dayCount / 29.530588) % 1 + 1) % 1;

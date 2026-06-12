@@ -29,6 +29,7 @@ flora:
 light:
   grade: { tint: '#b8e4de', strength: 0.15, multiplier: 1.04 }
   aurora: 0
+latitude: 38            # the region's home latitude (deg N)
 climate: { summer: 24, winter: 6 }
 weather:
   clear: 5

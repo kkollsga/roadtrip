@@ -26,6 +26,7 @@ flora:
   avenue: sakura
 light:
   grade: { tint: '#f4cfd8', strength: 0.16, multiplier: 1 }
+latitude: 36            # the region's home latitude (deg N)
 climate: { summer: 27, winter: -2 }
 weather:
   clear: 5
