@@ -76,5 +76,5 @@ variants:
     forest: { depth: 2 }
   - key: lakeside
     weight: 1.5
-    terrain: { water: 0.6, waterCol: '#37647c' }
+    terrain: { lake: 0.65, waterCol: '#37647c' }
     near: { density: 2.5 }

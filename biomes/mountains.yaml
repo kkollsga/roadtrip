@@ -63,7 +63,7 @@ extras:
 variants:
   - key: alpineLake
     weight: 1.5
-    terrain: { water: 0.5, waterCol: '#386a7e' }
+    terrain: { lake: 0.6, waterCol: '#386a7e' }
   - key: forestedValley
     weight: 2
     terrain: { farAmp: 0.2, midAmp: 0.09 }

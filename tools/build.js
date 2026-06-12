@@ -24,7 +24,7 @@ const DEFAULTS = {
   far: '#7d92aa', mid: '#8fae70', ground: '#79a35d',
   fol: '#55844a', fol2: '#6f9c54', trunk: '#6b5340',
   farAmp: 0.10, midAmp: 0.06, ridged: 0, snowcap: 0,
-  water: 0, waterCol: '#3c6f95', aurora: 0, occluder: 0,
+  water: 0, lake: 0, waterCol: '#3c6f95', aurora: 0, occluder: 0,
   landmarks: [], grade: { tint: '#ffffff', s: 0, lm: 1 },
   avenue: 'roundTree',
   density: 3, items: [['roundTree', 1]],
@@ -56,7 +56,7 @@ function compileTable(table) {
 function flatten(doc) {
   const out = {};
   const t = doc.terrain || {};
-  for (const k of ['far', 'mid', 'ground', 'farAmp', 'midAmp', 'ridged', 'snowcap', 'water', 'waterCol']) {
+  for (const k of ['far', 'mid', 'ground', 'farAmp', 'midAmp', 'ridged', 'snowcap', 'water', 'lake', 'waterCol']) {
     if (k in t) out[k] = t[k];
   }
   const f = doc.flora || {};

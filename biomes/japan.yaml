@@ -84,5 +84,5 @@ variants:
     midridge: { density: 0.3 }
   - key: lakeside
     weight: 1.5
-    terrain: { water: 0.55, waterCol: '#406b82' }
+    terrain: { lake: 0.6, waterCol: '#406b82' }
     near: { density: 4 }

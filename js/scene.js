@@ -323,7 +323,9 @@ window.Scene = (() => {
         // sink beneath the sea plane behind them — headlands, islands,
         // open water all emerge; where it sits high, far panes lift to
         // the horizon and the ocean hides behind the land
-        const wAt = farPane ? effN(wxs, 'water') : 0;
+        const midPane = !farPane && D > 40;
+        const wAt = farPane ? effN(wxs, 'water')
+          : midPane ? effN(wxs, 'lake') : 0;
         const lift = farPane ? (1 - wAt) * h * 0.018 : 0;
         pts.push(baseY - lift - amp * (shaped - wAt * 0.85));
       }
@@ -474,7 +476,8 @@ window.Scene = (() => {
         for (const it of items) {
           const sx = it.x - lx0;
           if (sx < -mg || sx > w + mg) continue;
-          if (landOnly && effN(it.x / p, 'water') > 0.35) continue; // no woods at sea
+          if (landOnly && (effN(it.x / p, 'water') > 0.35
+            || effN(it.x / p, 'lake') > 0.35)) continue; // no woods in water
           const size = itemMeters(it.type, it.sf) * M;
           const c = colorSets[it.prof.key] || (colorSets[it.prof.key] = colorsFor(it.prof, d));
           const y = groundY(it.x, sx, it);
@@ -700,6 +703,32 @@ window.Scene = (() => {
         const ly = h * (groundYf(190) + (cfg.y - 0.645) * 0.35);
         q(190, () => Assets[kind](ctx, sx, ly, s, c, vv, time), ly);
       }
+    }
+
+    // lakes: a local water table on the mid pane — the same emergence as
+    // the sea, one pane nearer. Where the mid crest dips below the table,
+    // still water shows through.
+    const lakeW = effN(cwx, 'lake');
+    if (lakeW > 0.02) {
+      q(58, () => {
+        const top = h * groundYf(72), bot = h * groundYf(46);
+        const water = Palette.lit(effC(cwx, 'waterCol'), pal, light);
+        const g = ctx.createLinearGradient(0, top, 0, bot);
+        g.addColorStop(0, U.css(U.mix(U.mix(water, pal.bot, 0.5), pal.fog, effD(hazeAt(70))), lakeW));
+        g.addColorStop(1, U.css(U.mix(water, pal.fog, effD(hazeAt(50))), lakeW));
+        ctx.fillStyle = g;
+        ctx.fillRect(0, top, w, bot - top);
+        // still-water sheen drifting slowly
+        ctx.fillStyle = U.css(U.scale(water, 1.3), 0.10 * lakeW * (0.3 + 0.7 * light));
+        for (let row = 0; row < 4; row++) {
+          const ry = U.lerp(top, bot, (row + 1) / 5);
+          const sp = 110 + row * 50;
+          const off = (worldX * (0.18 + row * 0.03) + time * (3 + row * 2)) % sp;
+          for (let x = -off; x < w; x += sp) {
+            ctx.fillRect(x + U.hash2(row, Math.floor((x + off) / sp)) * 40, ry, 16 + row * 8, 1);
+          }
+        }
+      });
     }
 
     // mid ridge + its landmarks (lighthouses, pagodas)
