@@ -32,7 +32,8 @@ light:
 latitude: 47            # the region's home latitude (deg N)
 climate: { summer: 14, winter: -14 }
 weather:
-  clear: 5
+  clear: 3.8
+  fair: 2.8
   overcast: 2
   snow: 2
   fog: 1

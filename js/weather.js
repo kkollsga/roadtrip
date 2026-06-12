@@ -3,13 +3,15 @@
 (function () {
   'use strict';
 
-  var TYPES = ['clear', 'overcast', 'rain', 'snow', 'fog'];
+  var TYPES = ['clear', 'fair', 'overcast', 'rain', 'storm', 'snow', 'fog'];
 
   // Per-type scalar targets. Order: cloudCover, fog, precip, dim.
   var TARGETS = {
     clear:    { cloud: 0.12, fog: 0.02, precip: 0.0,  dim: 0.0  },
+    fair:     { cloud: 0.34, fog: 0.03, precip: 0.0,  dim: 0.03 }, // bright scattered cumulus
     overcast: { cloud: 0.85, fog: 0.12, precip: 0.0,  dim: 0.22 },
     rain:     { cloud: 0.95, fog: 0.25, precip: 0.85, dim: 0.35 },
+    storm:    { cloud: 1.0,  fog: 0.30, precip: 1.0,  dim: 0.50 }, // heavy, dark, lightning
     snow:     { cloud: 0.8,  fog: 0.3,  precip: 0.7,  dim: 0.18 },
     fog:      { cloud: 0.55, fog: 0.85, precip: 0.0,  dim: 0.25 }
   };
@@ -142,20 +144,36 @@
     W._blendDur = rand(8, 12);
   }
 
+  // precipitation takes the form the temperature allows
+  function tempAdjust(type) {
+    var tC = W.forecast ? W.forecast.tempC : 8;
+    if ((type === 'rain' || type === 'storm') && tC < 1) return 'snow';
+    if (type === 'snow' && tC > 4) return 'rain';
+    return type;
+  }
+
   function nextAuto(biome) {
     var list = allowedFor(biome);
     // today's forecast steers the odds: precipitation arrives with the
     // forecast chance and in the forecast's form (snow below freezing)
     var f = W.forecast;
     if (f) {
-      if (Math.random() < f.chance) return f.type;
+      if (Math.random() < f.chance) {
+        // a wet day: mostly the forecast form, sometimes it builds
+        // into a storm where the biome knows storms
+        var stormW = 0;
+        for (var j = 0; j < list.length; j++) if (list[j][0] === 'storm') stormW = list[j][1];
+        if (stormW > 0 && Math.random() < 0.25) return tempAdjust('storm');
+        return tempAdjust(f.type);
+      }
       var calm = [];
       for (var i = 0; i < list.length; i++) {
-        if (list[i][0] !== 'rain' && list[i][0] !== 'snow') calm.push(list[i]);
+        var ty = list[i][0];
+        if (ty !== 'rain' && ty !== 'snow' && ty !== 'storm') calm.push(list[i]);
       }
       if (calm.length) return pickWeighted(calm, W._to);
     }
-    return pickWeighted(list, W._to);
+    return tempAdjust(pickWeighted(list, W._to));
   }
 
   function ensureInit(env) {
@@ -244,20 +262,41 @@
     W.precip = clamp(basePrecip * driftMul, 0, 1);
 
     // --- Wetness: rises ~30s during rain, dries ~90s after ---
-    var raining = (W._to === 'rain' && W._blend > 0.2) || W._from === 'rain';
-    var rainAmt = (W._to === 'rain' ? k : (W._from === 'rain' ? 1 - k : 0));
+    var wetTo = W._to === 'rain' || W._to === 'storm';
+    var wetFrom = W._from === 'rain' || W._from === 'storm';
+    var raining = (wetTo && W._blend > 0.2) || wetFrom;
+    var rainAmt = (wetTo ? k : (wetFrom ? 1 - k : 0));
+    void raining;
     if (rainAmt > 0.05) {
       W.wetness = clamp(W.wetness + dt / 30 * rainAmt, 0, 1);
     } else {
       W.wetness = clamp(W.wetness - dt / 90, 0, 1);
     }
 
-    // --- Snow cover: accumulates ~45s while snowing, melts ~150s after ---
+    // --- Lightning: deep in a storm, bolts strike every 5-16 s; the
+    // flash decays fast, the bolt outlives it by a blink ---
+    var stormy = storminess();
+    if (dt > 0) {
+      if (stormy > 0.5) {
+        W._boltTimer = (W._boltTimer === undefined ? rand(2, 6) : W._boltTimer) - dt;
+        if (W._boltTimer <= 0) {
+          W._boltTimer = rand(5, 16);
+          W.flash = 1;
+          W._bolt = makeBolt(env);
+        }
+      }
+      W.flash = Math.max(0, (W.flash || 0) - dt * 4.5);
+    }
+
+    // --- Snow cover: accumulates while snowing; only MELTS above
+    // freezing, faster the warmer it is — a cold clear winter day keeps
+    // the world white ---
     var snowAmt = (W._to === 'snow' ? k : (W._from === 'snow' ? 1 - k : 0));
+    var tC = W.forecast ? W.forecast.tempC : 8;
     if (snowAmt > 0.05) {
       W.snowCover = clamp(W.snowCover + dt / 45 * snowAmt, 0, 1);
-    } else {
-      W.snowCover = clamp(W.snowCover - dt / 150, 0, 1);
+    } else if (tC > 0) {
+      W.snowCover = clamp(W.snowCover - dt / 150 * Math.min(1.6, tC / 6), 0, 1);
     }
 
     W.current.type = W._to;
@@ -275,9 +314,18 @@
   function rainStrength() {
     var k = ease(W._blend);
     var s = 0;
-    if (W._to === 'rain') s = Math.max(s, k);
-    if (W._from === 'rain') s = Math.max(s, 1 - k);
+    if (W._to === 'rain' || W._to === 'storm') s = Math.max(s, k);
+    if (W._from === 'rain' || W._from === 'storm') s = Math.max(s, 1 - k);
     return s * (W.precip > 0 ? clamp(W.precip / 0.85, 0, 1.2) : s);
+  }
+
+  // how deep into a storm we are (drives lightning and the gust slant)
+  function storminess() {
+    var k = ease(W._blend);
+    var s = 0;
+    if (W._to === 'storm') s = Math.max(s, k);
+    if (W._from === 'storm') s = Math.max(s, 1 - k);
+    return s;
   }
   function snowStrength() {
     var k = ease(W._blend);
@@ -349,11 +397,69 @@
   }
 
   // ---- Rendering (front: over finished scene) ----
+  function makeBolt(env) {
+    var w = (env && env.w) || 1280, h = (env && env.h) || 720;
+    var x = w * rand(0.15, 0.85);
+    var y = h * 0.16;
+    var segs = [[x, y]];
+    var endY = h * rand(0.5, 0.68);
+    var n = 7;
+    for (var i = 1; i <= n; i++) {
+      x += rand(-1, 1) * w * 0.022;
+      y = h * 0.16 + (endY - h * 0.16) * (i / n);
+      segs.push([x, y]);
+    }
+    // one branch forking off mid-bolt
+    var bi = 3 + Math.floor(rand(0, 2));
+    var branch = [[segs[bi][0], segs[bi][1]]];
+    var bx = segs[bi][0], by = segs[bi][1];
+    for (var j2 = 0; j2 < 3; j2++) {
+      bx += rand(0.4, 1.4) * w * 0.018 * (rand(0, 1) < 0.5 ? -1 : 1);
+      by += h * 0.05;
+      branch.push([bx, by]);
+    }
+    return { segs: segs, branch: branch };
+  }
+
+  function drawBolt(ctx, pts, width, alpha) {
+    ctx.strokeStyle = 'rgba(255,250,235,' + alpha.toFixed(3) + ')';
+    ctx.lineWidth = width;
+    ctx.lineJoin = 'round';
+    ctx.beginPath();
+    ctx.moveTo(pts[0][0], pts[0][1]);
+    for (var i = 1; i < pts.length; i++) ctx.lineTo(pts[i][0], pts[i][1]);
+    ctx.stroke();
+  }
+
   W.renderFront = function (ctx, env, pal) {
     if (!env) return;
     var w = env.w, h = env.h;
     var light = (pal && typeof pal.light === 'number') ? pal.light : 1;
     var fc = (pal && pal.fog) || [200, 205, 210];
+
+    // --- An approaching front: rolling into rain/storm/snow, a dark bank
+    // slides in ahead of the car instead of the sky fading uniformly ---
+    if (W._blend < 1 && (W._to === 'rain' || W._to === 'storm' || W._to === 'snow')) {
+      var fEdge = w * (1.25 - ease(W._blend) * 1.5);
+      var fg2 = ctx.createLinearGradient(fEdge, 0, fEdge + w * 0.55, 0);
+      var fAl = (W._to === 'storm' ? 0.34 : 0.20) * (0.4 + 0.6 * light);
+      fg2.addColorStop(0, 'rgba(30,36,44,0)');
+      fg2.addColorStop(1, 'rgba(30,36,44,' + fAl.toFixed(3) + ')');
+      ctx.fillStyle = fg2;
+      ctx.fillRect(fEdge, 0, w - fEdge + w * 0.6, h * 0.62);
+    }
+
+    // --- Lightning: the flash washes the world, the bolt follows ---
+    if (W.flash > 0.01) {
+      ctx.fillStyle = 'rgba(245,248,255,' + (W.flash * 0.20).toFixed(3) + ')';
+      ctx.fillRect(0, 0, w, h);
+      if (W._bolt && W.flash > 0.45) {
+        var ba2 = (W.flash - 0.45) / 0.55;
+        drawBolt(ctx, W._bolt.segs, 5, ba2 * 0.25);   // glow
+        drawBolt(ctx, W._bolt.segs, 1.7, ba2 * 0.95); // core
+        drawBolt(ctx, W._bolt.branch, 1.2, ba2 * 0.6);
+      }
+    }
 
     // --- Fog ---
     if (W.fog > 0.01) {

@@ -203,7 +203,7 @@
         let tot = 0, wet = 0;
         for (const [k2, w2] of tbl) {
           tot += w2;
-          if (k2 === 'rain' || k2 === 'snow') wet += w2;
+          if (k2 === 'rain' || k2 === 'snow' || k2 === 'storm') wet += w2;
           if (k2 === 'fog') wet += w2 * 0.4;
         }
         const seasonWet = 1 + 0.35 * Math.cos(2 * Math.PI * (doy - 280) / 365);
