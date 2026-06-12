@@ -452,8 +452,12 @@
     }
     if (dom.forecast && app.forecast) {
       var f = app.forecast;
+      var moons = ['\u{1F311}', '\u{1F312}', '\u{1F313}', '\u{1F314}',
+        '\u{1F315}', '\u{1F316}', '\u{1F317}', '\u{1F318}'];
+      var ph = typeof app.moonPhaseNow === 'number' ? app.moonPhaseNow : 0.5;
+      var glyph = moons[Math.round(ph * 8) % 8];
       dom.forecast.textContent = f.tempC + '\u00b0C \u00b7 '
-        + Math.round(f.chance * 100) + '% ' + f.type;
+        + Math.round(f.chance * 100) + '% ' + f.type + ' \u00b7 ' + glyph;
     }
     if (dom.lat && app.latMode === 'auto' && typeof app._autoLat === 'number') {
       dom.lat.value = String((app._autoLat - 8) / 70);

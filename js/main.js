@@ -222,6 +222,7 @@
     Weather.update(runDt, env);
     env.light = U.clamp(pal.light * (1 - Weather.dim), 0.05, 1);
     App.lightNow = env.light;
+    App.moonPhaseNow = moonPhase;
     env.weather = {
       cloudCover: Weather.cloudCover,
       fog: Weather.fog,

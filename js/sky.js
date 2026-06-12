@@ -218,14 +218,24 @@ window.Sky = (() => {
       const r = h * 0.024;
       ctx.save(); // moonrise eases in the same way dawn does
       ctx.globalAlpha = U.smooth(U.clamp((moonArc.elev + 0.5) / 0.5, 0, 1));
-      const ga = 0.06 + 0.26 * illum; // glow follows the phase
-      const mg = ctx.createRadialGradient(mx, my, 0, mx, my, r * 8);
-      mg.addColorStop(0, `rgba(238,216,150,${ga.toFixed(3)})`);
-      mg.addColorStop(1, 'rgba(238,216,150,0)');
-      ctx.fillStyle = mg;
-      ctx.fillRect(mx - r * 8, my - r * 8, r * 16, r * 16);
-      drawMoonPhase(ctx, mx, my, r, mph,
-        '#f2e2a8', U.css(U.mix(pal.top, U.col('#8a8a74'), 0.22), 0.9));
+      // by day the moon is a pale ghost: no halo, the unlit side vanishes
+      // into the sky, the lit limb fades toward thin white
+      const dayness = U.clamp((pal.light - 0.25) / 0.6, 0, 1);
+      const ga = (0.06 + 0.26 * illum) * (1 - dayness); // night halo only
+      if (ga > 0.01) {
+        // the halo swells toward the full moon — the storybook centerpiece
+        const gr = r * (5 + 6 * illum);
+        const mg = ctx.createRadialGradient(mx, my, 0, mx, my, gr);
+        mg.addColorStop(0, `rgba(238,216,150,${ga.toFixed(3)})`);
+        mg.addColorStop(1, 'rgba(238,216,150,0)');
+        ctx.fillStyle = mg;
+        ctx.fillRect(mx - gr, my - gr, gr * 2, gr * 2);
+      }
+      const lit = U.css(U.mix(U.col('#f2e2a8'), U.col('#eef2f6'), dayness),
+        1 - 0.55 * dayness);
+      const dark = U.css(U.mix(pal.top, U.col('#8a8a74'), 0.22),
+        0.9 * (1 - dayness));
+      drawMoonPhase(ctx, mx, my, r, mph, lit, dark);
       ctx.restore();
       if (moonArc.elev > 0.02 && illum > 0.25) { env.moonX = mx; env.moonY = my; }
     }
